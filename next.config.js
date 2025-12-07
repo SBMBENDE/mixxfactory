@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Force rebuild - fix categories API cache issue (2025-12-07 11:11 GMT)
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
