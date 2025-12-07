@@ -41,7 +41,7 @@ export default function Carousel({
 
   // Calculate responsive itemsPerView
   const getItemsPerView = () => {
-    if (windowWidth < 1024) return 2; // Mobile & Tablet: 2 items
+    if (windowWidth < 1024) return 1; // Mobile & Tablet: 1 item
     return itemsPerView; // Desktop: default (4 items)
   };
 
@@ -123,7 +123,7 @@ export default function Carousel({
         style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${responsiveItemsPerView}, 1fr)`,
-        gap: windowWidth < 1024 ? '0.75rem' : '1.5rem',
+        gap: '1.5rem',
         overflow: 'hidden',
       }}>
         {visibleItems.map((item, idx) => (
