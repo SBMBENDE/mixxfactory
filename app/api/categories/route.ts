@@ -14,6 +14,10 @@ export async function GET() {
     await connectDB();
 
     const categories = await CategoryModel.find().sort({ name: 1 }).lean();
+    
+    console.log(`[Categories API] Found ${categories.length} categories`);
+    console.log('[Categories API] First category:', categories[0]?.name);
+    console.log('[Categories API] All category names:', categories.map((c: any) => c.name).join(', '));
 
     const response = successResponse(categories);
     // Ensure no caching on the response
