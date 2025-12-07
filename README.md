@@ -235,3 +235,4 @@ For issues and questions, please open an issue on GitHub or contact support@mixx
 ---
 
 **Built with ❤️ by MixxFactory Team**
+# Deployment trigger
