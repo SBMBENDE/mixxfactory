@@ -6,6 +6,8 @@ import { connectDB } from '@/lib/db/connection';
 import { CategoryModel } from '@/lib/db/models';
 import { successResponse, internalErrorResponse } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     await connectDB();
