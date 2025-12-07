@@ -8,9 +8,12 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useLanguage } from '@/hooks/useLanguage';
+import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
 export default function DirectoryPage() {
   const searchParams = useSearchParams();
+  const { language } = useLanguage();
   const [professionals, setProfessionals] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -162,7 +165,7 @@ export default function DirectoryPage() {
             <option value="">{t.directory.allCategories}</option>
             {categories.map((category) => (
               <option key={category._id} value={category.slug}>
-                {category.name}
+                {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
               </option>
             ))}
           </select>
