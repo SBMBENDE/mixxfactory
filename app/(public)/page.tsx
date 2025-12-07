@@ -7,6 +7,7 @@
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
+import Carousel from '@/components/Carousel';
 
 export default function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -77,54 +78,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Categories Preview */}
+      {/* Categories Preview - Carousel */}
       <section style={{ padding: '4rem 1rem' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '3rem', textAlign: 'center' }}>
             {t.home.popularCategories}
           </h2>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
-            gap: '1.5rem' 
-          }}>
-            {[
-              { nameKey: 'dj', slug: 'dj', emoji: '🎧' },
-              { nameKey: 'eventHall', slug: 'event-hall', emoji: '🏛️' },
-              { nameKey: 'stylist', slug: 'stylist', emoji: '✨' },
-              { nameKey: 'restaurant', slug: 'restaurant', emoji: '🍽️' },
-              { nameKey: 'nightclub', slug: 'nightclub', emoji: '🌙' },
-              { nameKey: 'cameraman', slug: 'cameraman', emoji: '📹' },
-              { nameKey: 'promoter', slug: 'promoter', emoji: '📢' },
-              { nameKey: 'decorator', slug: 'decorator', emoji: '🎨' },
-            ].map((cat) => (
-              <a
-                key={cat.slug}
-                href={`/directory?category=${cat.slug}`}
-                style={{
-                  padding: '1.5rem',
-                  textAlign: 'center',
-                  borderRadius: '0.5rem',
-                  backgroundColor: 'white',
-                  border: '1px solid #e5e7eb',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  transition: 'all 0.2s',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 15px rgba(0,0,0,0.1)';
-                  e.currentTarget.style.borderColor = '#2563eb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.borderColor = '#e5e7eb';
-                }}
-              >
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{cat.emoji}</div>
-                <p style={{ fontWeight: '600', color: '#111827' }}>{t.categories[cat.nameKey as keyof typeof t.categories]}</p>
-              </a>
-            ))}
+          <div style={{ paddingLeft: '4rem', paddingRight: '4rem' }}>
+            <Carousel
+              items={[
+                { nameKey: 'dj', slug: 'dj', emoji: '🎧' },
+                { nameKey: 'eventHall', slug: 'event-hall', emoji: '🏛️' },
+                { nameKey: 'stylist', slug: 'stylist', emoji: '✨' },
+                { nameKey: 'restaurant', slug: 'restaurant', emoji: '🍽️' },
+                { nameKey: 'nightclub', slug: 'nightclub', emoji: '🌙' },
+                { nameKey: 'cameraman', slug: 'cameraman', emoji: '📹' },
+                { nameKey: 'promoter', slug: 'promoter', emoji: '📢' },
+                { nameKey: 'decorator', slug: 'decorator', emoji: '🎨' },
+                { nameKey: 'caterer', slug: 'caterer', emoji: '🍽️' },
+                { nameKey: 'florist', slug: 'florist', emoji: '🌸' },
+              ]}
+              renderItem={(cat) => (
+                <a
+                  href={`/directory?category=${cat.slug}`}
+                  style={{
+                    padding: '1.5rem',
+                    textAlign: 'center',
+                    borderRadius: '0.5rem',
+                    backgroundColor: 'white',
+                    border: '1px solid #e5e7eb',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    transition: 'all 0.3s',
+                    cursor: 'pointer',
+                    display: 'block',
+                    height: '100%',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = '0 20px 25px rgba(37, 99, 235, 0.15)';
+                    e.currentTarget.style.borderColor = '#2563eb';
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.borderColor = '#e5e7eb';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{cat.emoji}</div>
+                  <p style={{ fontWeight: '600', color: '#111827' }}>{t.categories[cat.nameKey as keyof typeof t.categories]}</p>
+                </a>
+              )}
+              itemsPerView={4}
+              autoScroll={true}
+              autoScrollInterval={5000}
+            />
           </div>
         </div>
       </section>
