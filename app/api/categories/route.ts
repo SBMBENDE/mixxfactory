@@ -3,36 +3,41 @@
  * Last Updated: 2025-12-07 11:30 - Direct MongoDB query
  */
 
-import { connectDB } from '@/lib/db/connection';
-import { CategoryModel } from '@/lib/db/models';
-import { successResponse, internalErrorResponse } from '@/utils/api-response';
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const MONGODB_URI = process.env.MONGODB_URI;
+  
+  if (!MONGODB_URI) {
+    return NextResponse.json(
+      { success: false, error: 'MONGODB_URI not configured' },
+      { status: 500 }
+    );
+  }
+
+  let client: MongoClient | null = null;
+
   try {
-    await connectDB();
+    // Connect directly with MongoDB driver, bypassing Mongoose
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
 
-    // First, try direct MongoDB query
-    const db = mongoose.connection.db;
-    if (!db) {
-      throw new Error('Database connection not available');
-    }
+    const db = client.db('mixxfactory');
+    const collection = db.collection('categories');
 
-    // Get ALL documents, no sorting
-    const allDocs = await db.collection('categories').find({}).toArray();
-    console.log(`[Categories API] Direct query found ${allDocs.length} documents total`);
-    allDocs.forEach((doc: any, i: number) => {
-      console.log(`  ${i + 1}. ${doc.name} - _id: ${doc._id}`);
-    });
+    // Get all categories
+    const categories = await collection
+      .find({})
+      .sort({ name: 1 })
+      .toArray();
 
-    // Now sort
-    const directCategories = await db.collection('categories').find({}).sort({ name: 1 }).toArray();
-    console.log(`[Categories API] After sort: ${directCategories.length} documents`);
+    console.log(`[Categories API] Found ${categories.length} categories in database`);
 
-    const categories = directCategories.map((doc: any) => ({
+    // Format response
+    const data = categories.map((doc: any) => ({
       _id: doc._id,
       name: doc.name,
       slug: doc.slug,
@@ -42,14 +47,30 @@ export async function GET() {
       updatedAt: doc.updatedAt,
     }));
 
-    const response = successResponse(categories);
-    // Ensure no caching on the response
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    const response = NextResponse.json({
+      success: true,
+      data,
+    });
+
+    // Set aggressive no-cache headers
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
+    response.headers.set('Surrogate-Control', 'no-store');
+
     return response;
   } catch (error) {
     console.error('Error fetching categories:', error);
-    return internalErrorResponse();
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  } finally {
+    if (client) {
+      await client.close();
+    }
   }
 }
