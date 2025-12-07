@@ -1,12 +1,11 @@
-import { connectToDatabase } from '@/lib/db/connection';
-import { CategoryModel } from '@/lib/db/models/Category';
-import { ProfessionalModel } from '@/lib/db/models/Professional';
+import { connectDB } from '@/lib/db/connection';
+import { CategoryModel, ProfessionalModel } from '@/lib/db/models';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    await connectToDatabase();
+    await connectDB();
 
     const categories = await CategoryModel.find({}).lean();
     const professionals = await ProfessionalModel.find({})
