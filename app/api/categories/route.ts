@@ -20,14 +20,17 @@ export async function GET() {
       throw new Error('Database connection not available');
     }
 
+    // Get ALL documents, no sorting
+    const allDocs = await db.collection('categories').find({}).toArray();
+    console.log(`[Categories API] Direct query found ${allDocs.length} documents total`);
+    allDocs.forEach((doc: any, i: number) => {
+      console.log(`  ${i + 1}. ${doc.name} - _id: ${doc._id}`);
+    });
+
+    // Now sort
     const directCategories = await db.collection('categories').find({}).sort({ name: 1 }).toArray();
-    console.log(`[Categories API] Direct MongoDB query found ${directCategories.length} categories`);
+    console.log(`[Categories API] After sort: ${directCategories.length} documents`);
 
-    // Also try through Mongoose model for comparison
-    const mongooseCategories = await CategoryModel.find().sort({ name: 1 }).lean();
-    console.log(`[Categories API] Mongoose query found ${mongooseCategories.length} categories`);
-
-    // Use direct query result
     const categories = directCategories.map((doc: any) => ({
       _id: doc._id,
       name: doc.name,
@@ -37,9 +40,6 @@ export async function GET() {
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     }));
-
-    console.log(`[Categories API] Returning ${categories.length} categories`);
-    console.log('[Categories API] Category names:', categories.map((c: any) => c.name).join(', '));
 
     const response = successResponse(categories);
     // Ensure no caching on the response
