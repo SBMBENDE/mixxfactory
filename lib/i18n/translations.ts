@@ -281,6 +281,8 @@ export const translations = {
       cameraman: 'Caméramans',
       promoter: 'Promoteurs',
       decorator: 'Décorateurs',
+      caterer: 'Traiteurs',
+      florist: 'Fleuristes',
     },
     // Authentication
     auth: {
