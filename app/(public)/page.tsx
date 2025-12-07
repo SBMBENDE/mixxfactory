@@ -9,8 +9,28 @@ import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
 import Carousel from '@/components/Carousel';
 
+// Emoji mapping for categories
+const categoryEmojis: Record<string, string> = {
+  dj: '🎧',
+  'event-hall': '🏛️',
+  stylist: '✨',
+  restaurant: '🍽️',
+  nightclub: '🌙',
+  cameraman: '📹',
+  promoter: '📢',
+  decorator: '🎨',
+  caterer: '🍽️',
+  florist: '🌸',
+};
+
+function getEmojiForCategory(slug: string): string {
+  return categoryEmojis[slug] || '⭐';
+}
+
 export default function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const t = useTranslations();
 
   // Check if user is authenticated
@@ -23,6 +43,37 @@ export default function HomePage() {
       }
     };
     checkAuth();
+  }, []);
+
+  // Fetch categories from API instead of hardcoding
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/categories');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          setCategories(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+        // Fallback to hardcoded categories if API fails
+        setCategories([
+          { name: 'DJs', slug: 'dj', nameKey: 'dj', emoji: '🎧' },
+          { name: 'Event Halls', slug: 'event-hall', nameKey: 'eventHall', emoji: '🏛️' },
+          { name: 'Stylists', slug: 'stylist', nameKey: 'stylist', emoji: '✨' },
+          { name: 'Restaurants', slug: 'restaurant', nameKey: 'restaurant', emoji: '🍽️' },
+          { name: 'Nightclubs', slug: 'nightclub', nameKey: 'nightclub', emoji: '🌙' },
+          { name: 'Cameramen', slug: 'cameraman', nameKey: 'cameraman', emoji: '📹' },
+          { name: 'Promoters', slug: 'promoter', nameKey: 'promoter', emoji: '📢' },
+          { name: 'Decorators', slug: 'decorator', nameKey: 'decorator', emoji: '🎨' },
+          { name: 'Caterers', slug: 'caterer', nameKey: 'caterer', emoji: '🍽️' },
+          { name: 'Florists', slug: 'florist', nameKey: 'florist', emoji: '🌸' },
+        ]);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    fetchCategories();
   }, []);
 
   return (
@@ -85,54 +136,52 @@ export default function HomePage() {
             {t.home.popularCategories}
           </h2>
           <div style={{ paddingLeft: '4rem', paddingRight: '4rem' }}>
-            <Carousel
-              items={[
-                { nameKey: 'dj', slug: 'dj', emoji: '🎧' },
-                { nameKey: 'eventHall', slug: 'event-hall', emoji: '🏛️' },
-                { nameKey: 'stylist', slug: 'stylist', emoji: '✨' },
-                { nameKey: 'restaurant', slug: 'restaurant', emoji: '🍽️' },
-                { nameKey: 'nightclub', slug: 'nightclub', emoji: '🌙' },
-                { nameKey: 'cameraman', slug: 'cameraman', emoji: '📹' },
-                { nameKey: 'promoter', slug: 'promoter', emoji: '📢' },
-                { nameKey: 'decorator', slug: 'decorator', emoji: '🎨' },
-                { nameKey: 'caterer', slug: 'caterer', emoji: '🍽️' },
-                { nameKey: 'florist', slug: 'florist', emoji: '🌸' },
-              ]}
-              renderItem={(cat) => (
-                <a
-                  href={`/directory?category=${cat.slug}`}
-                  style={{
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    borderRadius: '0.5rem',
-                    backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    transition: 'all 0.3s',
-                    cursor: 'pointer',
-                    display: 'block',
-                    height: '100%',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 20px 25px rgba(37, 99, 235, 0.15)';
-                    e.currentTarget.style.borderColor = '#2563eb';
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = 'none';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                  <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{cat.emoji}</div>
-                  <p style={{ fontWeight: '600', color: '#111827' }}>{t.categories[cat.nameKey as keyof typeof t.categories]}</p>
-                </a>
-              )}
-              itemsPerView={4}
-              autoScroll={true}
-              autoScrollInterval={5000}
-            />
+            {!categoriesLoading && categories.length > 0 && (
+              <Carousel
+                items={categories.map((cat) => ({
+                  nameKey: cat.slug,
+                  slug: cat.slug,
+                  emoji: getEmojiForCategory(cat.slug),
+                }))}
+                renderItem={(cat) => (
+                  <a
+                    href={`/directory?category=${cat.slug}`}
+                    style={{
+                      padding: '1.5rem',
+                      textAlign: 'center',
+                      borderRadius: '0.5rem',
+                      backgroundColor: 'white',
+                      border: '1px solid #e5e7eb',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      transition: 'all 0.3s',
+                      cursor: 'pointer',
+                      display: 'block',
+                      height: '100%',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 20px 25px rgba(37, 99, 235, 0.15)';
+                      e.currentTarget.style.borderColor = '#2563eb';
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#e5e7eb';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{cat.emoji}</div>
+                    <p style={{ fontWeight: '600', color: '#111827' }}>
+                      {categories.find((c) => c.slug === cat.slug)?.name}
+                    </p>
+                  </a>
+                )}
+                itemsPerView={4}
+                autoScroll={true}
+                autoScrollInterval={5000}
+              />
+            )}
+            {categoriesLoading && <p style={{ textAlign: 'center', color: '#999' }}>Loading categories...</p>}
           </div>
         </div>
       </section>
