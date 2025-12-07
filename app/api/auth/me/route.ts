@@ -8,6 +8,8 @@ import { UserModel } from '@/lib/db/models';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth/jwt';
 import { successResponse, unauthorizedResponse } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Verify the request is a valid NextRequest

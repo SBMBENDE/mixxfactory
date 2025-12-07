@@ -10,6 +10,8 @@ import { generateSlug } from '@/utils/slug';
 import { verifyAdminAuth } from '@/lib/auth/middleware';
 import { successResponse, validationErrorResponse, internalErrorResponse } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     // Verify admin auth

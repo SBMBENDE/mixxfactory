@@ -10,6 +10,8 @@ import { comparePassword } from '@/lib/auth/password';
 import { generateToken, setAuthCookieHeader } from '@/lib/auth/jwt';
 import { errorResponse, validationErrorResponse } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     await connectDB();

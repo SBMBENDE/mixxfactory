@@ -5,10 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-const locales = ['en', 'fr'];
-const defaultLocale = 'en';
-
-export function middleware(request: NextRequest) {
+export function middleware(_: NextRequest) {
   // TODO: Enable locale routing after app restructuring
   // For now, middleware is disabled to keep current routes working
   return NextResponse.next();

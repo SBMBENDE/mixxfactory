@@ -15,6 +15,8 @@ import {
   internalErrorResponse,
 } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }

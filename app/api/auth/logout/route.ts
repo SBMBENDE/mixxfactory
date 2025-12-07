@@ -2,12 +2,15 @@
  * Logout API route
  */
 
-import { clearAuthCookie } from '@/lib/auth/jwt';
 import { successResponse } from '@/utils/api-response';
+import { cookies } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST() {
   try {
-    await clearAuthCookie();
+    const cookieStore = await cookies();
+    cookieStore.delete('auth_token');
 
     return successResponse(null, 'Logged out successfully');
   } catch (error) {

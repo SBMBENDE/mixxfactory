@@ -13,6 +13,8 @@ import { verifyAdminAuth } from '@/lib/auth/middleware';
 import { verifyAuth } from '@/lib/auth/verify';
 import { successResponse, validationErrorResponse, internalErrorResponse } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     // Check if admin or authenticated user
