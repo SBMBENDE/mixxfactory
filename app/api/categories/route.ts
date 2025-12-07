@@ -1,5 +1,6 @@
 /**
  * Categories API route (get all)
+ * Last Updated: 2025-12-07 11:30 - Direct MongoDB query
  */
 
 import { connectDB } from '@/lib/db/connection';
