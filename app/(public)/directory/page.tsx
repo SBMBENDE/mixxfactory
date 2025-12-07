@@ -77,20 +77,8 @@ export default function DirectoryPage() {
         if (searchTerm) params.append('q', searchTerm);
         if (selectedCategory) params.append('category', selectedCategory);
 
-        console.log('🔍 Fetching professionals with params:', {
-          category: selectedCategory,
-          searchTerm,
-          fullUrl: `/api/professionals?${params}`,
-        });
-
         const response = await fetch(`/api/professionals?${params}`);
         const data = await response.json();
-
-        console.log('📦 API Response:', {
-          success: data.success,
-          dataLength: Array.isArray(data.data) ? data.data.length : Array.isArray(data.data?.data) ? data.data.data.length : 0,
-          responseData: data,
-        });
 
         if (data.success && data.data.data) {
           setProfessionals(Array.isArray(data.data.data) ? data.data.data : []);
