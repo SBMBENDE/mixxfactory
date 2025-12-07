@@ -71,7 +71,6 @@ export default function DirectoryPage() {
     const fetchData = async () => {
       try {
         const params = new URLSearchParams();
-        params.append('sort', sortBy);
         if (searchTerm) params.append('q', searchTerm);
         if (selectedCategory) params.append('category', selectedCategory);
 
@@ -93,7 +92,7 @@ export default function DirectoryPage() {
 
     const timer = setTimeout(fetchData, 300);
     return () => clearTimeout(timer);
-  }, [searchTerm, selectedCategory, sortBy]);
+  }, [searchTerm, selectedCategory]);
 
   return (
     <div style={{ padding: '3rem 1rem' }}>
