@@ -124,7 +124,7 @@ export default function DirectoryPage() {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              ← Back to Homepage
+              {t.directory.back}
             </a>
           </div>
         )}
@@ -196,7 +196,7 @@ export default function DirectoryPage() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '3rem 0' }}>
             <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite', width: '3rem', height: '3rem', border: '2px solid #2563eb', borderBottomColor: 'transparent', borderRadius: '50%' }} />
-            <p style={{ marginTop: '1rem', color: '#6b7280' }}>Loading...</p>
+            <p style={{ marginTop: '1rem', color: '#6b7280' }}>{t.directory.loading}</p>
           </div>
         ) : professionals.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3rem 0', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>

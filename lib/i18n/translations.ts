@@ -59,6 +59,7 @@ export const translations = {
       registerProfessional: 'Register as Professional',
       noResults: 'No professionals found. Try adjusting your filters.',
       back: '← Back to Homepage',
+      loading: 'Loading...',
     },
     // Authentication
     auth: {
@@ -207,6 +208,10 @@ export const translations = {
       sending: 'Sending...',
       successMessage: 'Message sent successfully! We\'ll get back to you soon.',
       businessHours: 'Business Hours',
+      phone: 'Phone',
+      address: 'Address',
+      hours: 'Hours',
+      available24_7: '24/7 Available',
       monday: 'Monday - Friday',
       saturday: 'Saturday',
       sunday: 'Sunday',
@@ -296,6 +301,7 @@ export const translations = {
       registerProfessional: 'S\'inscrire en tant que professionnel',
       noResults: 'Aucun professionnel trouvé. Essayez d\'ajuster vos filtres.',
       back: '← Retour à l\'accueil',
+      loading: 'Chargement...',
     },
     // Categories
     categories: {
@@ -446,6 +452,10 @@ export const translations = {
       sending: 'Envoi...',
       successMessage: 'Message envoyé avec succès ! Nous vous répondrons bientôt.',
       businessHours: 'Horaires d\'ouverture',
+      phone: 'Téléphone',
+      address: 'Adresse',
+      hours: 'Horaires',
+      available24_7: 'Disponible 24h/24, 7j/7',
       monday: 'Lundi - Vendredi',
       saturday: 'Samedi',
       sunday: 'Dimanche',

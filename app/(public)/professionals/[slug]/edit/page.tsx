@@ -494,7 +494,7 @@ export default function EditProfessionalPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Minimum Price ($)
+                    Minimum Price (€)
                   </label>
                   <input
                     type="number"
@@ -513,7 +513,7 @@ export default function EditProfessionalPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Maximum Price ($)
+                    Maximum Price (€)
                   </label>
                   <input
                     type="number"

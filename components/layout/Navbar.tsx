@@ -92,13 +92,13 @@ export const Navbar: React.FC = () => {
                       onClick={handleLogout}
                       className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                     >
-                      Logout
+                      {t.nav.logout}
                     </button>
                   </>
                 ) : (
                   <Link href="/auth/login">
                     <Button variant="outline" size="sm">
-                      Login
+                      {t.nav.login}
                     </Button>
                   </Link>
                 )}
@@ -179,13 +179,13 @@ export const Navbar: React.FC = () => {
                         onClick={handleLogout}
                         className="w-full px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                       >
-                        Logout
+                        {t.nav.logout}
                       </button>
                     </>
                   ) : (
                     <Link href="/auth/login" className="block">
                       <Button variant="primary" size="sm" className="w-full">
-                        Login
+                        {t.nav.login}
                       </Button>
                     </Link>
                   )}

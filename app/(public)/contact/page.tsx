@@ -25,26 +25,26 @@ export default function ContactPage() {
   const contactInfo = [
     {
       icon: faPhone,
-      title: 'Phone',
+      title: t.contact.phone,
       value: '+1 (555) 123-4567',
       color: '#2563eb',
     },
     {
       icon: faEnvelope,
-      title: 'Email',
+      title: t.contact.email,
       value: 'support@mixxfactory.com',
       color: '#7c3aed',
     },
     {
       icon: faMapPin,
-      title: 'Address',
+      title: t.contact.address,
       value: 'New York, NY 10001, USA',
       color: '#06b6d4',
     },
     {
       icon: faClock,
-      title: 'Hours',
-      value: '24/7 Available',
+      title: t.contact.hours,
+      value: t.contact.available24_7,
       color: '#10b981',
     },
   ];
