@@ -6,6 +6,8 @@ import { connectDB } from '@/lib/db/connection';
 import { ProfessionalModel } from '@/lib/db/models';
 import { successResponse, notFoundResponse, internalErrorResponse } from '@/utils/api-response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   _: unknown,
   { params }: { params: { id: string } }
