@@ -1,0 +1,80 @@
+{
+  "name": "MixxFactory - Discover Professionals & Venues",
+  "short_name": "MixxFactory",
+  "description": "Browse and discover DJs, event halls, stylists, restaurants, and more professionals",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "dir": "ltr",
+  "lang": "en-US",
+  "screenshots": [
+    {
+      "src": "/icons/screenshot-1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/icons/screenshot-2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["lifestyle", "business"],
+  "shortcuts": [
+    {
+      "name": "Browse Directory",
+      "short_name": "Directory",
+      "description": "Browse professionals and venues",
+      "url": "/directory",
+      "icons": [
+        {
+          "src": "/icons/directory.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Admin Login",
+      "short_name": "Admin",
+      "description": "Access the admin dashboard",
+      "url": "/auth/login",
+      "icons": [
+        {
+          "src": "/icons/admin.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
