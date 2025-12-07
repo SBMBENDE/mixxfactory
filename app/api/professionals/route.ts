@@ -47,9 +47,14 @@ export async function GET(request: NextRequest) {
 
     if (category) {
       const categoryDoc = await CategoryModel.findOne({ slug: category });
+      console.log('🔍 API: Looking for category with slug:', category);
+      console.log('📋 API: Found category:', categoryDoc);
+      
       if (categoryDoc) {
         filter.category = categoryDoc._id;
+        console.log('📌 API: Filter now includes category ID:', categoryDoc._id);
       } else {
+        console.log('⚠️ API: Category not found with slug:', category);
         return successResponse(
           {
             data: [],
@@ -82,6 +87,13 @@ export async function GET(request: NextRequest) {
         .lean(),
       ProfessionalModel.countDocuments(filter),
     ]);
+
+    console.log('👥 API: Query results:', {
+      filter: filter,
+      total: total,
+      returned: professionals.length,
+      professionals: professionals.map((p: any) => ({ name: p.name, category: p.category })),
+    });
 
     // Convert ObjectIds to strings for frontend compatibility
     const processedProfessionals = professionals.map((prof: any) => ({
