@@ -29,6 +29,23 @@ export default function Carousel({
 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+  // Track window size for responsive design
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate responsive itemsPerView
+  const getItemsPerView = () => {
+    if (windowWidth < 640) return 1; // Mobile: 1 item
+    if (windowWidth < 1024) return 2; // Tablet: 2 items
+    return itemsPerView; // Desktop: default (4 items)
+  };
+
+  const responsiveItemsPerView = getItemsPerView();
 
   // Auto-scroll effect
   useEffect(() => {
@@ -63,9 +80,13 @@ export default function Carousel({
   }, [isAutoScrolling, autoScroll]);
 
   const visibleItems = [];
-  for (let i = 0; i < itemsPerView; i++) {
+  for (let i = 0; i < responsiveItemsPerView; i++) {
     visibleItems.push(items[(currentIndex + i) % items.length]);
   }
+
+  const showNavButtons = windowWidth >= 1024;
+  const navButtonSize = windowWidth < 768 ? '2rem' : '2.5rem';
+  const navButtonOffset = windowWidth < 768 ? '-2.5rem' : '-3rem';
 
   return (
     <div style={{
@@ -75,8 +96,8 @@ export default function Carousel({
       {/* Carousel Container */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${itemsPerView}, 1fr)`,
-        gap: '1.5rem',
+        gridTemplateColumns: `repeat(${responsiveItemsPerView}, 1fr)`,
+        gap: windowWidth < 640 ? '1rem' : '1.5rem',
         overflow: 'hidden',
       }}>
         {visibleItems.map((item, idx) => (
@@ -94,74 +115,78 @@ export default function Carousel({
         ))}
       </div>
 
-      {/* Navigation Buttons */}
-      <button
-        onClick={handlePrev}
-        style={{
-          position: 'absolute',
-          left: '-3rem',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '2.5rem',
-          height: '2.5rem',
-          borderRadius: '50%',
-          backgroundColor: '#2563eb',
-          color: 'white',
-          border: 'none',
-          fontSize: '1.25rem',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#1d4ed8';
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#2563eb';
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-        }}
-        aria-label="Previous"
-      >
-        ←
-      </button>
+      {/* Navigation Buttons - Desktop Only */}
+      {showNavButtons && (
+        <>
+          <button
+            onClick={handlePrev}
+            style={{
+              position: 'absolute',
+              left: navButtonOffset,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: navButtonSize,
+              height: navButtonSize,
+              borderRadius: '50%',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              border: 'none',
+              fontSize: '1.25rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#1d4ed8';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            }}
+            aria-label="Previous"
+          >
+            ←
+          </button>
 
-      <button
-        onClick={handleNext}
-        style={{
-          position: 'absolute',
-          right: '-3rem',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '2.5rem',
-          height: '2.5rem',
-          borderRadius: '50%',
-          backgroundColor: '#2563eb',
-          color: 'white',
-          border: 'none',
-          fontSize: '1.25rem',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#1d4ed8';
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#2563eb';
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-        }}
-        aria-label="Next"
-      >
-        →
-      </button>
+          <button
+            onClick={handleNext}
+            style={{
+              position: 'absolute',
+              right: navButtonOffset,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: navButtonSize,
+              height: navButtonSize,
+              borderRadius: '50%',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              border: 'none',
+              fontSize: '1.25rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#1d4ed8';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            }}
+            aria-label="Next"
+          >
+            →
+          </button>
+        </>
+      )}
 
       {/* Carousel Indicators */}
       <div style={{
@@ -211,12 +236,6 @@ export default function Carousel({
           to {
             opacity: 1;
             transform: translateX(0);
-          }
-        }
-
-        @media (max-width: 768px) {
-          .carousel-button {
-            display: none;
           }
         }
       `}</style>
