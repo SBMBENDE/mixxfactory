@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface FormData {
   name: string;
@@ -49,6 +50,7 @@ const INITIAL_FORM = {
 
 export default function ProfessionalRegistrationPage() {
   const router = useRouter();
+  const t = useTranslations();
   
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
@@ -198,10 +200,10 @@ export default function ProfessionalRegistrationPage() {
         {/* Header */}
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-            Complete Your Profile
+            {t.professional.completeProfile}
           </h1>
           <p style={{ color: '#6b7280' }}>
-            Fill in your professional details to get started
+            {t.professional.fillDetails}
           </p>
         </div>
 
@@ -216,7 +218,7 @@ export default function ProfessionalRegistrationPage() {
               marginBottom: '1.5rem',
               textAlign: 'center',
             }}>
-              ✓ Profile created successfully! Redirecting...
+              {t.professional.profileCreated}
             </div>
           )}
 
@@ -236,7 +238,7 @@ export default function ProfessionalRegistrationPage() {
             {/* Category Selection */}
             <div style={{ marginBottom: '2rem' }}>
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                Professional Category *
+                {t.professional.category} *
               </label>
               <select
                 value={selectedCategoryId}
@@ -251,7 +253,7 @@ export default function ProfessionalRegistrationPage() {
                   boxSizing: 'border-box',
                 }}
               >
-                <option value="">Select a category...</option>
+                <option value="">{t.professional.selectCategory}</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}
@@ -260,24 +262,24 @@ export default function ProfessionalRegistrationPage() {
               </select>
               {error === 'Please select a category' && (
                 <p style={{ color: '#dc2626', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                  {error}
+                  {t.professional.selectCategoryError}
                 </p>
               )}
             </div>
             {/* Basic Info */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Basic Information</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.basicInfo}</legend>
               
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Professional Name *
+                  {t.professional.name} *
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Your professional name"
+                  placeholder={t.professional.yourName}
                   required
                   style={{
                     width: '100%',
@@ -292,13 +294,13 @@ export default function ProfessionalRegistrationPage() {
 
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Description *
+                  {t.professional.description} *
                 </label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  placeholder="Tell us about your services, experience, and what makes you unique..."
+                  placeholder={t.professional.tellUs}
                   required
                   style={{
                     width: '100%',
@@ -316,18 +318,18 @@ export default function ProfessionalRegistrationPage() {
 
             {/* Contact Info */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Contact Information</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.contactInfo}</legend>
               
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Email *
+                  {t.professional.email} *
                 </label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="your@email.com"
+                  placeholder={t.professional.yourEmail}
                   required
                   style={{
                     width: '100%',
@@ -343,14 +345,14 @@ export default function ProfessionalRegistrationPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Phone
+                    {t.professional.phone}
                   </label>
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="+1 (555) 000-0000"
+                    placeholder={t.professional.yourPhone}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -363,14 +365,14 @@ export default function ProfessionalRegistrationPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Website
+                    {t.professional.website}
                   </label>
                   <input
                     type="url"
                     name="website"
                     value={formData.website}
                     onChange={handleInputChange}
-                    placeholder="https://yourwebsite.com"
+                    placeholder={t.professional.yourWebsite}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -386,19 +388,19 @@ export default function ProfessionalRegistrationPage() {
 
             {/* Location */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Location</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.location}</legend>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    City *
+                    {t.professional.city} *
                   </label>
                   <input
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    placeholder="New York"
+                    placeholder={t.professional.cityName}
                     required
                     style={{
                       width: '100%',
@@ -412,14 +414,14 @@ export default function ProfessionalRegistrationPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Region/State *
+                    {t.professional.region} *
                   </label>
                   <input
                     type="text"
                     name="region"
                     value={formData.region}
                     onChange={handleInputChange}
-                    placeholder="New York"
+                    placeholder={t.professional.regionName}
                     required
                     style={{
                       width: '100%',
@@ -435,14 +437,14 @@ export default function ProfessionalRegistrationPage() {
 
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Country *
+                  {t.professional.country} *
                 </label>
                 <input
                   type="text"
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
-                  placeholder="United States"
+                  placeholder={t.professional.countryName}
                   required
                   style={{
                     width: '100%',
@@ -458,19 +460,19 @@ export default function ProfessionalRegistrationPage() {
 
             {/* Pricing */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Pricing</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.pricing}</legend>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Minimum Price (€)
+                    {t.professional.minPrice}
                   </label>
                   <input
                     type="number"
                     name="minPrice"
                     value={formData.minPrice}
                     onChange={handleInputChange}
-                    placeholder="100"
+                    placeholder={t.professional.minPriceExample}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -483,14 +485,14 @@ export default function ProfessionalRegistrationPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Maximum Price (€)
+                    {t.professional.maxPrice}
                   </label>
                   <input
                     type="number"
                     name="maxPrice"
                     value={formData.maxPrice}
                     onChange={handleInputChange}
-                    placeholder="500"
+                    placeholder={t.professional.maxPriceExample}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -506,18 +508,18 @@ export default function ProfessionalRegistrationPage() {
 
             {/* Social Links */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Social Media</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.socialMedia}</legend>
               
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Instagram Username
+                  {t.professional.instagram}
                 </label>
                 <input
                   type="text"
                   name="instagram"
                   value={formData.instagram}
                   onChange={handleInputChange}
-                  placeholder="@yourhandle"
+                  placeholder={t.professional.handle}
                   style={{
                     width: '100%',
                     padding: '0.625rem 1rem',
@@ -532,14 +534,14 @@ export default function ProfessionalRegistrationPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Twitter Handle
+                    {t.professional.twitter}
                   </label>
                   <input
                     type="text"
                     name="twitter"
                     value={formData.twitter}
                     onChange={handleInputChange}
-                    placeholder="@yourhandle"
+                    placeholder={t.professional.twitterHandle}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -552,14 +554,14 @@ export default function ProfessionalRegistrationPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    Facebook Page
+                    {t.professional.facebook}
                   </label>
                   <input
                     type="text"
                     name="facebook"
                     value={formData.facebook}
                     onChange={handleInputChange}
-                    placeholder="yourpage"
+                    placeholder={t.professional.facebookPage}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -575,14 +577,14 @@ export default function ProfessionalRegistrationPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    YouTube Channel
+                    {t.professional.youtube}
                   </label>
                   <input
                     type="text"
                     name="youtube"
                     value={formData.youtube}
                     onChange={handleInputChange}
-                    placeholder="@yourchannel or channel URL"
+                    placeholder={t.professional.youtubeChannel}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -595,14 +597,14 @@ export default function ProfessionalRegistrationPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                    TikTok Handle
+                    {t.professional.tiktok}
                   </label>
                   <input
                     type="text"
                     name="tiktok"
                     value={formData.tiktok}
                     onChange={handleInputChange}
-                    placeholder="@yourhandle"
+                    placeholder={t.professional.tiktokHandle}
                     style={{
                       width: '100%',
                       padding: '0.625rem 1rem',
@@ -618,12 +620,12 @@ export default function ProfessionalRegistrationPage() {
 
             {/* Profile Image */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Profile Image</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.profileImage}</legend>
               
               {/* Image Preview */}
               {formData.imagePreview && (
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Preview:</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>{t.professional.preview}:</p>
                   <div style={{ position: 'relative', width: '180px', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
                     <img
                       src={formData.imagePreview}
@@ -641,7 +643,7 @@ export default function ProfessionalRegistrationPage() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Upload Image *
+                  {t.professional.uploadImage} *
                 </label>
                 <input
                   type="file"
@@ -659,7 +661,7 @@ export default function ProfessionalRegistrationPage() {
                   }}
                 />
                 <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  Select an image file from your device (JPG, PNG, GIF, etc.)
+                  {t.professional.selectImage}
                 </p>
               </div>
             </fieldset>
@@ -680,11 +682,11 @@ export default function ProfessionalRegistrationPage() {
                 fontSize: '1rem',
               }}
             >
-              {loading ? 'Creating Profile...' : 'Create My Profile'}
+              {loading ? t.professional.creating : t.professional.createProfile}
             </button>
 
             <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '1rem', textAlign: 'center' }}>
-              * Required fields
+              {t.professional.requiredFields}
             </p>
           </form>
         </div>
