@@ -181,7 +181,7 @@ export default function HomePage() {
                 autoScrollInterval={5000}
               />
             )}
-            {categoriesLoading && <p style={{ textAlign: 'center', color: '#999' }}>Loading categories...</p>}
+            {categoriesLoading && <p style={{ textAlign: 'center', color: '#999' }}>{t.home.loadingCategories}</p>}
           </div>
         </div>
       </section>
