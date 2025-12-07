@@ -5,6 +5,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     password: '',
     confirmPassword: '',
   });
+  const t = useTranslations();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -46,7 +48,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
       if (mode === 'register') {
         if (formData.password !== formData.confirmPassword) {
-          setError('Passwords do not match');
+          setError(t.auth.passwordMatch);
           setLoading(false);
           return;
         }
@@ -63,7 +65,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || data.message || `${mode} failed`);
+        setError(data.error || data.message || (mode === 'login' ? t.auth.loginFailed : t.auth.registerFailed));
         setLoading(false);
         return;
       }
@@ -82,7 +84,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         window.location.href = '/register/professional';
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(t.auth.networkError);
       setLoading(false);
     }
   };
@@ -113,7 +115,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
-            {mode === 'login' ? 'Login' : 'Register'}
+            {mode === 'login' ? t.auth.login : t.auth.register}
           </h2>
           <button
             onClick={onClose}
@@ -143,7 +145,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               borderBottom: mode === 'login' ? '2px solid #2563eb' : 'none',
             }}
           >
-            Login
+            {t.auth.login}
           </button>
           <button
             onClick={() => setMode('register')}
@@ -157,7 +159,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               borderBottom: mode === 'register' ? '2px solid #2563eb' : 'none',
             }}
           >
-            Register
+            {t.auth.register}
           </button>
         </div>
 
@@ -183,7 +185,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               fontWeight: '500',
               marginBottom: '0.25rem',
             }}>
-              Email
+              {t.auth.email}
             </label>
             <input
               type="email"
@@ -210,7 +212,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               fontWeight: '500',
               marginBottom: '0.25rem',
             }}>
-              Password
+              {t.auth.password}
             </label>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <input
@@ -243,7 +245,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                   fontSize: '1.25rem',
                   padding: '0.25rem 0.5rem',
                 }}
-                title={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? t.auth.hidePassword : t.auth.showPassword}
               >
                 {showPassword ? '👁️' : '👁️‍🗨️'}
               </button>
@@ -258,7 +260,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 fontWeight: '500',
                 marginBottom: '0.25rem',
               }}>
-                Confirm Password
+                {t.auth.confirmPassword}
               </label>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
@@ -291,7 +293,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     fontSize: '1.25rem',
                     padding: '0.25rem 0.5rem',
                   }}
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  title={showConfirmPassword ? t.auth.hidePassword : t.auth.showPassword}
                 >
                   {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
@@ -314,7 +316,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               fontSize: '1rem',
             }}
           >
-            {loading ? (mode === 'login' ? 'Logging in...' : 'Registering...') : (mode === 'login' ? 'Login' : 'Register')}
+            {loading ? (mode === 'login' ? t.auth.redirecting : t.auth.registering) : (mode === 'login' ? t.auth.login : t.auth.register)}
           </button>
         </form>
       </div>

@@ -88,6 +88,7 @@ export const translations = {
       createAccountLink: 'Create an account',
       showPassword: 'Show password',
       hidePassword: 'Hide password',
+      loggingIn: 'Logging in...',
     },
     // Categories
     categories: {
@@ -337,6 +338,7 @@ export const translations = {
       createAccountLink: 'Créer un compte',
       showPassword: 'Afficher le mot de passe',
       hidePassword: 'Masquer le mot de passe',
+      loggingIn: 'Connexion en cours...',
     },
     // Professional Registration
     professional: {
