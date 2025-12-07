@@ -30,6 +30,7 @@ export default function Carousel({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [touchStart, setTouchStart] = useState(0);
 
   // Track window size for responsive design
   useEffect(() => {
@@ -79,6 +80,29 @@ export default function Carousel({
     return () => clearTimeout(timeout);
   }, [isAutoScrolling, autoScroll]);
 
+  // Touch/swipe handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    handleSwipe(e.changedTouches[0].clientX);
+  };
+
+  const handleSwipe = (endX: number) => {
+    if (!touchStart) return;
+    
+    const distance = touchStart - endX;
+    const isLeftSwipe = distance > 50; // Swipe threshold: 50px
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrev();
+    }
+  };
+
   const visibleItems = [];
   for (let i = 0; i < responsiveItemsPerView; i++) {
     visibleItems.push(items[(currentIndex + i) % items.length]);
@@ -94,7 +118,10 @@ export default function Carousel({
       width: '100%',
     }}>
       {/* Carousel Container */}
-      <div style={{
+      <div 
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${responsiveItemsPerView}, 1fr)`,
         gap: windowWidth < 640 ? '1rem' : '1.5rem',
