@@ -43,11 +43,14 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
+    console.log('📝 Received body for professional creation:', JSON.stringify(body, null, 2));
 
     const validationResult = createProfessionalSchema.safeParse(body);
     if (!validationResult.success) {
+      console.log('❌ Validation failed:', validationResult.error.errors);
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
+    console.log('✅ Validation passed');
 
     const {
       name,
@@ -66,11 +69,14 @@ export async function POST(request: NextRequest) {
       priceRange,
     } = validationResult.data;
 
+    console.log('📌 Extracted data - name:', name, 'category:', category);
+
     const slug = customSlug || generateSlug(name);
 
     // Check if slug already exists
     const existingProf = await ProfessionalModel.findOne({ slug });
     if (existingProf) {
+      console.log('⚠️ Slug already exists:', slug);
       return validationErrorResponse('Professional with this slug already exists');
     }
 
@@ -93,9 +99,15 @@ export async function POST(request: NextRequest) {
       priceRange: priceRange || {},
     });
 
-    console.log('Creating professional with userId:', userId, 'Type:', typeof userId);
+    console.log('📝 Professional object before save:', {
+      name: professional.name,
+      slug: professional.slug,
+      category: professional.category,
+      userId: professional.userId,
+    });
     
     await professional.save();
+    console.log('✅ Professional saved successfully');
     await professional.populate('category');
 
     console.log('Professional created:', { slug: professional.slug, userId: professional.userId });
