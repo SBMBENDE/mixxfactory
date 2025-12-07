@@ -86,6 +86,8 @@ export const translations = {
       joingMixxFactory: 'Join MixxFactory today',
       dontHaveAccount: "Don't have an account?",
       createAccountLink: 'Create an account',
+      showPassword: 'Show password',
+      hidePassword: 'Hide password',
     },
     // Categories
     categories: {
@@ -310,6 +312,8 @@ export const translations = {
       joingMixxFactory: 'Rejoignez MixxFactory aujourd\'hui',
       dontHaveAccount: 'Vous n\'avez pas de compte ?',
       createAccountLink: 'Créer un compte',
+      showPassword: 'Afficher le mot de passe',
+      hidePassword: 'Masquer le mot de passe',
     },
     // Professional Registration
     professional: {

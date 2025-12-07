@@ -71,8 +71,8 @@ export default function LoginPage() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f3f4f6' }}>
       <div style={{ width: '100%', maxWidth: '28rem' }}>
         <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: '1.5rem' }}>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Login</h1>
-          <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>Sign in to your account</p>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>{t.auth.login}</h1>
+          <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>{t.auth.signIn}</p>
 
           <form onSubmit={handleLogin}>
             {error && (
@@ -117,7 +117,7 @@ export default function LoginPage() {
                     fontSize: '1.25rem',
                     padding: '0.25rem 0.5rem',
                   }}
-                  title={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? t.auth.hidePassword : t.auth.showPassword}
                 >
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>

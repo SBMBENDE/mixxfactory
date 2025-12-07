@@ -87,8 +87,8 @@ export default function RegisterPage() {
         <div style={{ width: '100%', maxWidth: '28rem' }}>
           <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: '1.5rem', textAlign: 'center' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
-            <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#047857' }}>Account Created!</h1>
-            <p style={{ color: '#6b7280', marginBottom: '1rem' }}>Redirecting you to the next step...</p>
+            <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#047857' }}>{t.auth.accountCreated}</h1>
+            <p style={{ color: '#6b7280', marginBottom: '1rem' }}>{t.auth.redirecting}</p>
             <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>If you are not redirected, please wait.</p>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                     fontSize: '1.25rem',
                     padding: '0.25rem 0.5rem',
                   }}
-                  title={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? t.auth.hidePassword : t.auth.showPassword}
                 >
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                     fontSize: '1.25rem',
                     padding: '0.25rem 0.5rem',
                   }}
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  title={showConfirmPassword ? t.auth.hidePassword : t.auth.showPassword}
                 >
                   {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
