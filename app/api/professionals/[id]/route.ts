@@ -2,13 +2,12 @@
  * Get single professional by ID
  */
 
-import { NextRequest } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ProfessionalModel } from '@/lib/db/models';
 import { successResponse, notFoundResponse, internalErrorResponse } from '@/utils/api-response';
 
 export async function GET(
-  request: NextRequest,
+  _: unknown,
   { params }: { params: { id: string } }
 ) {
   try {
