@@ -17,8 +17,8 @@ interface FormData {
   city: string;
   region: string;
   country: string;
-  imageFile: File | null;
-  imagePreview: string;
+  imageFiles: File[];
+  imagePreviews: string[];
   minPrice: number;
   maxPrice: number;
   instagram: string;
@@ -37,8 +37,8 @@ const INITIAL_FORM = {
   city: '',
   region: '',
   country: '',
-  imageFile: null,
-  imagePreview: '',
+  imageFiles: [],
+  imagePreviews: [],
   minPrice: 0,
   maxPrice: 0,
   instagram: '',
@@ -96,26 +96,42 @@ export default function ProfessionalRegistrationPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     
-    if (name === 'imageFile' && (e.target as HTMLInputElement).files) {
-      const file = (e.target as HTMLInputElement).files![0];
-      if (file) {
-        // Create preview
+    if (name === 'imageFiles' && (e.target as HTMLInputElement).files) {
+      const files = Array.from((e.target as HTMLInputElement).files!);
+      const newPreviews: string[] = [];
+      let filesProcessed = 0;
+
+      files.forEach((file) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFormData(prev => ({
-            ...prev,
-            imageFile: file,
-            imagePreview: reader.result as string,
-          }));
+          newPreviews.push(reader.result as string);
+          filesProcessed++;
+          
+          // Once all files are processed, update state
+          if (filesProcessed === files.length) {
+            setFormData(prev => ({
+              ...prev,
+              imageFiles: [...prev.imageFiles, ...files],
+              imagePreviews: [...prev.imagePreviews, ...newPreviews],
+            }));
+          }
         };
         reader.readAsDataURL(file);
-      }
+      });
     } else {
       setFormData(prev => ({
         ...prev,
         [name]: type === 'number' ? (value ? Number(value) : 0) : value,
       }));
     }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      imageFiles: prev.imageFiles.filter((_, i) => i !== index),
+      imagePreviews: prev.imagePreviews.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -143,7 +159,7 @@ export default function ProfessionalRegistrationPage() {
           email: formData.email,
           phone: formData.phone,
           website: formData.website,
-          images: formData.imagePreview ? [formData.imagePreview] : [],
+          images: formData.imagePreviews,
           location: {
             city: formData.city,
             region: formData.region,
@@ -618,37 +634,65 @@ export default function ProfessionalRegistrationPage() {
               </div>
             </fieldset>
 
-            {/* Profile Image */}
+            {/* Profile Images Gallery */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>{t.professional.profileImage}</legend>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Portfolio Gallery</legend>
               
-              {/* Image Preview */}
-              {formData.imagePreview && (
+              {/* Image Preview Gallery */}
+              {formData.imagePreviews.length > 0 && (
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>{t.professional.preview}:</p>
-                  <div style={{ position: 'relative', width: '180px', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
-                    <img
-                      src={formData.imagePreview}
-                      alt="Profile preview"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                      }}
-                    />
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.75rem' }}>Preview ({formData.imagePreviews.length} images):</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                    {formData.imagePreviews.map((preview, index) => (
+                      <div key={index} style={{ position: 'relative', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
+                        <img
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            objectPosition: 'center',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          style={{
+                            position: 'absolute',
+                            top: '0.5rem',
+                            right: '0.5rem',
+                            backgroundColor: 'rgba(255, 0, 0, 0.8)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '28px',
+                            height: '28px',
+                            fontSize: '1.2rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                          title="Remove image"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  {t.professional.uploadImage} *
+                  Upload Multiple Images
                 </label>
                 <input
                   type="file"
-                  name="imageFile"
+                  name="imageFiles"
                   accept="image/*"
+                  multiple
                   onChange={handleInputChange}
                   style={{
                     width: '100%',
@@ -661,7 +705,10 @@ export default function ProfessionalRegistrationPage() {
                   }}
                 />
                 <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  {t.professional.selectImage}
+                  Select one or more images (JPG, PNG, GIF, etc.)
+                </p>
+              </div>
+            </fieldset>
                 </p>
               </div>
             </fieldset>

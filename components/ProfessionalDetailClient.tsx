@@ -96,6 +96,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
         {/* Image Gallery */}
         {professional.images && professional.images.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
+            {/* Main Image */}
             <div style={{
               position: 'relative',
               width: '100%',
@@ -106,6 +107,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              marginBottom: '1rem',
             }}>
               {professional.images[0].startsWith('data:') ? (
                 <img
@@ -129,6 +131,77 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                 />
               )}
             </div>
+
+            {/* Thumbnail Gallery */}
+            {professional.images.length > 1 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                gap: '0.75rem',
+              }}>
+                {professional.images.map((image, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      position: 'relative',
+                      width: '100%',
+                      aspectRatio: '1/1',
+                      borderRadius: '0.375rem',
+                      overflow: 'hidden',
+                      backgroundColor: '#e5e7eb',
+                      cursor: 'pointer',
+                      border: index === 0 ? '2px solid #3b82f6' : '2px solid transparent',
+                      transition: 'border-color 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (index !== 0) {
+                        e.currentTarget.style.borderColor = '#9ca3af';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (index !== 0) {
+                        e.currentTarget.style.borderColor = 'transparent';
+                      }
+                    }}
+                    onClick={() => {
+                      // Update main image by swapping with first
+                      const newImages = [...professional.images];
+                      [newImages[0], newImages[index]] = [newImages[index], newImages[0]];
+                      // Create a temporary update - in real app would use state management
+                      const mainImageDiv = document.querySelector('[data-main-gallery]') as HTMLDivElement;
+                      if (mainImageDiv) {
+                        const imgElement = mainImageDiv.querySelector('img');
+                        if (imgElement) {
+                          imgElement.src = image;
+                        }
+                      }
+                    }}
+                  >
+                    {image.startsWith('data:') ? (
+                      <img
+                        src={image}
+                        alt={`${professional.name} - ${index + 1}`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                        }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    ) : (
+                      <Image
+                        src={image}
+                        alt={`${professional.name} - ${index + 1}`}
+                        fill
+                        style={{ objectFit: 'cover', objectPosition: 'center' }}
+                        sizes="100px"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
