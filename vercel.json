@@ -1,0 +1,36 @@
+{
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "nodeVersion": "18.x",
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=0, stale-while-revalidate=0"
+        }
+      ]
+    },
+    {
+      "source": "/directory",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=0, stale-while-revalidate=0"
+        }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
+}
