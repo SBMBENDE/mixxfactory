@@ -236,3 +236,4 @@ For issues and questions, please open an issue on GitHub or contact support@mixx
 
 **Built with ❤️ by MixxFactory Team**
 # Deployment trigger
+# Force rebuild Mon Dec  8 14:04:08 CET 2025
