@@ -17,8 +17,6 @@ interface FormData {
   city: string;
   region: string;
   country: string;
-  profilePicFile: File | null;
-  profilePicPreview: string;
   imageFiles: File[];
   imagePreviews: string[];
   minPrice: number;
@@ -39,8 +37,6 @@ const INITIAL_FORM = {
   city: '',
   region: '',
   country: '',
-  profilePicFile: null,
-  profilePicPreview: '',
   imageFiles: [],
   imagePreviews: [],
   minPrice: 0,
@@ -56,7 +52,6 @@ export default function ProfessionalRegistrationPage() {
   const router = useRouter();
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const profilePicInputRef = useRef<HTMLInputElement>(null);
   
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
@@ -102,12 +97,7 @@ export default function ProfessionalRegistrationPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     
-    if (name === 'profilePicFile' && (e.target as HTMLInputElement).files) {
-      const file = (e.target as HTMLInputElement).files![0];
-      if (file) {
-        handleProfilePicChange(file);
-      }
-    } else if (name === 'imageFiles' && (e.target as HTMLInputElement).files) {
+    if (name === 'imageFiles' && (e.target as HTMLInputElement).files) {
       const newFiles = Array.from((e.target as HTMLInputElement).files!);
       if (newFiles.length === 0) return;
       
@@ -119,26 +109,6 @@ export default function ProfessionalRegistrationPage() {
         [name]: type === 'number' ? (value ? Number(value) : 0) : value,
       }));
     }
-  };
-
-  const handleProfilePicChange = async (file: File) => {
-    try {
-      const preview = await readFileAsDataURL(file);
-      setFormData(prev => ({
-        ...prev,
-        profilePicFile: file,
-        profilePicPreview: preview,
-      }));
-    } catch (err) {
-      console.error('Failed to read profile picture:', err);
-    }
-    
-    // Reset the file input
-    setTimeout(() => {
-      if (profilePicInputRef.current) {
-        profilePicInputRef.current.value = '';
-      }
-    }, 100);
   };
 
   const processFilesAndAddToGallery = async (files: File[]) => {
@@ -187,14 +157,6 @@ export default function ProfessionalRegistrationPage() {
     }));
   };
 
-  const removeProfilePic = () => {
-    setFormData(prev => ({
-      ...prev,
-      profilePicFile: null,
-      profilePicPreview: '',
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -220,9 +182,7 @@ export default function ProfessionalRegistrationPage() {
           email: formData.email,
           phone: formData.phone,
           website: formData.website,
-          images: formData.profilePicPreview 
-            ? [formData.profilePicPreview, ...formData.imagePreviews]
-            : formData.imagePreviews,
+          images: formData.imagePreviews,
           location: {
             city: formData.city,
             region: formData.region,
@@ -697,78 +657,7 @@ export default function ProfessionalRegistrationPage() {
               </div>
             </fieldset>
 
-            {/* Profile Picture */}
-            <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Profile Picture</legend>
-              
-              {/* Profile Picture Preview */}
-              {formData.profilePicPreview && (
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <div style={{ position: 'relative', width: '150px', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
-                    <img
-                      src={formData.profilePicPreview}
-                      alt="Profile Picture"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={removeProfilePic}
-                      style={{
-                        position: 'absolute',
-                        top: '0.5rem',
-                        right: '0.5rem',
-                        backgroundColor: 'rgba(255, 0, 0, 0.8)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '28px',
-                        height: '28px',
-                        fontSize: '1.2rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                      title="Remove profile picture"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  {formData.profilePicPreview ? 'Change Profile Picture' : 'Upload Profile Picture'}
-                </label>
-                <input
-                  ref={profilePicInputRef}
-                  type="file"
-                  name="profilePicFile"
-                  accept="image/*"
-                  onChange={handleInputChange}
-                  style={{
-                    width: '100%',
-                    padding: '0.625rem 1rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.375rem',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box',
-                    backgroundColor: 'white',
-                  }}
-                />
-                <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  Select one image for your profile picture (JPG, PNG, GIF, etc.)
-                </p>
-              </div>
-            </fieldset>
-
-            {/* Portfolio Gallery */}
+            {/* Profile Images Gallery */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
               <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Portfolio Gallery</legend>
               
@@ -820,7 +709,7 @@ export default function ProfessionalRegistrationPage() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  {formData.imagePreviews.length > 0 ? 'Add More Gallery Images' : 'Upload Gallery Images'}
+                  {formData.imagePreviews.length > 0 ? 'Add More Images' : 'Upload Images'}
                 </label>
                 <input
                   ref={fileInputRef}
