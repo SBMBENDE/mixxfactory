@@ -6,17 +6,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
-import { verifyAuth } from '@/lib/auth/jwt';
+import { verifyAdminAuth } from '@/lib/auth/middleware';
 import { errorResponse } from '@/utils/api-response';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    // Verify authentication
-    const authResult = await verifyAuth(request);
-    if (!authResult.valid || authResult.role !== 'admin') {
-      return errorResponse('Unauthorized', 401);
+    // Verify admin authentication
+    const authResult = await verifyAdminAuth(request);
+    if (!authResult.isValid) {
+      return authResult.error;
     }
 
     await connectDB();
@@ -36,9 +36,12 @@ export async function GET(request: NextRequest) {
 
     // Categories breakdown
     const categoriesBreakdown = categories.map((category) => {
-      const profInCategory = professionals.filter(
-        (p) => p.category._id.toString() === category._id.toString()
-      );
+      const profInCategory = professionals.filter((p) => {
+        // Handle case where category might not be populated or might be null
+        if (!p.category) return false;
+        const catId = typeof p.category === 'object' ? p.category._id : p.category;
+        return catId.toString() === category._id.toString();
+      });
       return {
         name: category.name,
         count: profInCategory.length,
@@ -85,6 +88,8 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Analytics API error:', error);
-    return errorResponse('Failed to fetch analytics', 500);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error details:', errorMsg);
+    return errorResponse(`Failed to fetch analytics: ${errorMsg}`, 500);
   }
 }
