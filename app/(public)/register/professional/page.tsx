@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from '@/hooks/useTranslations';
 
@@ -51,6 +51,7 @@ const INITIAL_FORM = {
 export default function ProfessionalRegistrationPage() {
   const router = useRouter();
   const t = useTranslations();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
@@ -97,51 +98,55 @@ export default function ProfessionalRegistrationPage() {
     const { name, value, type } = e.target;
     
     if (name === 'imageFiles' && (e.target as HTMLInputElement).files) {
-      const files = Array.from((e.target as HTMLInputElement).files!);
-      if (files.length === 0) return; // No files selected
+      const newFiles = Array.from((e.target as HTMLInputElement).files!);
+      if (newFiles.length === 0) return;
       
-      const newPreviews: string[] = [];
-      let filesProcessed = 0;
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onerror = () => {
-          filesProcessed++;
-          if (filesProcessed === files.length) {
-            // Update state with accumulated files and previews
-            setFormData(prev => ({
-              ...prev,
-              imageFiles: [...prev.imageFiles, ...files],
-              imagePreviews: [...prev.imagePreviews, ...newPreviews],
-            }));
-          }
-        };
-        reader.onloadend = () => {
-          if (reader.result) {
-            newPreviews.push(reader.result as string);
-          }
-          filesProcessed++;
-          
-          // Once all files are processed, update state
-          if (filesProcessed === files.length) {
-            setFormData(prev => ({
-              ...prev,
-              imageFiles: [...prev.imageFiles, ...files],
-              imagePreviews: [...prev.imagePreviews, ...newPreviews],
-            }));
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-      
-      // Reset the input so the same file can be selected again if needed
-      (e.target as HTMLInputElement).value = '';
+      // Process each file and add to existing images
+      processFilesAndAddToGallery(newFiles);
     } else {
       setFormData(prev => ({
         ...prev,
         [name]: type === 'number' ? (value ? Number(value) : 0) : value,
       }));
     }
+  };
+
+  const processFilesAndAddToGallery = async (files: File[]) => {
+    const newPreviews: string[] = [];
+    
+    for (const file of files) {
+      try {
+        const preview = await readFileAsDataURL(file);
+        newPreviews.push(preview);
+      } catch (err) {
+        console.error('Failed to read file:', err);
+      }
+    }
+    
+    // Add to existing images
+    if (newPreviews.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        imageFiles: [...prev.imageFiles, ...files],
+        imagePreviews: [...prev.imagePreviews, ...newPreviews],
+      }));
+    }
+    
+    // Reset the file input after a small delay to allow for re-selection
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }, 100);
+  };
+
+  const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   };
 
   const removeImage = (index: number) => {
@@ -707,6 +712,7 @@ export default function ProfessionalRegistrationPage() {
                   {formData.imagePreviews.length > 0 ? 'Add More Images' : 'Upload Images'}
                 </label>
                 <input
+                  ref={fileInputRef}
                   type="file"
                   name="imageFiles"
                   accept="image/*"
