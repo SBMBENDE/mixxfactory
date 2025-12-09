@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 interface FormData {
@@ -16,8 +16,10 @@ interface FormData {
   city: string;
   region: string;
   country: string;
-  imageFile: File | null;
-  imagePreview: string;
+  profilePicFile: File | null;
+  profilePicPreview: string;
+  imageFiles: File[];
+  imagePreviews: string[];
   minPrice: number;
   maxPrice: number;
   instagram: string;
@@ -36,8 +38,10 @@ const INITIAL_FORM = {
   city: '',
   region: '',
   country: '',
-  imageFile: null,
-  imagePreview: '',
+  profilePicFile: null,
+  profilePicPreview: '',
+  imageFiles: [],
+  imagePreviews: [],
   minPrice: 0,
   maxPrice: 0,
   instagram: '',
@@ -51,6 +55,8 @@ export default function EditProfessionalPage() {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug as string;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const profilePicInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [loading, setLoading] = useState(true);
@@ -131,8 +137,10 @@ export default function EditProfessionalPage() {
           city: professional.location?.city || '',
           region: professional.location?.region || '',
           country: professional.location?.country || '',
-          imageFile: null,
-          imagePreview: professional.images?.[0] || '',
+          profilePicFile: null,
+          profilePicPreview: professional.images?.[0] || '',
+          imageFiles: [],
+          imagePreviews: professional.images?.slice(1) || [],
           minPrice: professional.priceRange?.min || 0,
           maxPrice: professional.priceRange?.max || 0,
           instagram: professional.socialLinks?.instagram || '',
@@ -157,25 +165,91 @@ export default function EditProfessionalPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
 
-    if (name === 'imageFile' && (e.target as HTMLInputElement).files) {
+    if (name === 'profilePicFile' && (e.target as HTMLInputElement).files) {
       const file = (e.target as HTMLInputElement).files![0];
       if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFormData(prev => ({
-            ...prev,
-            imageFile: file,
-            imagePreview: reader.result as string,
-          }));
-        };
-        reader.readAsDataURL(file);
+        handleProfilePicChange(file);
       }
+    } else if (name === 'imageFiles' && (e.target as HTMLInputElement).files) {
+      const newFiles = Array.from((e.target as HTMLInputElement).files!);
+      if (newFiles.length === 0) return;
+      processFilesAndAddToGallery(newFiles);
     } else {
       setFormData(prev => ({
         ...prev,
         [name]: type === 'number' ? (value ? Number(value) : 0) : value,
       }));
     }
+  };
+
+  const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const processFilesAndAddToGallery = async (files: File[]) => {
+    const newPreviews: string[] = [];
+    
+    for (const file of files) {
+      try {
+        const preview = await readFileAsDataURL(file);
+        newPreviews.push(preview);
+      } catch (err) {
+        console.error('Failed to read file:', err);
+      }
+    }
+    
+    if (newPreviews.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        imageFiles: [...prev.imageFiles, ...files],
+        imagePreviews: [...prev.imagePreviews, ...newPreviews],
+      }));
+    }
+    
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }, 100);
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      imageFiles: prev.imageFiles.filter((_, i) => i !== index),
+      imagePreviews: prev.imagePreviews.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleProfilePicChange = async (file: File) => {
+    try {
+      const preview = await readFileAsDataURL(file);
+      setFormData(prev => ({
+        ...prev,
+        profilePicFile: file,
+        profilePicPreview: preview,
+      }));
+    } catch (err) {
+      console.error('Failed to read profile picture:', err);
+    }
+    setTimeout(() => {
+      if (profilePicInputRef.current) {
+        profilePicInputRef.current.value = '';
+      }
+    }, 100);
+  };
+
+  const removeProfilePic = () => {
+    setFormData(prev => ({
+      ...prev,
+      profilePicFile: null,
+      profilePicPreview: '',
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -194,7 +268,9 @@ export default function EditProfessionalPage() {
           email: formData.email,
           phone: formData.phone,
           website: formData.website,
-          images: formData.imagePreview ? [formData.imagePreview] : [],
+          images: formData.profilePicPreview 
+            ? [formData.profilePicPreview, ...formData.imagePreviews]
+            : formData.imagePreviews,
           location: {
             city: formData.city,
             region: formData.region,
@@ -645,34 +721,59 @@ export default function EditProfessionalPage() {
               </div>
             </fieldset>
 
-            {/* Profile Image */}
+            {/* Profile Picture & Gallery Section */}
+            {/* Profile Picture */}
             <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
-              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Profile Image</legend>
-
-              {formData.imagePreview && (
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Profile Picture</legend>
+              
+              {formData.profilePicPreview && (
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Preview:</p>
-                  <img
-                    src={formData.imagePreview}
-                    alt="Profile preview"
-                    style={{
-                      width: '150px',
-                      height: '150px',
-                      objectFit: 'cover',
-                      borderRadius: '0.5rem',
-                      border: '2px solid #d1d5db',
-                    }}
-                  />
+                  <div style={{ position: 'relative', width: '150px', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
+                    <img
+                      src={formData.profilePicPreview}
+                      alt="Profile Picture"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={removeProfilePic}
+                      style={{
+                        position: 'absolute',
+                        top: '0.5rem',
+                        right: '0.5rem',
+                        backgroundColor: 'rgba(255, 0, 0, 0.8)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '28px',
+                        height: '28px',
+                        fontSize: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      title="Remove profile picture"
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
               )}
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Upload Image
+                  {formData.profilePicPreview ? 'Change Profile Picture' : 'Upload Profile Picture'}
                 </label>
                 <input
+                  ref={profilePicInputRef}
                   type="file"
-                  name="imageFile"
+                  name="profilePicFile"
                   accept="image/*"
                   onChange={handleInputChange}
                   style={{
@@ -686,7 +787,87 @@ export default function EditProfessionalPage() {
                   }}
                 />
                 <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  Select an image file from your device
+                  Select one image for your profile picture
+                </p>
+              </div>
+            </fieldset>
+
+            {/* Portfolio Gallery */}
+            <fieldset style={{ border: 'none', padding: 0, marginBottom: '2rem' }}>
+              <legend style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Portfolio Gallery</legend>
+              
+              {/* Image Preview Gallery */}
+              {formData.imagePreviews.length > 0 && (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.75rem' }}>Preview ({formData.imagePreviews.length} images):</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                    {formData.imagePreviews.map((preview, index) => (
+                      <div key={index} style={{ position: 'relative', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
+                        <img
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            objectPosition: 'center',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          style={{
+                            position: 'absolute',
+                            top: '0.5rem',
+                            right: '0.5rem',
+                            backgroundColor: 'rgba(255, 0, 0, 0.8)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '28px',
+                            height: '28px',
+                            fontSize: '1.2rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                          title="Remove image"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
+                  {formData.imagePreviews.length > 0 ? 'Add More Images' : 'Upload Images'}
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  name="imageFiles"
+                  accept="image/*"
+                  multiple
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '0.625rem 1rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.375rem',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                    backgroundColor: 'white',
+                  }}
+                />
+                <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                  {formData.imagePreviews.length > 0 
+                    ? `Select more images to add to your ${formData.imagePreviews.length} uploaded image${formData.imagePreviews.length > 1 ? 's' : ''}`
+                    : 'Select one or more images (JPG, PNG, GIF, etc.)'
+                  }
                 </p>
               </div>
             </fieldset>
