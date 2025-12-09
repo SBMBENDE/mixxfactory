@@ -844,9 +844,6 @@ export default function ProfessionalRegistrationPage() {
                 </p>
               </div>
             </fieldset>
-                </p>
-              </div>
-            </fieldset>
 
             {/* Submit Button */}
             <button
