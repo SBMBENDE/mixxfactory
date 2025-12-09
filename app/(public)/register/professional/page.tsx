@@ -98,13 +98,28 @@ export default function ProfessionalRegistrationPage() {
     
     if (name === 'imageFiles' && (e.target as HTMLInputElement).files) {
       const files = Array.from((e.target as HTMLInputElement).files!);
+      if (files.length === 0) return; // No files selected
+      
       const newPreviews: string[] = [];
       let filesProcessed = 0;
 
       files.forEach((file) => {
         const reader = new FileReader();
+        reader.onerror = () => {
+          filesProcessed++;
+          if (filesProcessed === files.length) {
+            // Update state with accumulated files and previews
+            setFormData(prev => ({
+              ...prev,
+              imageFiles: [...prev.imageFiles, ...files],
+              imagePreviews: [...prev.imagePreviews, ...newPreviews],
+            }));
+          }
+        };
         reader.onloadend = () => {
-          newPreviews.push(reader.result as string);
+          if (reader.result) {
+            newPreviews.push(reader.result as string);
+          }
           filesProcessed++;
           
           // Once all files are processed, update state
@@ -118,6 +133,9 @@ export default function ProfessionalRegistrationPage() {
         };
         reader.readAsDataURL(file);
       });
+      
+      // Reset the input so the same file can be selected again if needed
+      (e.target as HTMLInputElement).value = '';
     } else {
       setFormData(prev => ({
         ...prev,
@@ -686,7 +704,7 @@ export default function ProfessionalRegistrationPage() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem' }}>
-                  Upload Multiple Images
+                  {formData.imagePreviews.length > 0 ? 'Add More Images' : 'Upload Images'}
                 </label>
                 <input
                   type="file"
@@ -705,7 +723,10 @@ export default function ProfessionalRegistrationPage() {
                   }}
                 />
                 <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  Select one or more images (JPG, PNG, GIF, etc.)
+                  {formData.imagePreviews.length > 0 
+                    ? `Select more images to add to your ${formData.imagePreviews.length} uploaded image${formData.imagePreviews.length > 1 ? 's' : ''}`
+                    : 'Select one or more images (JPG, PNG, GIF, etc.)'
+                  }
                 </p>
               </div>
             </fieldset>
