@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPhone, faGlobe, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faTwitter, faFacebook, faYoutube, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface Professional {
   _id: string;
@@ -52,6 +53,7 @@ interface Props {
 
 export default function ProfessionalDetailClient({ professional }: Props) {
   const { user } = useAuth();
+  const t = useTranslations();
   const [isOwner, setIsOwner] = useState(false);
 
   // Check if the current user owns this profile
@@ -89,7 +91,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            ← Back to Directory
+            ← {t.detail.backToDirectory}
           </a>
         </div>
 
@@ -98,7 +100,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
           <div style={{ marginBottom: '2rem' }}>
             {/* Profile Picture - First Image */}
             <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Profile Picture</h3>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.detail.profilePicture}</h3>
               <div style={{
                 position: 'relative',
                 width: '200px',
@@ -138,7 +140,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             {/* Portfolio Gallery - Remaining Images */}
             {professional.images.length > 1 && (
               <div>
-                <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Portfolio Gallery</h3>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.detail.portfolioGallery}</h3>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
@@ -240,26 +242,26 @@ export default function ProfessionalDetailClient({ professional }: Props) {
 
         {/* Description */}
         <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>About</h2>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t.detail.about}</h2>
           <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#374151' }}>
             {professional.description}
           </p>
         </div>
 
         {/* Pricing Info */}
-        {professional.priceRange && (professional.priceRange.min || professional.priceRange.max) && (
+        {professional.priceRange && (professional.priceRange.min !== undefined && professional.priceRange.min > 0 || professional.priceRange.max !== undefined && professional.priceRange.max > 0) && (
           <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Pricing</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t.detail.pricing}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
               {professional.priceRange.min !== undefined && professional.priceRange.min > 0 && (
                 <div>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>Minimum Price</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>{t.detail.minimumPrice}</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827' }}>€{professional.priceRange.min}</p>
                 </div>
               )}
               {professional.priceRange.max !== undefined && professional.priceRange.max > 0 && (
                 <div>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>Maximum Price</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>{t.detail.maximumPrice}</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827' }}>€{professional.priceRange.max}</p>
                 </div>
               )}
@@ -269,7 +271,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
 
         {/* Contact Information - Icons Only */}
         <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Contact</h2>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>{t.detail.contact}</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'flex-start' }}>
             {professional.email && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
@@ -388,7 +390,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
         {/* Social Media Links */}
         {professional.socialLinks && (professional.socialLinks.instagram || professional.socialLinks.twitter || professional.socialLinks.facebook || professional.socialLinks.youtube || professional.socialLinks.tiktok) && (
           <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Follow Us</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>{t.detail.followUs}</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
               {professional.socialLinks.instagram && (
                 <a

@@ -156,7 +156,7 @@ export default function ContactPage() {
 
       {/* Main Contact Section */}
       <section style={{ padding: '4rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'start' }}>
           {/* Contact Form */}
           <div style={{
             backgroundColor: 'white',
@@ -361,7 +361,7 @@ export default function ContactPage() {
               overflow: 'hidden',
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
               marginBottom: '2rem',
-              height: '400px',
+              height: 'clamp(300px, 50vw, 400px)',
               backgroundColor: '#e5e7eb',
             }}>
               <iframe
@@ -390,8 +390,8 @@ export default function ContactPage() {
                 {[
                   { day: t.contact.monday, hours: '9:00 AM - 6:00 PM' },
                   { day: t.contact.saturday, hours: '10:00 AM - 4:00 PM' },
-                  { day: t.contact.sunday, hours: 'Closed' },
-                  { day: t.contact.support24, hours: '24/7 Available' },
+                  { day: t.contact.sunday, hours: t.contact.closed },
+                  { day: t.contact.support24, hours: t.contact.available24_7 },
                 ].map((schedule, index) => (
                   <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: index < 3 ? '1px solid #e5e7eb' : 'none' }}>
                     <span style={{ fontWeight: '500', color: '#374151' }}>{schedule.day}</span>

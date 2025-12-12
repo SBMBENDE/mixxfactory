@@ -41,8 +41,9 @@ export const translations = {
     // Home page
     home: {
       title: 'Discover Professionals',
-      subtitle: 'Find the perfect DJ, stylist, event hall, restaurant, and more',
-      discoverBtn: 'Discover Now',
+      subtitle: 'Find DJs, stylists, event halls, restaurants and many other exceptional service providers, carefully selected to meet your needs',
+      subtitleMobile: 'Find exceptional professionals for all your needs',
+      discoverBtn: 'Discover',
       browseDir: 'Browse Directory',
       registerBtn: 'Register as Professional',
       popularCategories: 'Popular Categories',
@@ -157,15 +158,23 @@ export const translations = {
       facebookPage: 'yourpage',
       youtubeChannel: '@yourchannel or channel URL',
       tiktokHandle: '@yourhandle',
+      selectMoreImages: 'Select more images to add to your',
+      selectImagesHelp: 'Select one or more images (JPG, PNG, GIF, etc.)',
+      uploadedImages: 'uploaded image',
+      uploadedImagesPlural: 'uploaded images',
     },
     // Professional Detail
     detail: {
       contact: 'Contact',
       pricing: 'Pricing',
+      about: 'About',
+      profilePicture: 'Profile Picture',
+      portfolioGallery: 'Portfolio Gallery',
       minimumPrice: 'Minimum Price',
       maximumPrice: 'Maximum Price',
       reviews: 'Reviews',
       backToDirectory: '← Back to Directory',
+      followUs: 'Follow Us',
       edit: 'Edit',
       activate: 'Activate',
       deactivate: 'Deactivate',
@@ -213,6 +222,7 @@ export const translations = {
       address: 'Address',
       hours: 'Hours',
       available24_7: '24/7 Available',
+      closed: 'Closed',
       monday: 'Monday - Friday',
       saturday: 'Saturday',
       sunday: 'Sunday',
@@ -226,6 +236,13 @@ export const translations = {
       faqA3: 'Register an account, select "Professional" as your account type, and complete your profile with your services and rates.',
       faqQ4: 'Is MixxFactory available on mobile?',
       faqA4: 'Yes! MixxFactory is a progressive web app and works seamlessly on all devices including mobile phones.',
+    },
+    // Error page
+    error: {
+      title: 'Oops! Something went wrong',
+      message: 'An error occurred while loading this page.',
+      tryAgain: 'Try again',
+      goHome: 'Go Home',
     },
     // Dashboard
     dashboard: {
@@ -284,7 +301,8 @@ export const translations = {
     // Home page
     home: {
       title: 'Découvrez les Professionnels',
-      subtitle: 'Trouvez les DJs, les coiffeurs, les salles d\'événements, les restaurants parfaits et plus encore',
+      subtitle: 'Accédez à une sélection de professionnels d\'exception — DJs, coiffeurs, salles d\'événements, restaurants et bien plus encore — rigoureusement choisis pour répondre à vos besoins avec excellence',
+      subtitleMobile: 'Accédez à une sélection de professionnels soigneusement sélectionnés pour répondre à vos besoins.',
       discoverBtn: 'Découvrir',
       browseDir: 'Parcourir l\'annuaire',
       registerBtn: 'S\'inscrire en tant que professionnel',
@@ -297,7 +315,7 @@ export const translations = {
     // Directory
     directory: {
       title: 'Découvrez les Professionnels',
-      subtitle: 'Recherchez et filtrez dans notre vaste annuaire',
+      subtitle: 'Trouvez les DJs, coiffeurs, salles d\'événements, restaurants et bien d\'autres prestataires d\'exception, soigneusement sélectionnés pour répondre à vos besoins',
       search: 'Rechercher par nom, description...',
       allCategories: 'Toutes les catégories',
       registerProfessional: 'S\'inscrire en tant que professionnel',
@@ -315,7 +333,7 @@ export const translations = {
       cameraman: 'Caméramans',
       promoter: 'Promoteurs',
       decorator: 'Décorateurs',
-      caterer: 'Traiteurs',
+      caterer: 'Service Traiteur',
       florist: 'Fleuristes',
     },
     // Authentication
@@ -402,15 +420,23 @@ export const translations = {
       facebookPage: 'votreepage',
       youtubeChannel: '@votrechaîne ou URL de la chaîne',
       tiktokHandle: '@votreidentifiant',
+      selectMoreImages: 'Sélectionnez plus d\'images à ajouter à vos',
+      selectImagesHelp: 'Sélectionnez une ou plusieurs images (JPG, PNG, GIF, etc.)',
+      uploadedImages: 'image téléchargée',
+      uploadedImagesPlural: 'images téléchargées',
     },
     // Professional Detail
     detail: {
       contact: 'Contact',
       pricing: 'Tarification',
+      about: 'À propos',
+      profilePicture: 'Photo de profil',
+      portfolioGallery: 'Galerie',
       minimumPrice: 'Prix minimum',
       maximumPrice: 'Prix maximum',
       reviews: 'Avis',
       backToDirectory: '← Retour à l\'annuaire',
+      followUs: 'Nous suivre',
       edit: 'Modifier',
       activate: 'Activer',
       deactivate: 'Désactiver',
@@ -443,7 +469,7 @@ export const translations = {
     // Contact page
     contact: {
       title: 'Nous contacter',
-      subtitle: 'Des questions ? Nous adorerions vous entendre',
+      subtitle: 'Des questions ? Nous sommes à votre écoute',
       sendMessage: 'Envoyez-nous un message',
       form: 'Formulaire de contact',
       name: 'Nom',
@@ -458,6 +484,7 @@ export const translations = {
       address: 'Adresse',
       hours: 'Horaires',
       available24_7: 'Disponible 24h/24, 7j/7',
+      closed: 'Fermé',
       monday: 'Lundi - Vendredi',
       saturday: 'Samedi',
       sunday: 'Dimanche',
@@ -471,6 +498,13 @@ export const translations = {
       faqA3: 'Créez un compte, sélectionnez "Professionnel" comme type de compte et complétez votre profil avec vos services et tarifs.',
       faqQ4: 'MixxFactory est-il disponible sur mobile ?',
       faqA4: 'Oui ! MixxFactory est une application Web progressive et fonctionne sans problème sur tous les appareils, y compris les téléphones mobiles.',
+    },
+    // Error page
+    error: {
+      title: 'Oups ! Quelque chose s\'est mal passé',
+      message: 'Une erreur s\'est produite lors du chargement de cette page.',
+      tryAgain: 'Réessayer',
+      goHome: 'Accueil',
     },
     // Dashboard
     dashboard: {

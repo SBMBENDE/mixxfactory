@@ -39,8 +39,10 @@ export async function GET(request: NextRequest) {
       const profInCategory = professionals.filter((p) => {
         // Handle case where category might not be populated or might be null
         if (!p.category) return false;
-        const catId = typeof p.category === 'object' ? p.category._id : p.category;
-        return catId.toString() === category._id.toString();
+        const catId = typeof p.category === 'object' 
+          ? String((p.category as Record<string, any>)._id) 
+          : String(p.category);
+        return catId === category._id.toString();
       });
       return {
         name: category.name,
@@ -67,7 +69,9 @@ export async function GET(request: NextRequest) {
       .map((p) => ({
         _id: p._id.toString(),
         name: p.name,
-        category: p.category?.name || 'Unknown',
+        category: typeof p.category === 'object' 
+          ? (p.category as Record<string, any>).name || 'Unknown' 
+          : 'Unknown',
         createdAt: p.createdAt,
         active: p.active,
         featured: p.featured,

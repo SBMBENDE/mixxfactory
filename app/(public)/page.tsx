@@ -26,14 +26,37 @@ const categoryEmojis: Record<string, string> = {
   florist: '🌸',
 };
 
+// Map category slugs to translation keys
+const categoryTranslationKeys: Record<string, string> = {
+  dj: 'dj',
+  'event-hall': 'eventHall',
+  stylist: 'stylist',
+  restaurant: 'restaurant',
+  nightclub: 'nightclub',
+  cameraman: 'cameraman',
+  promoter: 'promoter',
+  decorator: 'decorator',
+  caterer: 'caterer',
+  florist: 'florist',
+};
+
 function getEmojiForCategory(slug: string): string {
   return categoryEmojis[slug] || '⭐';
+}
+
+function getTranslatedCategoryName(slug: string, categories: any[]): string {
+  // First try to get translation key
+  const translationKey = categoryTranslationKeys[slug];
+  // Fall back to database name
+  const dbName = categories.find((c) => c.slug === slug)?.name;
+  return dbName || slug;
 }
 
 export default function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const t = useTranslations();
 
   // Check if user is authenticated
@@ -46,6 +69,16 @@ export default function HomePage() {
       }
     };
     checkAuth();
+  }, []);
+
+  // Detect mobile window size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize(); // Set initial value
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Fetch categories from API instead of hardcoding
@@ -93,7 +126,7 @@ export default function HomePage() {
               {t.home.title}
             </h1>
             <p style={{ fontSize: '1.125rem', marginBottom: '2rem', color: '#f0f9ff' }}>
-              {t.home.subtitle}
+              {isMobile ? t.home.subtitleMobile : t.home.subtitle}
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <a 
@@ -175,7 +208,7 @@ export default function HomePage() {
                   >
                     <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{cat.emoji}</div>
                     <p style={{ fontWeight: '600', color: '#111827' }}>
-                      {categories.find((c) => c.slug === cat.slug)?.name}
+                      {t.categories[categoryTranslationKeys[cat.slug] as keyof typeof t.categories] || categories.find((c) => c.slug === cat.slug)?.name}
                     </p>
                   </a>
                 )}

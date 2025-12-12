@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslations } from '@/hooks/useTranslations';
 
 export default function PublicError({
   error,
@@ -9,6 +10,8 @@ export default function PublicError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations();
+
   useEffect(() => {
     console.error('Public page error:', error);
   }, [error]);
@@ -34,10 +37,10 @@ export default function PublicError({
         }}
       >
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#dc2626' }}>
-          Oops! Something went wrong
+          {t.error.title}
         </h2>
         <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-          {error.message || 'An error occurred while loading this page.'}
+          {error.message || t.error.message}
         </p>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
           <button
@@ -53,7 +56,7 @@ export default function PublicError({
               fontWeight: '600',
             }}
           >
-            Try again
+            {t.error.tryAgain}
           </button>
           <button
             onClick={() => (window.location.href = '/')}
@@ -68,7 +71,7 @@ export default function PublicError({
               fontWeight: '600',
             }}
           >
-            Go Home
+            {t.error.goHome}
           </button>
         </div>
       </div>

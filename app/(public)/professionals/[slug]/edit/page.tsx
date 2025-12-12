@@ -6,6 +6,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface FormData {
   name: string;
@@ -55,6 +56,7 @@ export default function EditProfessionalPage() {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug as string;
+  const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const profilePicInputRef = useRef<HTMLInputElement>(null);
 
@@ -865,8 +867,8 @@ export default function EditProfessionalPage() {
                 />
                 <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
                   {formData.imagePreviews.length > 0 
-                    ? `Select more images to add to your ${formData.imagePreviews.length} uploaded image${formData.imagePreviews.length > 1 ? 's' : ''}`
-                    : 'Select one or more images (JPG, PNG, GIF, etc.)'
+                    ? `${t.professional.selectMoreImages} ${formData.imagePreviews.length} ${formData.imagePreviews.length > 1 ? t.professional.uploadedImagesPlural : t.professional.uploadedImages}`
+                    : t.professional.selectImagesHelp
                   }
                 </p>
               </div>
