@@ -317,8 +317,10 @@ export default function BlogPage() {
                           style={{
                             backgroundColor: '#dbeafe',
                             color: '#1e40af',
-                            padding: '0.25rem 0.75rem',
+                            padding: '0.3rem 0.7rem',
                             borderRadius: '9999px',
+                            fontSize: 'clamp(0.65rem, 2vw, 0.75rem)',
+                            fontWeight: '500',
                           }}
                         >
                           {post.category}
@@ -329,8 +331,10 @@ export default function BlogPage() {
                           style={{
                             backgroundColor: '#fef3c7',
                             color: '#92400e',
-                            padding: '0.25rem 0.75rem',
+                            padding: '0.3rem 0.7rem',
                             borderRadius: '9999px',
+                            fontSize: 'clamp(0.65rem, 2vw, 0.75rem)',
+                            fontWeight: '500',
                           }}
                         >
                           ⭐ {t.blog.featured}
@@ -342,22 +346,24 @@ export default function BlogPage() {
                     <Link href={`/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
                       <h2
                         style={{
-                          fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                          fontWeight: '600',
+                          fontSize: 'clamp(1.1rem, 5vw, 1.25rem)',
+                          fontWeight: '700',
                           marginBottom: '0.75rem',
-                          color: '#111827',
+                          color: '#1f2937',
                           cursor: 'pointer',
                           transition: 'color 0.2s',
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word',
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.color = '#3b82f6')}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = '#111827')}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = '#1f2937')}
                       >
                         {post.title}
                       </h2>
                     </Link>
 
                     {/* Excerpt */}
-                    <p style={{ color: '#6b7280', marginBottom: '1rem', flex: 1, fontSize: 'clamp(0.85rem, 3vw, 0.95rem)', lineHeight: '1.5' }}>
+                    <p style={{ color: '#374151', marginBottom: '1rem', flex: 1, fontSize: 'clamp(0.9rem, 4vw, 0.95rem)', lineHeight: '1.6', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                       {post.excerpt || post.content.substring(0, 150) + '...'}
                     </p>
 
@@ -382,13 +388,15 @@ export default function BlogPage() {
                     )}
 
                     {/* Footer */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', color: '#6b7280', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <div style={{ display: 'flex', gap: '0.75rem' }}>
-                        <span>{post.author}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: 'clamp(0.8rem, 2.5vw, 0.875rem)', color: '#4b5563', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', minWidth: '100%' }}>
+                        <span style={{ fontWeight: '500' }}>{post.author}</span>
+                        <span>•</span>
                         <span>{formatDate(post.createdAt)}</span>
+                        <span>•</span>
                         <span>👁 {post.views}</span>
                       </div>
-                      <Link href={`/blog/${post.slug}`} style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: '500' }}>
+                      <Link href={`/blog/${post.slug}`} style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: '600', marginTop: '0.5rem' }}>
                         {t.blog.readMore} →
                       </Link>
                     </div>
