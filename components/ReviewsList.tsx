@@ -17,13 +17,23 @@ interface Review {
   verified: boolean;
 }
 
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
+}
+
+interface Statistics {
+  averageRating: number;
+  totalReviews: number;
+  ratingBreakdown: Record<number, number>;
+}
+
 interface ReviewsData {
   reviews: Review[];
-  statistics: {
-    averageRating: number;
-    totalReviews: number;
-    ratingBreakdown: Record<number, number>;
-  };
+  pagination: Pagination;
+  statistics: Statistics;
 }
 
 interface ReviewsListProps {
@@ -72,7 +82,7 @@ export default function ReviewsList({ professionalId }: ReviewsListProps) {
     );
   }
 
-  const { reviews, statistics } = data;
+  const { reviews, statistics, pagination } = data;
   const { averageRating, totalReviews, ratingBreakdown } = statistics;
 
   return (
@@ -175,7 +185,7 @@ export default function ReviewsList({ professionalId }: ReviewsListProps) {
       </div>
 
       {/* Pagination */}
-      {data.pagination && data.pagination.pages > 1 && (
+      {pagination && pagination.pages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
           <button
             onClick={() => setPage(Math.max(1, page - 1))}
@@ -191,17 +201,17 @@ export default function ReviewsList({ professionalId }: ReviewsListProps) {
             Previous
           </button>
           <span style={{ padding: '0.5rem 1rem' }}>
-            Page {page} of {data.pagination.pages}
+            Page {page} of {pagination.pages}
           </span>
           <button
-            onClick={() => setPage(Math.min(data.pagination.pages, page + 1))}
-            disabled={page === data.pagination.pages}
+            onClick={() => setPage(Math.min(pagination.pages, page + 1))}
+            disabled={page === pagination.pages}
             style={{
               padding: '0.5rem 1rem',
               border: '1px solid #d1d5db',
               borderRadius: '0.375rem',
-              cursor: page === data.pagination.pages ? 'not-allowed' : 'pointer',
-              opacity: page === data.pagination.pages ? 0.5 : 1,
+              cursor: page === pagination.pages ? 'not-allowed' : 'pointer',
+              opacity: page === pagination.pages ? 0.5 : 1,
             }}
           >
             Next

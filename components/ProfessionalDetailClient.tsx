@@ -13,6 +13,8 @@ import { faEnvelope, faPhone, faGlobe, faMapPin } from '@fortawesome/free-solid-
 import { faInstagram, faTwitter, faFacebook, faYoutube, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
+import ReviewsList from './ReviewsList';
+import ReviewForm from './ReviewForm';
 
 interface Professional {
   _id: string;
@@ -539,6 +541,12 @@ export default function ProfessionalDetailClient({ professional }: Props) {
           }}>
             Share
           </button>
+        </div>
+
+        {/* Reviews Section */}
+        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
+          <ReviewsList professionalId={professional._id} />
+          <ReviewForm professionalId={professional._id} />
         </div>
       </div>
     </div>

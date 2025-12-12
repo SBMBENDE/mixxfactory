@@ -5,7 +5,7 @@
  * DELETE - Delete review
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ReviewModel } from '@/lib/db/models';
 import { verifyAdminAuth } from '@/lib/auth/middleware';

@@ -4,7 +4,7 @@
  * POST - Submit a new review
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ReviewModel, ProfessionalModel } from '@/lib/db/models';
 import { createReviewSchema } from '@/lib/validations';
