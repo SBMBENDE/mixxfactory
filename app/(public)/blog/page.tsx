@@ -21,16 +21,6 @@ interface BlogPost {
   updatedAt: string;
 }
 
-interface BlogListResponse {
-  success: boolean;
-  posts: BlogPost[];
-  total: number;
-  page: number;
-  totalPages: number;
-  availableCategories: string[];
-  availableTags: string[];
-}
-
 export default function BlogPage() {
   const t = useTranslations();
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -58,13 +48,13 @@ export default function BlogPage() {
         });
 
         const response = await fetch(`/api/blog/posts?${params}`);
-        const data: BlogListResponse = await response.json();
+        const data = await response.json();
 
-        if (data.success) {
-          setPosts(data.posts);
-          setTotalPages(data.totalPages);
-          setCategories(data.availableCategories);
-          setTags(data.availableTags);
+        if (data.success && data.data) {
+          setPosts(data.data.posts);
+          setTotalPages(data.data.totalPages);
+          setCategories(data.data.availableCategories);
+          setTags(data.data.availableTags);
         } else {
           setError('Failed to load blog posts');
         }
