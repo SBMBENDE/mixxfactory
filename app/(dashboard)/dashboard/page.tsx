@@ -52,16 +52,23 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div>
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem' }}>Admin Dashboard</h1>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
+        <p className="mt-1 text-sm sm:text-base text-gray-600 dark:text-gray-400">Welcome back! Manage your platform here.</p>
+      </div>
 
       {/* Stats Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         {stats.map((stat, idx) => (
-          <div key={idx} style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}>
-            <div style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>{stat.icon}</div>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.25rem' }}>{stat.label}</p>
-            <p style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#1f2937' }}>
+          <div 
+            key={idx} 
+            className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 shadow hover:shadow-md transition-shadow"
+          >
+            <div className="text-3xl sm:text-4xl mb-2">{stat.icon}</div>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">{stat.label}</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
               {loading ? '...' : stat.value}
             </p>
           </div>
@@ -69,24 +76,56 @@ export default function AdminDashboard() {
       </div>
 
       {/* Management Section */}
-      <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Management</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Quick Access</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage your content and settings</p>
         </div>
-        <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
-          <Link href="/dashboard/blog" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
-            📝 Blog Posts
+        
+        <div className="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+          <Link 
+            href="/dashboard/blog" 
+            className="flex flex-col items-center justify-center p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all text-center"
+          >
+            <span className="text-2xl sm:text-3xl mb-2">📝</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white break-words">Blog Posts</span>
           </Link>
-          <Link href="/dashboard/news-flashes" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
-            📢 News Flashes
+
+          <Link 
+            href="/dashboard/news-flashes" 
+            className="flex flex-col items-center justify-center p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all text-center"
+          >
+            <span className="text-2xl sm:text-3xl mb-2">📢</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white break-words">News Flashes</span>
           </Link>
-          <Link href="/dashboard/categories" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
-            🏷️ Categories
+
+          <Link 
+            href="/dashboard/categories" 
+            className="flex flex-col items-center justify-center p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all text-center"
+          >
+            <span className="text-2xl sm:text-3xl mb-2">🏷️</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white break-words">Categories</span>
           </Link>
-          <Link href="/dashboard/professionals" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
-            👥 Professionals
+
+          <Link 
+            href="/dashboard/professionals" 
+            className="flex flex-col items-center justify-center p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all text-center"
+          >
+            <span className="text-2xl sm:text-3xl mb-2">👥</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white break-words">Professionals</span>
           </Link>
         </div>
+      </div>
+
+      {/* Analytics Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
+        <Link 
+          href="/dashboard/analytics" 
+          className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm sm:text-base"
+        >
+          View detailed analytics →
+        </Link>
       </div>
     </div>
   );
