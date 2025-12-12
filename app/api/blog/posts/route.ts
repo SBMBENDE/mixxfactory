@@ -78,16 +78,11 @@ export async function GET(request: NextRequest) {
           views: p.views,
           createdAt: p.createdAt,
         })),
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit),
-        },
-        filters: {
-          categories: allCategories,
-          tags: allTags.sort(),
-        },
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+        availableCategories: allCategories,
+        availableTags: allTags.sort(),
       },
       'Posts fetched successfully',
       200

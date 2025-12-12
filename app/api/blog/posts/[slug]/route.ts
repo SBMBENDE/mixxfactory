@@ -33,19 +33,21 @@ export async function GET(
 
     return successResponse(
       {
-        _id: post._id.toString(),
-        title: post.title,
-        slug: post.slug,
-        content: post.content,
-        excerpt: post.excerpt,
-        category: post.category,
-        tags: post.tags,
-        author: post.author,
-        featuredImage: post.featuredImage,
-        featured: post.featured,
-        views: post.views + 1, // Include the view we just added
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
+        post: {
+          _id: post._id.toString(),
+          title: post.title,
+          slug: post.slug,
+          content: post.content,
+          excerpt: post.excerpt,
+          category: post.category,
+          tags: post.tags,
+          author: post.author,
+          featuredImage: post.featuredImage,
+          featured: post.featured,
+          views: post.views + 1, // Include the view we just added
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+        },
       },
       'Post fetched successfully',
       200
