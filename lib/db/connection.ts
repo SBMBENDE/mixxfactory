@@ -63,6 +63,19 @@ export async function connectDB() {
 }
 
 /**
+ * Connect to database with timeout protection
+ * Prevents hanging connections to MongoDB Atlas
+ * @param timeout - Connection timeout in milliseconds (default: 10000ms)
+ */
+export async function connectDBWithTimeout(timeout: number = 10000) {
+  const connectPromise = connectDB();
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Database connection timeout')), timeout)
+  );
+  return Promise.race([connectPromise, timeoutPromise]);
+}
+
+/**
  * Disconnect from MongoDB (useful for testing and graceful shutdown)
  */
 export async function disconnectDB() {

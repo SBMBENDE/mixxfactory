@@ -2,7 +2,7 @@
  * Get single professional by ID
  */
 
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { ProfessionalModel } from '@/lib/db/models';
 import { successResponse, notFoundResponse, internalErrorResponse } from '@/utils/api-response';
 
@@ -13,7 +13,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectDB();
+    await connectDBWithTimeout();
 
     const { id } = params;
 

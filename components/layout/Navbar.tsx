@@ -159,6 +159,9 @@ export const Navbar: React.FC = () => {
             <Link href="/directory" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               {t.nav.directory}
             </Link>
+            <Link href="/blog" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+              📝 {t.nav.blog}
+            </Link>
             <Link href="/about" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               {t.nav.about}
             </Link>

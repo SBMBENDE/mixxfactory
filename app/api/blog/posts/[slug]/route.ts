@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { BlogPostModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
 
@@ -15,7 +15,7 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    await connectDB();
+    await connectDBWithTimeout();
 
     const { slug } = params;
 

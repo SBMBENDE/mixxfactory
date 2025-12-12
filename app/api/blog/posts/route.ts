@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { BlogPostModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
 
@@ -12,12 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    // Add timeout to database connection
-    const connectPromise = connectDB();
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
-    );
-    await Promise.race([connectPromise, timeoutPromise]);
+    await connectDBWithTimeout();
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');

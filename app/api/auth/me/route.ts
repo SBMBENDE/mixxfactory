@@ -3,7 +3,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth/jwt';
 import { successResponse, unauthorizedResponse } from '@/utils/api-response';
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     if (!request) {
       return unauthorizedResponse();
     }
-    await connectDB();
+    await connectDBWithTimeout();
 
     // Get token from request
     const token = await getTokenFromRequest(request);

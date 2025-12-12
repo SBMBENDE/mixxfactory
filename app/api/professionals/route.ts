@@ -3,7 +3,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 import { searchQuerySchema } from '@/lib/validations';
 import { successResponse, errorResponse, validationErrorResponse } from '@/utils/api-response';
@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    await connectDBWithTimeout();
 
     const searchParams = request.nextUrl.searchParams;
     const query = {

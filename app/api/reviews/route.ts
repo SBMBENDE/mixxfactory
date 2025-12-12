@@ -5,7 +5,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { ReviewModel, ProfessionalModel } from '@/lib/db/models';
 import { createReviewSchema } from '@/lib/validations';
 import { successResponse, errorResponse, validationErrorResponse } from '@/utils/api-response';
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    await connectDBWithTimeout();
 
     // Get query parameters
     const { searchParams } = new URL(request.url);
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await connectDBWithTimeout();
 
     const body = await request.json();
 

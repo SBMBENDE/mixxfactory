@@ -3,7 +3,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { loginSchema } from '@/lib/validations';
 import { comparePassword } from '@/lib/auth/password';
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await connectDBWithTimeout();
 
     const body = await request.json();
 
