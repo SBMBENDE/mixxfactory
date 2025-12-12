@@ -5,6 +5,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState([
@@ -67,13 +68,24 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Recent Activity */}
+      {/* Management Section */}
       <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
         <div style={{ padding: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Recent Activity</h2>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Management</h2>
         </div>
-        <div style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
-          <p>No recent activity</p>
+        <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+          <Link href="/dashboard/blog" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+            📝 Blog Posts
+          </Link>
+          <Link href="/dashboard/news-flashes" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+            📢 News Flashes
+          </Link>
+          <Link href="/dashboard/categories" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+            🏷️ Categories
+          </Link>
+          <Link href="/dashboard/professionals" style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', textAlign: 'center', textDecoration: 'none', color: '#3b82f6', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+            👥 Professionals
+          </Link>
         </div>
       </div>
     </div>
