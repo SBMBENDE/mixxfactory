@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
 import Carousel from '@/components/Carousel';
+import NewsFlashBanner from '@/components/NewsFlashBanner';
 
 // Emoji mapping for categories
 const categoryEmojis: Record<string, string> = {
@@ -42,14 +43,6 @@ const categoryTranslationKeys: Record<string, string> = {
 
 function getEmojiForCategory(slug: string): string {
   return categoryEmojis[slug] || '⭐';
-}
-
-function getTranslatedCategoryName(slug: string, categories: any[]): string {
-  // First try to get translation key
-  const translationKey = categoryTranslationKeys[slug];
-  // Fall back to database name
-  const dbName = categories.find((c) => c.slug === slug)?.name;
-  return dbName || slug;
 }
 
 export default function HomePage() {
@@ -162,6 +155,13 @@ export default function HomePage() {
               </button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* News Flash Banner */}
+      <section style={{ padding: '1rem', backgroundColor: '#f9fafb' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
+          <NewsFlashBanner />
         </div>
       </section>
 

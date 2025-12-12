@@ -83,6 +83,30 @@ export const createReviewSchema = z.object({
   comment: z.string().min(10, 'Comment must be at least 10 characters').max(5000),
 });
 
+export const createBlogPostSchema = z.object({
+  title: z.string().min(5, 'Title must be at least 5 characters').max(200),
+  content: z.string().min(50, 'Content must be at least 50 characters').max(50000),
+  excerpt: z.string().min(10, 'Excerpt must be at least 10 characters').max(300),
+  category: z.string().min(1, 'Category is required'),
+  tags: z.array(z.string()).optional().default([]),
+  author: z.string().optional().default('Admin'),
+  featuredImage: z.string().url().optional(),
+  featured: z.boolean().optional().default(false),
+});
+
+export const updateBlogPostSchema = createBlogPostSchema.partial().extend({
+  published: z.boolean().optional(),
+});
+
+export const createNewsFlashSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters').max(100),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(1000),
+  type: z.enum(['info', 'success', 'warning', 'error']).default('info'),
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+  priority: z.number().min(0).max(100).optional().default(0),
+});
+
 // Type exports
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -93,3 +117,6 @@ export type UpdateProfessionalInput = z.infer<typeof updateProfessionalSchema>;
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type ContactInput = z.infer<typeof contactSchema>;
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;
+export type CreateBlogPostInput = z.infer<typeof createBlogPostSchema>;
+export type UpdateBlogPostInput = z.infer<typeof updateBlogPostSchema>;
+export type CreateNewsFlashInput = z.infer<typeof createNewsFlashSchema>;

@@ -272,3 +272,140 @@ reviewSchema.index({ professionalId: 1, rating: 1 });
 export const ReviewModel =
   (mongoose.models.Review as Model<IReviewDocument>) ||
   mongoose.model<IReviewDocument>('Review', reviewSchema);
+
+// ============ BLOG POST MODEL ============
+interface IBlogPostDocument extends Document {
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  category: string;
+  tags: string[];
+  author: string;
+  featuredImage?: string;
+  published: boolean;
+  featured: boolean;
+  views: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const blogPostSchema = new Schema<IBlogPostDocument>(
+  {
+    title: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    excerpt: {
+      type: String,
+      required: true,
+      maxlength: 300,
+    },
+    category: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    tags: [
+      {
+        type: String,
+        lowercase: true,
+      },
+    ],
+    author: {
+      type: String,
+      default: 'Admin',
+    },
+    featuredImage: String,
+    published: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
+  },
+  { timestamps: true }
+);
+
+blogPostSchema.index({ published: 1, featured: -1, createdAt: -1 });
+blogPostSchema.index({ title: 'text', content: 'text', excerpt: 'text' });
+
+export const BlogPostModel =
+  (mongoose.models.BlogPost as Model<IBlogPostDocument>) ||
+  mongoose.model<IBlogPostDocument>('BlogPost', blogPostSchema);
+
+// ============ NEWS FLASH MODEL ============
+interface INewsFlashDocument extends Document {
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  published: boolean;
+  startDate: Date;
+  endDate: Date;
+  priority: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const newsFlashSchema = new Schema<INewsFlashDocument>(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: ['info', 'success', 'warning', 'error'],
+      default: 'info',
+    },
+    published: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    startDate: {
+      type: Date,
+      default: Date.now,
+    },
+    endDate: {
+      type: Date,
+      default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+    },
+    priority: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
+  },
+  { timestamps: true }
+);
+
+newsFlashSchema.index({ published: 1, priority: -1, startDate: -1 });
+
+export const NewsFlashModel =
+  (mongoose.models.NewsFlash as Model<INewsFlashDocument>) ||
+  mongoose.model<INewsFlashDocument>('NewsFlash', newsFlashSchema);
