@@ -90,19 +90,19 @@ export default function BlogPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', paddingTop: '2rem', paddingBottom: '4rem' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', paddingTop: '1rem', paddingBottom: '2rem' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', paddingTop: '2rem', paddingBottom: '2rem', marginBottom: '2rem' }}>
+      <div style={{ backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', paddingTop: '1.5rem', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
           <div style={{ marginBottom: '1rem' }}>
             <Link href="/" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>
               ← {t.blog.backToBlog} {t.nav.home}
             </Link>
           </div>
-          <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>
+          <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.25rem)', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>
             {t.blog.title}
           </h1>
-          <p style={{ color: '#6b7280', fontSize: '1rem' }}>
+          <p style={{ color: '#6b7280', fontSize: 'clamp(0.875rem, 4vw, 1rem)' }}>
             {t.blog.posts} • {posts.length} {posts.length === 1 ? 'article' : 'articles'}
           </p>
         </div>
@@ -110,20 +110,21 @@ export default function BlogPage() {
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
         {/* Search & Filter Bar */}
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
           <form onSubmit={handleSearch} style={{ marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <input
                 type="text"
                 placeholder={t.blog.search}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
-                  flex: 1,
-                  padding: '0.75rem 1rem',
+                  flex: '1 1 200px',
+                  minWidth: '150px',
+                  padding: '0.75rem',
                   border: '1px solid #d1d5db',
                   borderRadius: '0.5rem',
-                  fontSize: '1rem',
+                  fontSize: '0.875rem',
                 }}
               />
               <button
@@ -264,9 +265,9 @@ export default function BlogPage() {
             <div
               style={{
                 display: viewType === 'grid' ? 'grid' : 'flex',
-                gridTemplateColumns: viewType === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : undefined,
+                gridTemplateColumns: viewType === 'grid' ? 'repeat(auto-fill, minmax(280px, 1fr))' : undefined,
                 flexDirection: viewType === 'list' ? 'column' : undefined,
-                gap: '2rem',
+                gap: '1.5rem',
                 marginBottom: '2rem',
               }}
             >
@@ -296,20 +297,21 @@ export default function BlogPage() {
                     <div
                       style={{
                         width: viewType === 'list' ? '250px' : '100%',
-                        height: viewType === 'list' ? '200px' : '200px',
+                        height: viewType === 'list' ? '200px' : '180px',
                         backgroundColor: '#e5e7eb',
                         backgroundImage: `url(${post.featuredImage})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         flexShrink: 0,
+                        minHeight: '150px',
                       }}
                     />
                   )}
 
                   {/* Content */}
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <div style={{ padding: 'clamp(1rem, 3vw, 1.5rem)', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     {/* Meta */}
-                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', fontSize: '0.75rem', color: '#6b7280', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', fontSize: '0.7rem', color: '#6b7280', flexWrap: 'wrap' }}>
                       {post.category && (
                         <span
                           style={{
@@ -340,7 +342,7 @@ export default function BlogPage() {
                     <Link href={`/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
                       <h2
                         style={{
-                          fontSize: '1.25rem',
+                          fontSize: 'clamp(1rem, 4vw, 1.25rem)',
                           fontWeight: '600',
                           marginBottom: '0.75rem',
                           color: '#111827',
@@ -355,7 +357,7 @@ export default function BlogPage() {
                     </Link>
 
                     {/* Excerpt */}
-                    <p style={{ color: '#6b7280', marginBottom: '1rem', flex: 1 }}>
+                    <p style={{ color: '#6b7280', marginBottom: '1rem', flex: 1, fontSize: 'clamp(0.85rem, 3vw, 0.95rem)', lineHeight: '1.5' }}>
                       {post.excerpt || post.content.substring(0, 150) + '...'}
                     </p>
 
@@ -380,8 +382,8 @@ export default function BlogPage() {
                     )}
 
                     {/* Footer */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-                      <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', color: '#6b7280', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.75rem' }}>
                         <span>{post.author}</span>
                         <span>{formatDate(post.createdAt)}</span>
                         <span>👁 {post.views}</span>
