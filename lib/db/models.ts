@@ -205,3 +205,70 @@ const contactSchema = new Schema<IContactDocument>(
 export const ContactModel =
   (mongoose.models.Contact as Model<IContactDocument>) ||
   mongoose.model<IContactDocument>('Contact', contactSchema);
+
+// ============ REVIEW MODEL ============
+interface IReviewDocument extends Document {
+  professionalId: mongoose.Types.ObjectId;
+  clientName: string;
+  clientEmail: string;
+  rating: number; // 1-5
+  title: string;
+  comment: string;
+  verified: boolean; // Admin verified
+  approved: boolean; // Published
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const reviewSchema = new Schema<IReviewDocument>(
+  {
+    professionalId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Professional',
+      required: true,
+      index: true,
+    },
+    clientName: {
+      type: String,
+      required: true,
+    },
+    clientEmail: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+  },
+  { timestamps: true }
+);
+
+// Index for efficient queries
+reviewSchema.index({ professionalId: 1, approved: 1 });
+reviewSchema.index({ professionalId: 1, rating: 1 });
+
+export const ReviewModel =
+  (mongoose.models.Review as Model<IReviewDocument>) ||
+  mongoose.model<IReviewDocument>('Review', reviewSchema);

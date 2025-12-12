@@ -74,6 +74,15 @@ export const contactSchema = z.object({
   message: z.string().min(10, 'Message must be at least 10 characters').max(5000),
 });
 
+export const createReviewSchema = z.object({
+  professionalId: z.string().min(1, 'Professional ID is required'),
+  clientName: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  clientEmail: z.string().email('Invalid email address'),
+  rating: z.number().min(1).max(5, 'Rating must be between 1 and 5'),
+  title: z.string().min(3, 'Title must be at least 3 characters').max(200),
+  comment: z.string().min(10, 'Comment must be at least 10 characters').max(5000),
+});
+
 // Type exports
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -83,3 +92,4 @@ export type CreateProfessionalInput = z.infer<typeof createProfessionalSchema>;
 export type UpdateProfessionalInput = z.infer<typeof updateProfessionalSchema>;
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type ContactInput = z.infer<typeof contactSchema>;
+export type CreateReviewInput = z.infer<typeof createReviewSchema>;
