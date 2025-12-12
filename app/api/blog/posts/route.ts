@@ -12,7 +12,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    // Add timeout to database connection
+    const connectPromise = connectDB();
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
+    );
+    await Promise.race([connectPromise, timeoutPromise]);
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -37,6 +42,7 @@ export async function GET(request: NextRequest) {
       filter.featured = true;
     }
 
+    // Only use text search if search query exists
     if (search) {
       filter.$text = { $search: search };
     }
@@ -44,23 +50,52 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Fetch posts and total count
-    const [posts, total] = await Promise.all([
-      BlogPostModel.find(filter)
-        .sort({ featured: -1, createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      BlogPostModel.countDocuments(filter),
-    ]);
+    let posts: any[] = [];
+    let total = 0;
+
+    try {
+      const results = await Promise.all([
+        BlogPostModel.find(filter)
+          .sort({ featured: -1, createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        BlogPostModel.countDocuments(filter),
+      ]);
+      posts = results[0];
+      total = results[1];
+    } catch (queryError) {
+      // If query fails (e.g., text index not ready), return empty results
+      console.error('Blog query error:', queryError);
+      posts = [];
+      total = 0;
+    }
 
     // Get all categories and tags for filtering
-    const allCategories = await BlogPostModel.distinct('category', { published: true });
-    const allTags = await BlogPostModel.distinct('tags', { published: true });
+    let allCategories: string[] = [];
+    let allTags: string[] = [];
+
+    try {
+      const results = await Promise.all([
+        BlogPostModel.distinct('category', { published: true }),
+        BlogPostModel.distinct('tags', { published: true }),
+      ]);
+      allCategories = results[0] || [];
+      allTags = (results[1]?.flat() || []).sort();
+    } catch (err) {
+      console.error('Error fetching categories/tags:', err);
+      // Continue with empty arrays
+    }
 
     // Increment views
     const postIds = posts.map((p) => p._id);
     if (postIds.length > 0) {
-      await BlogPostModel.updateMany({ _id: { $in: postIds } }, { $inc: { views: 1 } });
+      try {
+        await BlogPostModel.updateMany({ _id: { $in: postIds } }, { $inc: { views: 1 } });
+      } catch (err) {
+        console.error('Error incrementing views:', err);
+        // Continue anyway
+      }
     }
 
     return successResponse(
@@ -82,7 +117,7 @@ export async function GET(request: NextRequest) {
         page,
         totalPages: Math.ceil(total / limit),
         availableCategories: allCategories,
-        availableTags: allTags.sort(),
+        availableTags: allTags,
       },
       'Posts fetched successfully',
       200
