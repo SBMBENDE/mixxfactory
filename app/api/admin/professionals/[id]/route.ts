@@ -17,6 +17,33 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const auth = await verifyAdminAuth(request);
+    if (!auth.isValid) {
+      return auth.error;
+    }
+
+    await connectDB();
+
+    const { id } = params;
+
+    const professional = await ProfessionalModel.findById(id).populate('category');
+
+    if (!professional) {
+      return notFoundResponse('Professional');
+    }
+
+    return successResponse(professional, 'Professional retrieved successfully');
+  } catch (error) {
+    console.error('Error fetching professional:', error);
+    return internalErrorResponse();
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
