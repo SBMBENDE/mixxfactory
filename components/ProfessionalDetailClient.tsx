@@ -7,7 +7,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPhone, faGlobe, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faTwitter, faFacebook, faYoutube, faTiktok } from '@fortawesome/free-brands-svg-icons';
@@ -15,6 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
 import ReviewsList from './ReviewsList';
 import ReviewForm from './ReviewForm';
+import ImageGallery from './ImageGallery';
 
 interface Professional {
   _id: string;
@@ -100,92 +100,11 @@ export default function ProfessionalDetailClient({ professional }: Props) {
         {/* Profile Picture & Gallery Section */}
         {professional.images && professional.images.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
-            {/* Profile Picture - First Image */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.detail.profilePicture}</h3>
-              <div style={{
-                position: 'relative',
-                width: '200px',
-                aspectRatio: '1/1',
-                borderRadius: '0.5rem',
-                overflow: 'hidden',
-                backgroundColor: '#e5e7eb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '3px solid #3b82f6',
-              }}>
-                {professional.images[0].startsWith('data:') ? (
-                  <img
-                    src={professional.images[0]}
-                    alt={professional.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                    }}
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                  />
-                ) : (
-                  <Image
-                    src={professional.images[0]}
-                    alt={professional.name}
-                    fill
-                    style={{ objectFit: 'cover', objectPosition: 'center' }}
-                    priority
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Portfolio Gallery - Remaining Images */}
-            {professional.images.length > 1 && (
-              <div>
-                <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.detail.portfolioGallery}</h3>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-                  gap: '0.75rem',
-                }}>
-                  {professional.images.slice(1).map((image, index) => (
-                    <div
-                      key={index + 1}
-                      style={{
-                        position: 'relative',
-                        width: '100%',
-                        aspectRatio: '1/1',
-                        borderRadius: '0.375rem',
-                        overflow: 'hidden',
-                        backgroundColor: '#e5e7eb',
-                      }}
-                    >
-                      {image.startsWith('data:') ? (
-                        <img
-                          src={image}
-                          alt={`${professional.name} - ${index + 2}`}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            objectPosition: 'center',
-                          }}
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      ) : (
-                        <Image
-                          src={image}
-                          alt={`${professional.name} - ${index + 2}`}
-                          fill
-                          style={{ objectFit: 'cover', objectPosition: 'center' }}
-                          sizes="150px"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ImageGallery
+              images={professional.images}
+              title={`${professional.name} Gallery`}
+              isAdmin={false}
+            />
           </div>
         )}
 
