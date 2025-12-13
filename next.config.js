@@ -58,7 +58,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'scontent-*.xx.fbcdn.net',
+        hostname: 'scontent-cdg4-2.xx.fbcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.fbcdn.net',
       },
       {
         protocol: 'https',
