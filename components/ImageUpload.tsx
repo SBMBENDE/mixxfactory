@@ -1,5 +1,6 @@
 /**
  * Image Upload Component - For admin to add images to professionals
+ * Integrates with Cloudinary for direct file uploads
  */
 
 'use client';
@@ -19,9 +20,11 @@ export default function ImageUpload({
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<{ file: File; preview: string }[]>([]);
   const [imageUrls, setImageUrls] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const cloudinaryCloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -32,26 +35,30 @@ export default function ImageUpload({
     if (files.length === 0) return;
 
     setError('');
-    setUploading(true);
 
     try {
-      // Note: In production, you'd upload to Cloudinary here
-      // For now, we'll use a file to data URL approach for local testing
-      // Then switch to Cloudinary API when credentials are configured
-
-      const newUrls: string[] = [];
+      const newPreviews: { file: File; preview: string }[] = [];
 
       for (const file of files) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          throw new Error(`${file.name} is not an image file`);
+        }
+
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`${file.name} is too large (max 10MB)`);
+        }
+
         // Create object URL for preview
-        const url = URL.createObjectURL(file);
-        newUrls.push(url);
+        const preview = URL.createObjectURL(file);
+        newPreviews.push({ file, preview });
       }
 
-      setPreviewUrls((prev) => [...prev, ...newUrls]);
+      setPreviewUrls((prev) => [...prev, ...newPreviews]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to process files');
     } finally {
-      setUploading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -110,13 +117,25 @@ export default function ImageUpload({
     }
   };
 
-  const handleRemovePreview = (url: string) => {
-    setPreviewUrls(previewUrls.filter((u) => u !== url));
+  const handleRemovePreview = (index: number) => {
+    setPreviewUrls((prev) => {
+      const newPreviews = [...prev];
+      URL.revokeObjectURL(newPreviews[index].preview);
+      newPreviews.splice(index, 1);
+      return newPreviews;
+    });
   };
 
-  const handleUploadPreviews = async () => {
+  const handleUploadToCloudinary = async () => {
     if (previewUrls.length === 0) {
       setError('No files selected');
+      return;
+    }
+
+    if (!cloudinaryCloudName) {
+      setError(
+        'Cloudinary not configured. Add NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME to .env.local'
+      );
       return;
     }
 
@@ -124,25 +143,48 @@ export default function ImageUpload({
     setUploading(true);
 
     try {
-      // In production, upload to Cloudinary and get permanent URLs
-      // For now, we'll just use the preview URLs
-      // This is a placeholder - implement Cloudinary upload here
+      const uploadedUrls: string[] = [];
 
+      for (const { file } of previewUrls) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'mixxfactory'); // You can customize this
+
+        // Upload to Cloudinary
+        const cloudinaryResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        if (!cloudinaryResponse.ok) {
+          throw new Error(`Failed to upload ${file.name} to Cloudinary`);
+        }
+
+        const cloudinaryData = await cloudinaryResponse.json();
+        uploadedUrls.push(cloudinaryData.secure_url);
+      }
+
+      // Save to database
       const response = await fetch(`/api/admin/professionals/${professionalId}/images`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ images: previewUrls }),
+        body: JSON.stringify({ images: uploadedUrls }),
       });
 
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Failed to upload images');
+        throw new Error(data.message || 'Failed to save images');
       }
 
+      // Clean up previews
+      previewUrls.forEach(({ preview }) => URL.revokeObjectURL(preview));
       setPreviewUrls([]);
-      onImagesAdded(previewUrls);
+      onImagesAdded(uploadedUrls);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload images');
     } finally {
@@ -167,7 +209,9 @@ export default function ImageUpload({
         <div className="space-y-6">
           {/* Method 1: Paste URLs */}
           <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-3">Method 1: Paste Image URLs</h4>
+            <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+              Method 1: Paste Image URLs
+            </h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
               Paste one image URL per line. Works with Cloudinary, Imgur, or any public image URL.
             </p>
@@ -188,14 +232,20 @@ export default function ImageUpload({
             </button>
           </div>
 
-          {/* Method 2: File Upload (Placeholder) */}
+          {/* Method 2: Upload Files to Cloudinary */}
           <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
             <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-              Method 2: Upload Files
+              Method 2: Upload Files to Cloudinary
             </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-              ⚠️ File upload requires Cloudinary integration. Configure in .env.local for production use.
-            </p>
+            {cloudinaryCloudName ? (
+              <p className="text-sm text-green-600 dark:text-green-400 mb-3">
+                ✓ Cloudinary is configured and ready!
+              </p>
+            ) : (
+              <p className="text-sm text-yellow-600 dark:text-yellow-400 mb-3">
+                ⚠️ Configure Cloudinary in .env.local to enable direct uploads.
+              </p>
+            )}
             <input
               ref={fileInputRef}
               type="file"
@@ -210,7 +260,7 @@ export default function ImageUpload({
               disabled={uploading || isLoading}
               className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 text-gray-900 dark:text-white rounded-lg transition-colors"
             >
-              {uploading ? 'Processing...' : 'Select Files from Computer'}
+              {uploading ? 'Uploading...' : 'Select Files from Computer'}
             </button>
 
             {/* Preview Selected Files */}
@@ -220,15 +270,15 @@ export default function ImageUpload({
                   Selected Files ({previewUrls.length}):
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {previewUrls.map((url) => (
-                    <div key={url} className="relative group rounded-lg overflow-hidden bg-gray-200">
+                  {previewUrls.map((item, index) => (
+                    <div key={index} className="relative group rounded-lg overflow-hidden bg-gray-200">
                       <img
-                        src={url}
+                        src={item.preview}
                         alt="Preview"
                         className="w-full h-24 object-cover"
                       />
                       <button
-                        onClick={() => handleRemovePreview(url)}
+                        onClick={() => handleRemovePreview(index)}
                         className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
                       >
                         <span className="text-white text-sm font-semibold">Remove</span>
@@ -237,26 +287,31 @@ export default function ImageUpload({
                   ))}
                 </div>
                 <button
-                  onClick={handleUploadPreviews}
-                  disabled={uploading || isLoading}
+                  onClick={handleUploadToCloudinary}
+                  disabled={uploading || isLoading || !cloudinaryCloudName}
                   className="mt-3 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
                 >
-                  {uploading ? 'Uploading...' : `Upload ${previewUrls.length} File(s)`}
+                  {uploading ? 'Uploading...' : `Upload ${previewUrls.length} File(s) to Cloudinary`}
                 </button>
               </div>
             )}
           </div>
 
-          {/* Cloudinary Integration Notice */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>💡 Tip:</strong> To enable direct file uploads with automatic optimization, configure
-              Cloudinary in your .env.local:
-            </p>
-            <code className="block mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
-              NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
-            </code>
-          </div>
+          {/* Setup Instructions */}
+          {!cloudinaryCloudName && (
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+              <p className="text-sm text-blue-800 dark:text-blue-200 font-semibold mb-2">
+                💡 Setup Cloudinary for File Uploads
+              </p>
+              <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+                <li>Sign up at cloudinary.com (free account)</li>
+                <li>Get your Cloud Name from the dashboard</li>
+                <li>Add to .env.local: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name</li>
+                <li>Create upload preset: Settings → Upload → Add upload preset (unsigned, mode: unsigned)</li>
+                <li>Restart dev server</li>
+              </ol>
+            </div>
+          )}
         </div>
       </div>
     </div>
