@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 interface NewsFlash {
@@ -24,13 +24,7 @@ export default function EditNewsFlashPage() {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState<NewsFlash | null>(null);
 
-  useEffect(() => {
-    if (flashId) {
-      fetchFlash();
-    }
-  }, [flashId]);
-
-  const fetchFlash = async () => {
+  const fetchFlash = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/news-flashes?id=${flashId}`, {
         credentials: 'include',
@@ -60,7 +54,13 @@ export default function EditNewsFlashPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [flashId]);
+
+  useEffect(() => {
+    if (flashId) {
+      fetchFlash();
+    }
+  }, [flashId, fetchFlash]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>

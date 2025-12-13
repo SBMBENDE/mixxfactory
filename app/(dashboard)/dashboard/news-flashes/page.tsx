@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface NewsFlash {
@@ -46,11 +46,7 @@ export default function NewsFlashesPage() {
 
   const limit = 10;
 
-  useEffect(() => {
-    fetchFlashes();
-  }, [page]);
-
-  const fetchFlashes = async () => {
+  const fetchFlashes = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -79,7 +75,11 @@ export default function NewsFlashesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
+
+  useEffect(() => {
+    fetchFlashes();
+  }, [fetchFlashes]);
 
   const handleDelete = async (id: string) => {
     try {

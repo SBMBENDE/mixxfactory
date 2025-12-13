@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 const CATEGORIES = ['Technology', 'Business', 'Lifestyle', 'Events', 'Tips', 'News'];
@@ -28,13 +28,7 @@ export default function EditBlogPostPage() {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState<BlogPost | null>(null);
 
-  useEffect(() => {
-    if (postId) {
-      fetchPost();
-    }
-  }, [postId]);
-
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/blog/posts?id=${postId}`, {
         credentials: 'include',
@@ -54,7 +48,13 @@ export default function EditBlogPostPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId, fetchPost]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>

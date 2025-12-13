@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
 
 interface Review {
@@ -46,11 +46,7 @@ export default function ReviewsList({ professionalId }: ReviewsListProps) {
   const [page, setPage] = useState(1);
   const t = useTranslations();
 
-  useEffect(() => {
-    fetchReviews();
-  }, [professionalId, page]);
-
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/reviews?professionalId=${professionalId}&page=${page}&limit=5`);
@@ -64,7 +60,11 @@ export default function ReviewsList({ professionalId }: ReviewsListProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [professionalId, page]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   const renderStars = (rating: number) => {
     return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
