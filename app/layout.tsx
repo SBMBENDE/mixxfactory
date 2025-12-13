@@ -12,9 +12,19 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     title: 'MixxFactory',
   },
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+    date: true,
+  },
+  icons: [
+    { rel: 'icon', url: '/icons/icon-192.png' },
+    { rel: 'apple-touch-icon', url: '/icons/icon-192.png' },
+  ],
 };
 
 export const viewport: Viewport = {
@@ -22,6 +32,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   minimumScale: 1,
   maximumScale: 5,
+  viewportFit: 'cover',
+  userScalable: true,
 };
 
 export default function RootLayout({
