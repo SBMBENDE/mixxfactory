@@ -19,10 +19,7 @@ export function OAuthButtons({
   variant = 'primary',
   fullWidth = false,
 }: OAuthButtonsProps) {
-  const [loading, setLoading] = useState(false);
-
   const handleOAuthClick = (provider: 'google' | 'facebook') => {
-    setLoading(true);
     // The actual navigation happens via the link href
     // Loading state can be used for button disabled state while redirecting
   };

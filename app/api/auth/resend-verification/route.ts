@@ -5,8 +5,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import User from '@/lib/db/models';
-import { generateEmailVerificationToken, hashToken } from '@/lib/auth/password';
+import { UserModel } from '@/lib/db/models';
+import { generateEmailVerificationToken } from '@/lib/auth/password';
 import { connectDB } from '@/lib/db/connection';
 import { sendEmail, getVerificationEmailHTML } from '@/lib/email/sendgrid';
 import { z } from 'zod';
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     // Find user
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await UserModel.findOne({ email: email.toLowerCase() });
 
     // Don't reveal whether email exists (security best practice)
     if (!user) {

@@ -4,12 +4,12 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import User from '@/lib/db/models';
+import { UserModel } from '@/lib/db/models';
 import {
   exchangeFacebookCode,
   getFacebookUserProfile,
 } from '@/lib/auth/oauth-callback';
-import { generateJWT } from '@/lib/auth/jwt';
+import { generateToken } from '@/lib/auth/jwt';
 import { validateOAuthConfig } from '@/lib/auth/oauth';
 import { connectDB } from '@/lib/db/connection';
 

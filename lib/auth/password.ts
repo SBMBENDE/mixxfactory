@@ -29,17 +29,17 @@ export async function comparePassword(
  */
 export function generatePasswordResetToken(): {
   token: string;
-  hash: string;
-  expires: Date;
+  hashedToken: string;
+  expiresAt: Date;
 } {
   const token = crypto.randomBytes(32).toString('hex');
-  const hash = crypto
+  const hashedToken = crypto
     .createHash('sha256')
     .update(token)
     .digest('hex');
-  const expires = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+  const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
 
-  return { token, hash, expires };
+  return { token, hashedToken, expiresAt };
 }
 
 /**
@@ -47,17 +47,17 @@ export function generatePasswordResetToken(): {
  */
 export function generateEmailVerificationToken(): {
   token: string;
-  hash: string;
-  expires: Date;
+  hashedToken: string;
+  expiresAt: Date;
 } {
   const token = crypto.randomBytes(32).toString('hex');
-  const hash = crypto
+  const hashedToken = crypto
     .createHash('sha256')
     .update(token)
     .digest('hex');
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-  return { token, hash, expires };
+  return { token, hashedToken, expiresAt };
 }
 
 /**

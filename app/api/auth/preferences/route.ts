@@ -5,8 +5,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import User from '@/lib/db/models';
-import { verifyJWT } from '@/lib/auth/jwt';
+import { UserModel } from '@/lib/db/models';
+import { verifyToken } from '@/lib/auth/jwt';
 import { connectDB } from '@/lib/db/connection';
 import { z } from 'zod';
 

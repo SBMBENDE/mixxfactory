@@ -25,14 +25,18 @@ export const oauthConfig = {
  * Validate OAuth configuration
  */
 export function validateOAuthConfig(provider: 'google' | 'facebook'): boolean {
-  const config = oauthConfig[provider];
-  
   if (provider === 'google') {
-    return !!(config.clientId && config.clientSecret);
+    return !!(
+      process.env.GOOGLE_CLIENT_ID && 
+      process.env.GOOGLE_CLIENT_SECRET
+    );
   }
   
   if (provider === 'facebook') {
-    return !!(config.appId && config.appSecret);
+    return !!(
+      process.env.FACEBOOK_APP_ID && 
+      process.env.FACEBOOK_APP_SECRET
+    );
   }
   
   return false;
@@ -48,15 +52,16 @@ export function getOAuthAuthorizationUrl(
   const config = oauthConfig[provider];
   
   if (provider === 'google') {
+    const googleConfig = config as typeof oauthConfig['google'];
     const params = new URLSearchParams({
-      client_id: config.clientId,
-      redirect_uri: config.redirectUri,
+      client_id: googleConfig.clientId,
+      redirect_uri: googleConfig.redirectUri,
       response_type: 'code',
-      scope: config.scopes.join(' '),
+      scope: googleConfig.scopes.join(' '),
       state,
       access_type: 'offline',
     });
-    return `${config.authUrl}?${params.toString()}`;
+    return `${googleConfig.authUrl}?${params.toString()}`;
   }
   
   if (provider === 'facebook') {

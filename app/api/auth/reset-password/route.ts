@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import User from '@/lib/db/models';
+import { UserModel } from '@/lib/db/models';
 import { hashPassword, hashToken } from '@/lib/auth/password';
 import { connectDB } from '@/lib/db/connection';
 import { z } from 'zod';
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     // Find user
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await UserModel.findOne({ email: email.toLowerCase() });
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid email or reset token' },

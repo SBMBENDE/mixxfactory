@@ -6,8 +6,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import User from '@/lib/db/models';
-import { generatePasswordResetToken, hashToken } from '@/lib/auth/password';
+import { UserModel } from '@/lib/db/models';
+import { generatePasswordResetToken } from '@/lib/auth/password';
 import { connectDB } from '@/lib/db/connection';
 import { sendEmail, getResetPasswordEmailHTML } from '@/lib/email/sendgrid';
 import { z } from 'zod';
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     // Find user by email
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await UserModel.findOne({ email: email.toLowerCase() });
 
     // Don't reveal whether email exists in system (security best practice)
     if (!user) {
