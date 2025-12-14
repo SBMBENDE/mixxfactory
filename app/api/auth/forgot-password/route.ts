@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/lib/db/models';
 import { generatePasswordResetToken, hashToken } from '@/lib/auth/password';
 import { connectDB } from '@/lib/db/connection';
+import { sendEmail, getResetPasswordEmailHTML } from '@/lib/email/sendgrid';
 import { z } from 'zod';
 
 // Validation schema
@@ -58,10 +59,21 @@ export async function POST(request: NextRequest) {
     user.passwordResetExpires = expiresAt;
     await user.save();
 
-    // TODO: Send password reset email
-    // When email service is configured, construct reset URL:
-    // const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${token}&email=${email}`;
-    // await sendPasswordResetEmail(email, user.firstName, resetUrl);
+    // Send password reset email
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+    try {
+      const firstName = user.firstName || email.split('@')[0];
+      const emailHTML = getResetPasswordEmailHTML(firstName, resetUrl);
+      await sendEmail({
+        to: email,
+        subject: 'Reset Your MixxFactory Password',
+        html: emailHTML,
+      });
+      console.log(`[Auth] Password reset email sent to ${email}`);
+    } catch (emailError) {
+      console.warn('[Auth] Email sending failed:', emailError);
+      // Continue - don't fail the request
+    }
 
     console.log(`[DEV] Password reset token for ${email}: ${token}`);
     console.log(`[DEV] Reset token expires at: ${expiresAt}`);
@@ -69,8 +81,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: 'If an account exists with this email, a password reset link has been sent.',
-        // TODO: Remove in production (for testing only)
-        ...(process.env.NODE_ENV === 'development' && { token, expiresAt }),
+        // Remove in production (for testing only)
+        ...(process.env.NODE_ENV === 'development' && { token, resetUrl, expiresAt }),
       },
       { status: 200 }
     );

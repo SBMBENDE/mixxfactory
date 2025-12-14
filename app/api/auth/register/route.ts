@@ -9,6 +9,7 @@ import { registerSchema } from '@/lib/validations';
 import { hashPassword, generateEmailVerificationToken } from '@/lib/auth/password';
 import { generateToken, setAuthCookieHeader } from '@/lib/auth/jwt';
 import { errorResponse, validationErrorResponse } from '@/utils/api-response';
+import { sendEmail, getVerificationEmailHTML } from '@/lib/email/sendgrid';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,6 +56,22 @@ export async function POST(request: NextRequest) {
       role: user.role,
     });
 
+    // Send verification email
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${verificationToken}`;
+    try {
+      const firstName = email.split('@')[0]; // Use part of email as fallback
+      const emailHTML = getVerificationEmailHTML(firstName, verificationUrl);
+      await sendEmail({
+        to: email,
+        subject: 'Verify Your MixxFactory Email',
+        html: emailHTML,
+      });
+      console.log(`[Auth] Verification email sent to ${email}`);
+    } catch (emailError) {
+      console.warn('[Auth] Email sending failed, but user created:', emailError);
+      // Don't fail registration if email fails - user can resend later
+    }
+
     // Create response with auth cookie
     const response = NextResponse.json(
       {
@@ -69,7 +86,7 @@ export async function POST(request: NextRequest) {
         message: 'Registration successful! Please verify your email.',
         // In development, include verification link for testing
         ...(process.env.NODE_ENV === 'development' && {
-          verificationLink: `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${verificationToken}`,
+          verificationLink: verificationUrl,
         }),
       },
       { status: 201 }

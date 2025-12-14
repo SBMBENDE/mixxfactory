@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/lib/db/models';
 import { generateEmailVerificationToken, hashToken } from '@/lib/auth/password';
 import { connectDB } from '@/lib/db/connection';
+import { sendEmail, getVerificationEmailHTML } from '@/lib/email/sendgrid';
 import { z } from 'zod';
 
 // Validation schema
@@ -67,10 +68,21 @@ export async function POST(request: NextRequest) {
     user.emailVerificationExpires = expiresAt;
     await user.save();
 
-    // TODO: Send verification email
-    // When email service is configured, construct verification URL:
-    // const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${token}`;
-    // await sendVerificationEmail(email, user.firstName, verificationUrl);
+    // Send verification email
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${token}`;
+    try {
+      const firstName = user.firstName || email.split('@')[0];
+      const emailHTML = getVerificationEmailHTML(firstName, verificationUrl);
+      await sendEmail({
+        to: email,
+        subject: 'Verify Your MixxFactory Email',
+        html: emailHTML,
+      });
+      console.log(`[Auth] Verification email resent to ${email}`);
+    } catch (emailError) {
+      console.warn('[Auth] Email sending failed:', emailError);
+      // Continue - don't fail the request
+    }
 
     console.log(`[DEV] Verification token for ${email}: ${token}`);
     console.log(`[DEV] Token expires at: ${expiresAt}`);
@@ -78,9 +90,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: 'If an account exists with this email, a verification link has been sent.',
-        // TODO: Remove in production (for testing only)
+        // Remove in production (for testing only)
         ...(process.env.NODE_ENV === 'development' && {
-          verificationLink: `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${token}`,
+          verificationLink: verificationUrl,
           token,
           expiresAt,
         }),

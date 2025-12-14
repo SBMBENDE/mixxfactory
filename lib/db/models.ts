@@ -409,3 +409,152 @@ newsFlashSchema.index({ published: 1, priority: -1, startDate: -1 });
 export const NewsFlashModel =
   (mongoose.models.NewsFlash as Model<INewsFlashDocument>) ||
   mongoose.model<INewsFlashDocument>('NewsFlash', newsFlashSchema);
+
+// ============ USER MODEL (Enhanced) ============
+interface IUserDocument extends Document {
+  email: string;
+  password?: string; // Optional for OAuth users
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  profilePicture?: string;
+  accountType: 'user' | 'professional' | 'admin';
+  
+  // OAuth
+  oauthProvider?: 'google' | 'facebook';
+  oauthId?: string;
+  
+  // Profile Completion
+  profileCompletion: {
+    basicInfo: boolean;
+    contactInfo: boolean;
+    profilePicture: boolean;
+    preferences: boolean;
+  };
+  profileCompletionPercentage: number;
+  
+  // Account Settings
+  preferences: {
+    emailNotifications: boolean;
+    smsNotifications: boolean;
+    marketingEmails: boolean;
+    twoFactorEnabled: boolean;
+    language: 'en' | 'fr';
+    theme: 'light' | 'dark';
+  };
+  
+  // Email Verification
+  emailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
+  
+  // Password Recovery
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
+  
+  // Account Status
+  active: boolean;
+  lastLogin?: Date;
+  loginAttempts: number;
+  lockUntil?: Date;
+  
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUserDocument>(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      index: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      minlength: 8,
+      select: false, // Don't include password in queries by default
+    },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    phone: String,
+    profilePicture: String,
+    accountType: {
+      type: String,
+      enum: ['user', 'professional', 'admin'],
+      default: 'user',
+      index: true,
+    },
+    
+    // OAuth
+    oauthProvider: {
+      type: String,
+      enum: ['google', 'facebook'],
+    },
+    oauthId: String,
+    
+    // Profile Completion
+    profileCompletion: {
+      basicInfo: { type: Boolean, default: false },
+      contactInfo: { type: Boolean, default: false },
+      profilePicture: { type: Boolean, default: false },
+      preferences: { type: Boolean, default: false },
+    },
+    profileCompletionPercentage: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    
+    // Account Settings
+    preferences: {
+      emailNotifications: { type: Boolean, default: true },
+      smsNotifications: { type: Boolean, default: false },
+      marketingEmails: { type: Boolean, default: true },
+      twoFactorEnabled: { type: Boolean, default: false },
+      language: {
+        type: String,
+        enum: ['en', 'fr'],
+        default: 'en',
+      },
+      theme: {
+        type: String,
+        enum: ['light', 'dark'],
+        default: 'light',
+      },
+    },
+    
+    // Email Verification
+    emailVerified: { type: Boolean, default: false },
+    emailVerificationToken: String,
+    emailVerificationExpires: Date,
+    
+    // Password Recovery
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    
+    // Account Status
+    active: { type: Boolean, default: true, index: true },
+    lastLogin: Date,
+    loginAttempts: { type: Number, default: 0 },
+    lockUntil: Date,
+  },
+  { timestamps: true }
+);
+
+// Index for profile completion tracking
+userSchema.index({ accountType: 1, profileCompletionPercentage: 1 });
+userSchema.index({ emailVerified: 1, active: 1 });
+
+export const UserModel =
+  (mongoose.models.User as Model<IUserDocument>) ||
+  mongoose.model<IUserDocument>('User', userSchema);
