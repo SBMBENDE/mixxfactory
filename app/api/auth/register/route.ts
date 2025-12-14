@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { registerSchema } from '@/lib/validations';
-import { hashPassword } from '@/lib/auth/password';
+import { hashPassword, generateEmailVerificationToken } from '@/lib/auth/password';
 import { generateToken, setAuthCookieHeader } from '@/lib/auth/jwt';
 import { errorResponse, validationErrorResponse } from '@/utils/api-response';
 
@@ -35,11 +35,17 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
+    // Generate email verification token
+    const { token: verificationToken, hashedToken, expiresAt } = generateEmailVerificationToken();
+
     // Create user
     const user = await UserModel.create({
       email,
       password: hashedPassword,
       role: role || 'professional', // Default to professional
+      emailVerificationToken: hashedToken,
+      emailVerificationExpires: expiresAt,
+      emailVerified: false, // Email not verified until token is confirmed
     });
 
     // Generate token
@@ -58,8 +64,13 @@ export async function POST(request: NextRequest) {
           email: user.email,
           role: user.role,
           token,
+          emailVerified: user.emailVerified,
         },
-        message: 'Registration successful',
+        message: 'Registration successful! Please verify your email.',
+        // In development, include verification link for testing
+        ...(process.env.NODE_ENV === 'development' && {
+          verificationLink: `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${verificationToken}`,
+        }),
       },
       { status: 201 }
     );
