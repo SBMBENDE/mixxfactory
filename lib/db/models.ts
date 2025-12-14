@@ -127,40 +127,6 @@ export const ProfessionalModel =
   mongoose.model<IProfessionalDocument>('Professional', professionalSchema);
 
 // ============ USER MODEL ============
-interface IUserDocument extends Document {
-  email: string;
-  password: string;
-  role: 'admin' | 'professional' | 'user';
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const userSchema = new Schema<IUserDocument>(
-  {
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      index: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: ['admin', 'professional', 'user'],
-      default: 'user',
-    },
-  },
-  { timestamps: true }
-);
-
-export const UserModel =
-  (mongoose.models.User as Model<IUserDocument>) ||
-  mongoose.model<IUserDocument>('User', userSchema);
-
 // ============ CONTACT MODEL ============
 interface IContactDocument extends Document {
   name: string;
