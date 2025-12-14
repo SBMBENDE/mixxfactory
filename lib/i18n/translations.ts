@@ -42,8 +42,8 @@ export const translations = {
     // Home page
     home: {
       title: 'Discover Professionals',
-      subtitle: 'Find DJs, stylists, event halls, restaurants and many other exceptional service providers, carefully selected to meet your needs',
-      subtitleMobile: 'Find exceptional professionals for all your needs',
+      subtitle: 'Connect with our verified & trusted professionals—all in one app.',
+      subtitleMobile: 'Connect with our verified & trusted professionals—all in one app.',
       discoverBtn: 'Discover',
       browseDir: 'Browse Directory',
       registerBtn: 'Register as Professional',
@@ -364,9 +364,9 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Découvrez les Professionnels',
-      subtitle: 'Accédez à une sélection de professionnels d\'exception — DJs, coiffeurs, salles d\'événements, restaurants et bien plus encore — rigoureusement choisis pour répondre à vos besoins avec excellence',
-      subtitleMobile: 'Accédez à une sélection de professionnels soigneusement sélectionnés pour répondre à vos besoins.',
+      title: 'Trouvez des professionnels',
+      subtitle: 'Des profils vérifiés & une expérience simple. Tout-en-un',
+      subtitleMobile: 'Des profils vérifiés & une expérience simple. Tout-en-un',
       discoverBtn: 'Découvrir',
       browseDir: 'Parcourir l\'annuaire',
       registerBtn: 'S\'inscrire en tant que professionnel',
