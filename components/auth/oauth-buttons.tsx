@@ -6,7 +6,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
 
 interface OAuthButtonsProps {
   className?: string;
@@ -19,7 +18,7 @@ export function OAuthButtons({
   variant = 'primary',
   fullWidth = false,
 }: OAuthButtonsProps) {
-  const handleOAuthClick = (provider: 'google' | 'facebook') => {
+  const handleOAuthClick = () => {
     // The actual navigation happens via the link href
     // Loading state can be used for button disabled state while redirecting
   };
@@ -40,7 +39,7 @@ export function OAuthButtons({
       {/* Google Login */}
       <Link
         href="/api/auth/oauth/google/login"
-        onClick={() => handleOAuthClick('google')}
+        onClick={() => handleOAuthClick()}
         className={baseButtonClass}
         title="Sign in with Google"
       >
@@ -73,7 +72,7 @@ export function OAuthButtons({
       {/* Facebook Login */}
       <Link
         href="/api/auth/oauth/facebook/login"
-        onClick={() => handleOAuthClick('facebook')}
+        onClick={() => handleOAuthClick()}
         className={baseButtonClass}
         title="Sign in with Facebook"
       >

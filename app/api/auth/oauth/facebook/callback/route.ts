@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     // Check if user already exists
-    let user = await User.findOne({
+    let user = await UserModel.findOne({
       oauthProvider: 'facebook',
       oauthId: userProfile.id,
     });
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       // Update last login
       user.lastLogin = new Date();
       user.loginAttempts = 0;
-      user.lockUntil = null;
+      user.lockUntil = undefined;
       await user.save();
     } else {
       // Create new user from Facebook profile
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
       const lastName = lastNameParts.join(' ') || '';
       const profilePicture = userProfile.picture?.data?.url || null;
 
-      user = await User.create({
+      user = await UserModel.create({
         email: userProfile.email,
         firstName,
         lastName,
@@ -116,10 +116,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Generate JWT token
-    const token = generateJWT({
+    const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
-      accountType: user.accountType,
+      role: user.accountType,
     });
 
     // Create response with redirect

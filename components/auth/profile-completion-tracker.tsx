@@ -6,7 +6,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckIcon } from '@heroicons/react/24/solid';
 
 interface ProfileCompletion {
   basicInfo: boolean;
@@ -18,7 +17,6 @@ interface ProfileCompletion {
 interface ProfileCompletionTrackerProps {
   completion: ProfileCompletion;
   percentage: number;
-  onComplete?: () => void;
 }
 
 interface CompletionStep {
@@ -31,7 +29,6 @@ interface CompletionStep {
 export function ProfileCompletionTracker({
   completion,
   percentage,
-  onComplete,
 }: ProfileCompletionTrackerProps) {
   const [steps, setSteps] = useState<CompletionStep[]>([]);
 
