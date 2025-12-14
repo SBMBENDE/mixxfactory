@@ -153,7 +153,7 @@ export function ProfileCompletionTracker({
       {percentage === 100 && (
         <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
           <p className="text-sm font-medium text-green-900 dark:text-green-100">
-            ✨ Profile Complete! You're all set.
+            ✨ Profile Complete! You&apos;re all set.
           </p>
         </div>
       )}

@@ -73,7 +73,7 @@ export default function ResendVerificationPage() {
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <p className="text-blue-800 dark:text-blue-200 text-sm">
-                  <strong>Link expires in 24 hours.</strong> If you don't see it, try:
+                  <strong>Link expires in 24 hours.</strong> If you don&apos;t see it, try:
                 </p>
                 <ul className="text-blue-700 dark:text-blue-300 text-xs mt-2 space-y-1">
                   <li>• Check your spam/junk folder</li>
@@ -149,7 +149,7 @@ export default function ResendVerificationPage() {
 
               <div className="text-center">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Link
                     href="/auth/register"
                     className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
