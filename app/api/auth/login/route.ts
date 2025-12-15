@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
-      role: user.role,
+      role: user.accountType,
     });
 
     // Create response with auth cookie
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user._id.toString(),
           email: user.email,
-          role: user.role,
+          role: user.accountType,
           token,
         },
         message: 'Login successful',
