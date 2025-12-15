@@ -28,7 +28,7 @@ Vercel needs environment variables to connect to MongoDB. The most common reason
 
 **Variable 1: MONGODB_URI**
 - Key: `MONGODB_URI`
-- Value: `mongodb+srv://MixxFactoryAdmin:Azerty123456@mixxfactory.jmifjk7.mongodb.net/mixxfactory?retryWrites=true&w=majority`
+- Value: `mongodb+srv://username:password@cluster.mongodb.net/mixxfactory?retryWrites=true&w=majority`
 - Environments: Production, Preview, Development
 
 **Variable 2: JWT_SECRET**

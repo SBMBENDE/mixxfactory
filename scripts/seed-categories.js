@@ -4,8 +4,12 @@
 
 const mongoose = require('mongoose')
 
-const MONGODB_URI =
-  'mongodb+srv://MixxFactoryAdmin:Azerty123456@mixxfactory.jmifjk7.mongodb.net/mixxfactory'
+const MONGODB_URI = process.env.MONGODB_URI
+
+if (!MONGODB_URI) {
+  console.error('MONGODB_URI environment variable is not set')
+  process.exit(1)
+}
 
 const categorySchema = new mongoose.Schema(
   {
