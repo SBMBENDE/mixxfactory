@@ -68,13 +68,23 @@ export async function POST(request: NextRequest) {
       return errorResponse('Failed to create subscription', 500);
     }
 
-    console.log(`✅ [Newsletter] Subscriber added/updated: ${email}`);
+    // Log detailed subscription info
+    console.log(`✅ [Newsletter] Subscriber added/updated:`);
+    console.log(`   Email: ${subscriber.email}`);
+    console.log(`   Name: ${subscriber.firstName || 'Not provided'}`);
+    console.log(`   ID: ${subscriber._id}`);
+    console.log(`   Subscribed: ${subscriber.subscribed}`);
+    console.log(`   Verified: ${subscriber.verified}`);
+    console.log(`   Categories: ${subscriber.categories?.join(', ') || 'None'}`);
+    console.log(`   Subscribed At: ${subscriber.subscribedAt}`);
 
     return successResponse(
       {
         email: subscriber.email,
         subscribed: subscriber.subscribed,
         firstName: subscriber.firstName,
+        id: subscriber._id,
+        verified: subscriber.verified,
       },
       'Successfully subscribed to newsletter!',
       201
