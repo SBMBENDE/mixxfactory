@@ -124,13 +124,46 @@ export async function PUT(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { newsFlashId, ...updateData } = body;
+    const { id, newsFlashId, ...updateData } = body;
+    
+    // Support both 'id' and 'newsFlashId' for compatibility
+    const idToUpdate = id || newsFlashId;
 
-    if (!newsFlashId) {
+    if (!idToUpdate) {
       return errorResponse('News Flash ID is required', 400);
     }
 
-    const newsFlash = await NewsFlashModel.findByIdAndUpdate(newsFlashId, updateData, {
+    // Validate update data if present
+    if (Object.keys(updateData).length > 0) {
+      // Only allow specific fields to be updated
+      const allowedFields = ['title', 'message', 'type', 'priority', 'startDate', 'endDate', 'published'];
+      const updateKeys = Object.keys(updateData);
+      
+      for (const key of updateKeys) {
+        if (!allowedFields.includes(key)) {
+          return errorResponse(`Field '${key}' cannot be updated`, 400);
+        }
+      }
+
+      // Validate data types if provided
+      if (updateData.title && typeof updateData.title !== 'string') {
+        return errorResponse('Title must be a string', 400);
+      }
+      if (updateData.message && typeof updateData.message !== 'string') {
+        return errorResponse('Message must be a string', 400);
+      }
+      if (updateData.type && !['info', 'success', 'warning', 'error'].includes(updateData.type)) {
+        return errorResponse('Invalid type', 400);
+      }
+      if (updateData.priority !== undefined && typeof updateData.priority !== 'number') {
+        return errorResponse('Priority must be a number', 400);
+      }
+      if (updateData.published !== undefined && typeof updateData.published !== 'boolean') {
+        return errorResponse('Published must be a boolean', 400);
+      }
+    }
+
+    const newsFlash = await NewsFlashModel.findByIdAndUpdate(idToUpdate, updateData, {
       new: true,
     });
 
