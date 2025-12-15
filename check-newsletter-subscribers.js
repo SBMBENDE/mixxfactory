@@ -4,6 +4,31 @@
  */
 
 const mongoose = require('mongoose')
+const fs = require('fs')
+const path = require('path')
+
+// Load .env.local if MONGODB_URI not set
+if (!process.env.MONGODB_URI) {
+  const envPath = path.join(__dirname, '.env.local')
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8')
+    const envLines = envContent.split('\n')
+    for (const line of envLines) {
+      const match = line.match(/^([^=]+)=(.*)$/)
+      if (match) {
+        let value = match[2].trim()
+        // Remove surrounding quotes if present
+        if (
+          (value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
+          value = value.slice(1, -1)
+        }
+        process.env[match[1]] = value
+      }
+    }
+  }
+}
 
 const MONGODB_URI = process.env.MONGODB_URI
 
