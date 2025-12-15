@@ -44,6 +44,14 @@ export function getCategoryNameTranslation(categorySlug: string, language: 'en' 
       en: 'Florist',
       fr: 'Fleuristes',
     },
+    tech: {
+      en: 'Tech',
+      fr: 'Technologie',
+    },
+    'transport-service': {
+      en: 'Transport Service',
+      fr: 'Service de transport',
+    },
   };
 
   return translations[categorySlug]?.[language] || categorySlug;

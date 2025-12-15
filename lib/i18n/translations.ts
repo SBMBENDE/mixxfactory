@@ -105,6 +105,10 @@ export const translations = {
       cameraman: 'Cameramen',
       promoter: 'Promoters',
       decorator: 'Decorators',
+      caterer: 'Caterers',
+      florist: 'Florists',
+      tech: 'Tech',
+      transportService: 'Transport Service',
     },
     // Professional Registration
     professional: {
@@ -397,8 +401,10 @@ export const translations = {
       cameraman: 'Caméramans',
       promoter: 'Promoteurs',
       decorator: 'Décorateurs',
-      caterer: 'Service Traiteur',
+      caterer: 'Traiteurs',
       florist: 'Fleuristes',
+      tech: 'Technologie',
+      transportService: 'Service de transport',
     },
     // Authentication
     auth: {
