@@ -4,7 +4,7 @@
  * - Professionals can create their own profile after registration
  */
 
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ProfessionalModel } from '@/lib/db/models';
 import { createProfessionalSchema } from '@/lib/validations';
@@ -32,16 +32,18 @@ export async function POST(request: NextRequest) {
       userAuth = await verifyAuth(request);
       if (!userAuth?.payload) {
         console.log('❌ Authentication failed - no user auth');
-        return new Response(
-          JSON.stringify({ success: false, error: 'Unauthorized' }),
-          { status: 401, headers: { 'Content-Type': 'application/json' } }
+        return NextResponse.json(
+          { success: false, error: 'Unauthorized' },
+          { status: 401 }
         );
       }
       userId = userAuth.payload.userId;
       console.log('✅ User creating professional with userId:', userId);
     }
 
+    console.log('🔗 Connecting to database...');
     await connectDB();
+    console.log('✅ Database connected');
 
     let body;
     try {
@@ -77,12 +79,15 @@ export async function POST(request: NextRequest) {
     } = validationResult.data;
 
     const slug = customSlug || generateSlug(name);
+    console.log('📛 Generated slug:', slug);
 
     // Check if slug already exists
+    console.log('🔍 Checking if slug already exists...');
     const existingProf = await ProfessionalModel.findOne({ slug });
     if (existingProf) {
       return validationErrorResponse('Professional with this slug already exists');
     }
+    console.log('✅ Slug is unique');
 
     const professional = new ProfessionalModel({
       userId: userId,
@@ -115,8 +120,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error creating professional:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Error details:', errorMessage);
-    return internalErrorResponse(errorMessage);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    
+    // Always return JSON response
+    return NextResponse.json(
+      { success: false, error: errorMessage },
+      { status: 500 }
+    );
   }
 }
 
