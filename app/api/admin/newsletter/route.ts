@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { NewsletterSubscriberModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
-import { verifyAdminAuth } from '@/lib/auth/jwt';
+import { verifyAdminAuth } from '@/lib/auth/middleware';
 
 export const dynamic = 'force-dynamic';
 

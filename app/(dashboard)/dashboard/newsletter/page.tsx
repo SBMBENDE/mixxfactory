@@ -5,7 +5,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface Subscriber {
   _id: string;
@@ -32,7 +31,6 @@ interface ApiResponse {
 }
 
 export default function NewsletterManagementPage() {
-  const router = useRouter();
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
