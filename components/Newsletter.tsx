@@ -128,7 +128,7 @@ export function Newsletter({
 
   return (
     <section
-      className={`relative ${fullWidth ? 'w-full' : 'max-w-2xl'} mx-auto px-4 py-12 md:py-16`}
+      className={`relative ${fullWidth ? 'w-full' : 'max-w-2xl'} mx-auto px-4 py-12 md:py-16 overflow-hidden`}
     >
       <div
         className={`rounded-lg shadow-lg p-8 md:p-12 ${style.container}`}
