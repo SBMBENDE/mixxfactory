@@ -3,7 +3,7 @@
  * GET /api/auth/oauth/facebook/login
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getOAuthAuthorizationUrl, validateOAuthConfig } from '@/lib/auth/oauth';
 import crypto from 'crypto';
 
