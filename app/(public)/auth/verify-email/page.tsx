@@ -15,6 +15,8 @@ export default function VerifyEmailPage() {
   const router = useRouter();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -23,10 +25,13 @@ export default function VerifyEmailPage() {
         const token = searchParams.get('token');
 
         if (!email || !token) {
+          setEmail(email || '');
           setStatus('error');
           setMessage('Invalid verification link. Missing email or token.');
           return;
         }
+
+        setEmail(email);
 
         const response = await fetch('/api/auth/verify-email', {
           method: 'POST',
@@ -47,9 +52,9 @@ export default function VerifyEmailPage() {
         setStatus('success');
         setMessage(data.message || 'Email verified successfully!');
 
-        // Redirect to login after 3 seconds
+        // Redirect to professional profile completion after 3 seconds
         setTimeout(() => {
-          router.push('/auth/login');
+          router.push('/register/professional');
         }, 3000);
       } catch (error) {
         setStatus('error');
@@ -59,6 +64,29 @@ export default function VerifyEmailPage() {
 
     verifyEmail();
   }, [searchParams, router]);
+
+  const handleResendEmail = async () => {
+    if (!email) return;
+    setResending(true);
+    try {
+      const response = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('Verification email sent! Check your inbox.');
+        setStatus('error'); // Keep error state but update message
+      } else {
+        setMessage(data.error || 'Failed to resend email');
+      }
+    } catch (error) {
+      setMessage('Failed to resend email');
+    } finally {
+      setResending(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
@@ -105,13 +133,13 @@ export default function VerifyEmailPage() {
                 </p>
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Redirecting to login in a few seconds...
+                Redirecting to complete your profile...
               </p>
               <Link
-                href="/auth/login"
+                href="/register/professional"
                 className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Go to Login
+                Complete Profile
               </Link>
             </div>
           )}
@@ -149,6 +177,15 @@ export default function VerifyEmailPage() {
                 </ul>
               </div>
               <div className="space-y-3">
+                {email && (
+                  <button
+                    onClick={handleResendEmail}
+                    disabled={resending}
+                    className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {resending ? 'Sending...' : 'Resend Verification Email'}
+                  </button>
+                )}
                 <Link
                   href="/auth/register"
                   className="block px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
