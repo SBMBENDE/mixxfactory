@@ -5,6 +5,9 @@
 @layer base {
   html {
     @apply scroll-smooth;
+    /* Prevent layout shift when scrollbar appears/disappears */
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
   }
 
   body {
