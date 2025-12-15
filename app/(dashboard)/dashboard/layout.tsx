@@ -22,22 +22,25 @@ export default function DashboardLayout({
       const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
       try {
-        console.log('Checking auth...');
+        console.log('[Dashboard] Checking auth...');
         const response = await fetch('/api/auth/me', {
           credentials: 'include', // Include cookies
           signal: controller.signal,
         });
 
         clearTimeout(timeout);
-        console.log('Auth check status:', response.status);
+        console.log('[Dashboard] Auth check status:', response.status);
 
         if (response.ok) {
           const data = await response.json();
-          console.log('Auth success:', data);
+          console.log('[Dashboard] Auth success:', data);
           setIsAuthed(true);
           setIsLoading(false);
+          console.log('[Dashboard] Dashboard should now be visible');
         } else {
-          console.log('Auth failed, redirecting to login');
+          console.log('[Dashboard] Auth failed (status:', response.status, '), redirecting to login');
+          const errorData = await response.json().catch(() => ({}));
+          console.log('[Dashboard] Error details:', errorData);
           setIsLoading(false);
           setTimeout(() => {
             window.location.href = '/auth/login';
@@ -45,7 +48,7 @@ export default function DashboardLayout({
         }
       } catch (error) {
         clearTimeout(timeout);
-        console.error('Auth check error:', error);
+        console.error('[Dashboard] Auth check error:', error);
         setIsLoading(false);
         // Redirect to login on any error
         setTimeout(() => {
@@ -56,6 +59,7 @@ export default function DashboardLayout({
 
     // Only check auth once
     if (checkAttempts === 0) {
+      console.log('[Dashboard] Initial auth check starting...');
       setCheckAttempts(1);
       checkAuth();
     }
