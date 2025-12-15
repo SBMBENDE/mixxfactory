@@ -8,6 +8,12 @@ import sgMail from '@sendgrid/mail';
 // Initialize SendGrid with API key
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('✅ [SendGrid] Initialized with API key');
+} else {
+  console.warn('⚠️ [SendGrid] WARNING: API key not configured!');
+  console.warn('⚠️ [SendGrid] SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY);
+  console.warn('⚠️ [SendGrid] SENDGRID_FROM_EMAIL:', process.env.SENDGRID_FROM_EMAIL);
+  console.warn('⚠️ [SendGrid] SENDGRID_FROM_NAME:', process.env.SENDGRID_FROM_NAME);
 }
 
 interface EmailOptions {
@@ -23,26 +29,33 @@ interface EmailOptions {
 export async function sendEmail(options: EmailOptions): Promise<void> {
   try {
     if (!process.env.SENDGRID_API_KEY) {
-      console.warn('❌ [Email] SendGrid API key not configured, skipping email send');
-      return;
+      console.error('❌ [Email] CRITICAL: SendGrid API key not configured!');
+      throw new Error('SendGrid API key not configured');
+    }
+
+    if (!process.env.SENDGRID_FROM_EMAIL) {
+      console.error('❌ [Email] CRITICAL: SendGrid FROM email not configured!');
+      throw new Error('SendGrid FROM email not configured');
     }
 
     const msg = {
       to: options.to,
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@mixxfactory.com',
+      from: process.env.SENDGRID_FROM_EMAIL,
       subject: options.subject,
       text: options.text || options.html,
       html: options.html,
       replyTo: 'support@mixxfactory.com',
     };
 
-    console.log(`[Email] SendGrid API Key length: ${process.env.SENDGRID_API_KEY.length}`);
+    console.log(`[Email] API Key length: ${process.env.SENDGRID_API_KEY.length}`);
     console.log(`[Email] From: ${msg.from}`);
-    console.log(`[Email] Sending to ${options.to}...`);
+    console.log(`[Email] To: ${options.to}`);
+    console.log(`[Email] Subject: ${options.subject}`);
+    console.log(`[Email] Sending...`);
     const result = await sgMail.send(msg as any);
-    console.log(`✅ [Email] Sent to ${options.to}`, result);
+    console.log(`✅ [Email] Successfully sent to ${options.to}`);
   } catch (error) {
-    console.error('❌ [Email Error]', error);
+    console.error('❌ [Email] Send failed:', error);
     throw new Error(`Failed to send email: ${error}`);
   }
 }
