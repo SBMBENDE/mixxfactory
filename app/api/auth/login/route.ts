@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Find user
     const user = await UserModel.findOne({ email }).select('+password');
-    if (!user) {
+    if (!user || !user.password) {
       return errorResponse('Invalid email or password', 401);
     }
 
