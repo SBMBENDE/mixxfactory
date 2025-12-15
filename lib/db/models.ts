@@ -522,3 +522,62 @@ userSchema.index({ emailVerified: 1, active: 1 });
 export const UserModel =
   (mongoose.models.User as Model<IUserDocument>) ||
   mongoose.model<IUserDocument>('User', userSchema);
+
+// ============ NEWSLETTER SUBSCRIBER MODEL ============
+interface INewsletterSubscriberDocument extends Document {
+  email: string;
+  firstName?: string;
+  subscribed: boolean;
+  subscribedAt: Date;
+  unsubscribedAt?: Date;
+  verificationToken?: string;
+  verified: boolean;
+  categories: string[]; // Categories user is interested in
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const newsletterSubscriberSchema = new Schema<INewsletterSubscriberDocument>(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      index: true,
+      trim: true,
+    },
+    firstName: String,
+    subscribed: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
+    subscribedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    unsubscribedAt: Date,
+    verificationToken: String,
+    verified: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    categories: [
+      {
+        type: String,
+        lowercase: true,
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+// Indexes for efficient queries
+newsletterSubscriberSchema.index({ subscribed: 1, verified: 1 });
+newsletterSubscriberSchema.index({ email: 1, subscribed: 1 });
+
+export const NewsletterSubscriberModel =
+  (mongoose.models.NewsletterSubscriber as Model<INewsletterSubscriberDocument>) ||
+  mongoose.model<INewsletterSubscriberDocument>('NewsletterSubscriber', newsletterSubscriberSchema);

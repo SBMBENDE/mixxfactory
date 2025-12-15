@@ -12,6 +12,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
 import Carousel from '@/components/Carousel';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
+import Newsletter from '@/components/Newsletter';
 
 // Emoji mapping for categories
 const categoryEmojis: Record<string, string> = {
@@ -256,6 +257,19 @@ export default function HomePage() {
             {t.home.getStarted}
           </button>
         </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section style={{
+        padding: '4rem 1rem',
+        backgroundColor: '#ffffff',
+      }}>
+        <Newsletter
+          variant="gradient"
+          title="Stay Updated with MixxFactory"
+          subtitle="Get exclusive offers, new professional listings, and industry news delivered straight to your inbox."
+          fullWidth={false}
+        />
       </section>
 
       {/* Auth Modal */}
