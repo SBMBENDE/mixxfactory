@@ -4,7 +4,7 @@ on:
   # Run daily at 2 AM UTC
   schedule:
     - cron: '0 2 * * *'
-  
+
   # Also allow manual trigger
   workflow_dispatch:
 
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,19 +36,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: '🔒 Next.js Security Patch Available',
-              body: `
-A new Next.js security patch is available for your version.
-
-**CVEs Addressed:**
-- CVE-2025-55184 (High - Denial of Service)
-- CVE-2025-55183 (Medium - Source Code Exposure)
-
-**Action Items:**
-1. Review the latest release notes
-2. Test the update in a development environment
-3. Merge and deploy when ready
-
-For details, see: https://github.com/vercel/next.js/security/advisories
-              `,
+              body: 'A new Next.js security patch is available for your version.\n\n**CVEs Addressed:**\n- CVE-2025-55184 (High - Denial of Service)\n- CVE-2025-55183 (Medium - Source Code Exposure)\n\n**Action Items:**\n1. Review the latest release notes\n2. Test the update in a development environment\n3. Merge and deploy when ready\n\nFor details, see: https://github.com/vercel/next.js/security/advisories',
               labels: ['security', 'dependencies']
             })

@@ -256,12 +256,12 @@ export default function NewsletterDemo() {
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">language</td>
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
                   <code className="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">
-                    'en' | 'fr'
+                    &apos;en&apos; | &apos;fr&apos;
                   </code>
                 </td>
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
                   <code className="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">
-                    'en'
+                    &apos;en&apos;
                   </code>
                 </td>
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
@@ -272,12 +272,12 @@ export default function NewsletterDemo() {
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">variant</td>
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
                   <code className="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">
-                    'default' | 'dark' | 'gradient'
+                    &apos;default&apos; | &apos;dark&apos; | &apos;gradient&apos;
                   </code>
                 </td>
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
                   <code className="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">
-                    'default'
+                    &apos;default&apos;
                   </code>
                 </td>
                 <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
