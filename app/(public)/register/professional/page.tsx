@@ -7,6 +7,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useLanguage } from '@/hooks/useLanguage';
+import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
 interface FormData {
   name: string;
@@ -55,6 +57,7 @@ const INITIAL_FORM = {
 export default function ProfessionalRegistrationPage() {
   const router = useRouter();
   const t = useTranslations();
+  const { language } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const profilePicInputRef = useRef<HTMLInputElement>(null);
   
@@ -373,7 +376,7 @@ export default function ProfessionalRegistrationPage() {
                 <option value="">{t.professional.selectCategory}</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
-                    {cat.name}
+                    {getCategoryNameTranslation(cat.slug, language)}
                   </option>
                 ))}
               </select>
