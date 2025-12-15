@@ -63,15 +63,9 @@ export default function RegisterPage() {
       setSuccess(true);
       setLoading(false);
 
-      // Redirect after 2 seconds
+      // Redirect to email verification page after 2 seconds
       setTimeout(() => {
-        if (role === 'professional') {
-          console.log('Redirecting professional to registration form...');
-          window.location.href = '/register/professional';
-        } else {
-          console.log('Redirecting user to directory...');
-          window.location.href = '/directory';
-        }
+        window.location.href = `/auth/verify-email?email=${encodeURIComponent(email)}`;
       }, 2000);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Network error';
