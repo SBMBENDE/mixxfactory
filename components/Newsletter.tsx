@@ -7,6 +7,7 @@
 
 import { useState } from 'react';
 import { Language, getNewsletterText } from '@/lib/translations/newsletter';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface NewsletterProps {
   title?: string;
@@ -16,17 +17,23 @@ interface NewsletterProps {
   fullWidth?: boolean;
   variant?: 'default' | 'dark' | 'gradient';
   language?: Language;
+  useContextLanguage?: boolean;
 }
 
 export function Newsletter({
   fullWidth = false,
   variant = 'default',
-  language = 'en',
+  language: langProp,
+  useContextLanguage = true,
   title,
   subtitle,
   placeholder,
   buttonText,
 }: NewsletterProps) {
+  // Use language from context if useContextLanguage is true, otherwise use prop
+  const { language: contextLanguage } = useLanguage();
+  const language = useContextLanguage ? contextLanguage : (langProp || 'en');
+  
   // Get translations for the selected language
   const translations = getNewsletterText(language);
   
@@ -221,9 +228,7 @@ export function Newsletter({
               : 'text-gray-500 dark:text-gray-500'
           }`}
         >
-          {language === 'fr'
-            ? 'Nous respectons votre vie privée. Désinscrivez-vous à tout moment.'
-            : 'We respect your privacy. Unsubscribe at any time.'}
+          {translations.privacyMessage}
         </p>
       </div>
 

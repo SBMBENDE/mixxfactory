@@ -266,8 +266,6 @@ export default function HomePage() {
       }}>
         <Newsletter
           variant="gradient"
-          title="Stay Updated with MixxFactory"
-          subtitle="Get exclusive offers, new professional listings, and industry news delivered straight to your inbox."
           fullWidth={false}
         />
       </section>
