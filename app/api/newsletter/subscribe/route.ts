@@ -2,7 +2,7 @@
  * Newsletter subscription API endpoint
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { NewsletterSubscriberModel } from '@/lib/db/models';
 import { errorResponse, successResponse } from '@/utils/api-response';
