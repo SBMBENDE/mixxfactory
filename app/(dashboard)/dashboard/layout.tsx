@@ -109,6 +109,9 @@ export default function DashboardLayout({
           <a href="/dashboard/reviews" style={{ display: 'block', padding: '0.5rem 0.5rem', marginBottom: '0.25rem', borderRadius: '0.375rem', color: '#1f2937', textDecoration: 'none', fontSize: '0.75rem' }}>
             ⭐ Reviews
           </a>
+          <a href="/dashboard/newsletter" style={{ display: 'block', padding: '0.5rem 0.5rem', marginBottom: '0.25rem', borderRadius: '0.375rem', color: '#1f2937', textDecoration: 'none', fontSize: '0.75rem' }}>
+            📧 Newsletter
+          </a>
           <a href="/dashboard/analytics" style={{ display: 'block', padding: '0.5rem 0.5rem', marginBottom: '0.25rem', borderRadius: '0.375rem', color: '#1f2937', textDecoration: 'none', fontSize: '0.75rem' }}>
             📈 Analytics
           </a>
