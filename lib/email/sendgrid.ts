@@ -52,7 +52,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     console.log(`[Email] To: ${options.to}`);
     console.log(`[Email] Subject: ${options.subject}`);
     console.log(`[Email] Sending...`);
-    const result = await sgMail.send(msg as any);
+    await sgMail.send(msg as any);
     console.log(`✅ [Email] Successfully sent to ${options.to}`);
   } catch (error) {
     console.error('❌ [Email] Send failed:', error);
