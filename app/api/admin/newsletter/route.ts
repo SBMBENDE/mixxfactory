@@ -2,7 +2,7 @@
  * Admin Newsletter Management API
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { NewsletterSubscriberModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
