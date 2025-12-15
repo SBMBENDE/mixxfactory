@@ -69,7 +69,7 @@ export default function VerifyEmailPage() {
             Email Verification
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            We're verifying your email address
+            We&apos;re verifying your email address
           </p>
 
           {/* Status Indicator */}
