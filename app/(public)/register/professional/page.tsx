@@ -258,7 +258,8 @@ export default function ProfessionalRegistrationPage() {
         router.push(`/professionals/${data.data.slug}`);
       }, 1500);
     } catch (err) {
-      setError('Network error. Please try again.');
+      console.error('Professional creation error:', err);
+      setError(err instanceof Error ? err.message : 'Network error. Please try again.');
       setLoading(false);
     }
   };
