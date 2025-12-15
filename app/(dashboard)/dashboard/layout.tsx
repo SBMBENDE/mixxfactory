@@ -97,6 +97,9 @@ export default function DashboardLayout({
           <a href="/dashboard" style={{ display: 'block', padding: '0.5rem 0.5rem', marginBottom: '0.25rem', borderRadius: '0.375rem', color: '#1f2937', textDecoration: 'none', fontWeight: 'bold', backgroundColor: '#f3f4f6', fontSize: '0.75rem' }}>
             📊 Dashboard
           </a>
+          <a href="/dashboard/users" style={{ display: 'block', padding: '0.5rem 0.5rem', marginBottom: '0.25rem', borderRadius: '0.375rem', color: '#1f2937', textDecoration: 'none', fontSize: '0.75rem' }}>
+            👥 Users
+          </a>
           <a href="/dashboard/categories" style={{ display: 'block', padding: '0.5rem 0.5rem', marginBottom: '0.25rem', borderRadius: '0.375rem', color: '#1f2937', textDecoration: 'none', fontSize: '0.75rem' }}>
             🏷️ Categories
           </a>
