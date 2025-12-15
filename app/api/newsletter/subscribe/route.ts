@@ -64,6 +64,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    if (!subscriber) {
+      return errorResponse('Failed to create subscription', 500);
+    }
+
     console.log(`✅ [Newsletter] Subscriber added/updated: ${email}`);
 
     return successResponse(
