@@ -54,11 +54,21 @@ export default function NewNewsFlashPage() {
         return;
       }
 
+      // Prepare payload - convert dates to ISO format and exclude published field
+      const payload = {
+        title: formData.title,
+        message: formData.message,
+        type: formData.type,
+        priority: formData.priority,
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
+      };
+
       const response = await fetch('/api/admin/news-flashes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();

@@ -102,8 +102,8 @@ export const createNewsFlashSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(100),
   message: z.string().min(10, 'Message must be at least 10 characters').max(1000),
   type: z.enum(['info', 'success', 'warning', 'error']).default('info'),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   priority: z.number().min(0).max(100).optional().default(0),
 });
 
