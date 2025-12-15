@@ -65,8 +65,9 @@ export default function ProfessionalRegistrationPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
 
-  // Check authentication
+  // Check authentication and email verification
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -75,7 +76,17 @@ export default function ProfessionalRegistrationPage() {
           router.push('/auth/login');
           return;
         }
+        const userData = await res.json();
         setIsAuthenticated(true);
+        
+        // Check if email is verified
+        if (userData.data?.emailVerified) {
+          setEmailVerified(true);
+        } else {
+          // Email not verified - redirect to verification page
+          router.push('/auth/resend-verification');
+          return;
+        }
       } catch {
         router.push('/auth/login');
       }
@@ -268,6 +279,34 @@ export default function ProfessionalRegistrationPage() {
     return (
       <div style={{ padding: '3rem 1rem', textAlign: 'center' }}>
         <p style={{ color: '#6b7280' }}>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!emailVerified) {
+    return (
+      <div style={{ padding: '3rem 1rem', backgroundColor: '#f9fafb', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ maxWidth: '500px', backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1rem' }}>Verify Your Email First</h1>
+          <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
+            Please verify your email address before completing your professional profile.
+          </p>
+          <a
+            href="/auth/resend-verification"
+            style={{
+              display: 'inline-block',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              borderRadius: '0.375rem',
+              textDecoration: 'none',
+              fontWeight: '600',
+            }}
+          >
+            Verify Email
+          </a>
+        </div>
       </div>
     );
   }

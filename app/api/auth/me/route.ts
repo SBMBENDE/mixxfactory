@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
         userId: user._id.toString(),
         email: user.email,
         role: user.accountType,
+        emailVerified: user.emailVerified,
       },
       'User data retrieved'
     );

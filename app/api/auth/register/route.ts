@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
       role: user.accountType,
     });
 
-    // Send verification email (best effort - don't block registration)
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${verificationToken}`;
+    // Send verification email (required before users can access professional registration)
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${encodeURIComponent(verificationToken)}`;
     try {
       console.log('[Auth] SendGrid API Key present:', !!process.env.SENDGRID_API_KEY);
       console.log('[Auth] Generating verification email for:', email);
@@ -72,8 +72,9 @@ export async function POST(request: NextRequest) {
       console.log(`✅ [Auth] Verification email sent to ${email}`);
     } catch (emailError) {
       console.error('❌ [Auth] Email sending failed:', emailError);
-      // Don't fail registration - email is optional for MVP
-      console.warn('[Auth] Email sending failed but registration continues (user can verify later):', emailError);
+      // Log the error but allow registration to proceed
+      // Users can resend verification email if needed
+      console.warn('[Auth] Email sending failed but registration continues (users can resend from resend-verification page):', emailError);
     }
 
     // Create response with auth cookie
