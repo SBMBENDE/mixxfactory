@@ -11,7 +11,7 @@ import crypto from 'crypto';
  * Google OAuth login initiation
  * GET /api/auth/oauth/google/login
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     if (!validateOAuthConfig('google')) {
       return NextResponse.json(

@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getOAuthAuthorizationUrl, validateOAuthConfig } from '@/lib/auth/oauth';
 import crypto from 'crypto';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     if (!validateOAuthConfig('facebook')) {
       return NextResponse.json(
