@@ -1,11 +1,12 @@
 /**
  * Newsletter Signup Component
- * Beautiful, responsive newsletter subscription form
+ * Beautiful, responsive newsletter subscription form with multi-language support
  */
 
 'use client';
 
 import { useState } from 'react';
+import { Language, getNewsletterText } from '@/lib/translations/newsletter';
 
 interface NewsletterProps {
   title?: string;
@@ -14,16 +15,27 @@ interface NewsletterProps {
   buttonText?: string;
   fullWidth?: boolean;
   variant?: 'default' | 'dark' | 'gradient';
+  language?: Language;
 }
 
 export function Newsletter({
-  title = 'Subscribe to Our Newsletter',
-  subtitle = 'Get the latest updates, exclusive offers, and industry insights delivered to your inbox.',
-  placeholder = 'Enter your email address',
-  buttonText = 'Subscribe',
   fullWidth = false,
   variant = 'default',
+  language = 'en',
+  title,
+  subtitle,
+  placeholder,
+  buttonText,
 }: NewsletterProps) {
+  // Get translations for the selected language
+  const translations = getNewsletterText(language);
+  
+  // Use provided strings or fall back to translations
+  const finalTitle = title || translations.title;
+  const finalSubtitle = subtitle || translations.subtitle;
+  const finalPlaceholder = placeholder || translations.placeholder;
+  const finalButtonText = buttonText || translations.buttonText;
+  
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,13 +62,16 @@ export function Newsletter({
 
       if (!res.ok) {
         setStatus('error');
-        setMessage(data.error || data.message || 'Failed to subscribe');
+        const errorMsg = data.error === 'Already subscribed with this email' 
+          ? translations.alreadySubscribed
+          : data.error || data.message || translations.errorMessage;
+        setMessage(errorMsg);
         setLoading(false);
         return;
       }
 
       setStatus('success');
-      setMessage('Thank you for subscribing! Check your email for confirmation.');
+      setMessage(translations.successMessage);
       setEmail('');
       setFirstName('');
       setLoading(false);
@@ -68,7 +83,7 @@ export function Newsletter({
       }, 5000);
     } catch (error) {
       setStatus('error');
-      setMessage('Network error. Please try again later.');
+      setMessage(translations.networkError);
       setLoading(false);
     }
   };
@@ -120,14 +135,14 @@ export function Newsletter({
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className={`text-3xl md:text-4xl font-bold mb-3 ${style.text}`}>
-            {title}
+            {finalTitle}
           </h2>
           <p
             className={`text-lg ${
               variant === 'gradient' ? 'text-white/90' : 'text-gray-600 dark:text-gray-400'
             }`}
           >
-            {subtitle}
+            {finalSubtitle}
           </p>
         </div>
 
@@ -139,7 +154,7 @@ export function Newsletter({
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Your name (optional)"
+              placeholder={translations.namePlaceholder}
               className={`w-full px-4 py-3 rounded-lg transition-colors duration-200 ${style.input} focus:outline-none focus:ring-2 focus:ring-offset-0 ${
                 variant === 'dark' ? 'focus:ring-blue-500' : ''
               }`}
@@ -153,7 +168,7 @@ export function Newsletter({
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={placeholder}
+              placeholder={finalPlaceholder}
               required
               className={`w-full px-4 py-3 rounded-lg transition-colors duration-200 ${style.input} focus:outline-none focus:ring-2 focus:ring-offset-0 ${
                 variant === 'dark' ? 'focus:ring-blue-500' : ''
@@ -190,10 +205,10 @@ export function Newsletter({
             {loading ? (
               <>
                 <span className="inline-block animate-spin">◌</span>
-                Subscribing...
+                {language === 'fr' ? 'Abonnement en cours...' : 'Subscribing...'}
               </>
             ) : (
-              buttonText
+              finalButtonText
             )}
           </button>
         </form>
@@ -206,7 +221,9 @@ export function Newsletter({
               : 'text-gray-500 dark:text-gray-500'
           }`}
         >
-          We respect your privacy. Unsubscribe at any time.
+          {language === 'fr'
+            ? 'Nous respectons votre vie privée. Désinscrivez-vous à tout moment.'
+            : 'We respect your privacy. Unsubscribe at any time.'}
         </p>
       </div>
 
