@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const user = await UserModel.create({
       email,
       password: hashedPassword,
-      role: role || 'professional', // Default to professional
+      accountType: role || 'professional', // Default to professional
       emailVerificationToken: hashedToken,
       emailVerificationExpires: expiresAt,
       emailVerified: false, // Email not verified until token is confirmed
