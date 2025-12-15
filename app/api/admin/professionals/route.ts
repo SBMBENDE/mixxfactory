@@ -31,13 +31,14 @@ export async function POST(request: NextRequest) {
     } else {
       userAuth = await verifyAuth(request);
       if (!userAuth?.payload) {
+        console.log('❌ Authentication failed - no user auth');
         return new Response(
           JSON.stringify({ success: false, error: 'Unauthorized' }),
           { status: 401, headers: { 'Content-Type': 'application/json' } }
         );
       }
       userId = userAuth.payload.userId;
-      console.log('User creating professional with userId:', userId);
+      console.log('✅ User creating professional with userId:', userId);
     }
 
     await connectDB();
@@ -99,11 +100,11 @@ export async function POST(request: NextRequest) {
     await professional.save();
     await professional.populate('category');
 
-    console.log('Professional created:', { slug: professional.slug, userId: professional.userId });
+    console.log('✅ Professional created:', { slug: professional.slug, userId: professional.userId });
 
     return successResponse(professional, 'Professional created successfully', 201);
   } catch (error) {
-    console.error('Error creating professional:', error);
+    console.error('❌ Error creating professional:', error);
     return internalErrorResponse();
   }
 }
