@@ -59,15 +59,19 @@ export async function POST(request: NextRequest) {
     // Send verification email
     const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?email=${encodeURIComponent(email)}&token=${verificationToken}`;
     try {
+      console.log('[Auth] SendGrid API Key present:', !!process.env.SENDGRID_API_KEY);
+      console.log('[Auth] Generating verification email for:', email);
       const firstName = email.split('@')[0]; // Use part of email as fallback
       const emailHTML = getVerificationEmailHTML(firstName, verificationUrl);
+      console.log('[Auth] Sending email via SendGrid...');
       await sendEmail({
         to: email,
         subject: 'Verify Your MixxFactory Email',
         html: emailHTML,
       });
-      console.log(`[Auth] Verification email sent to ${email}`);
+      console.log(`✅ [Auth] Verification email sent to ${email}`);
     } catch (emailError) {
+      console.error('❌ [Auth] Email sending failed:', emailError);
       console.warn('[Auth] Email sending failed, but user created:', emailError);
       // Don't fail registration if email fails - user can resend later
     }

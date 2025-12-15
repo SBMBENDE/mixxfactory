@@ -23,7 +23,7 @@ interface EmailOptions {
 export async function sendEmail(options: EmailOptions): Promise<void> {
   try {
     if (!process.env.SENDGRID_API_KEY) {
-      console.warn('[Email] SendGrid API key not configured, skipping email send');
+      console.warn('❌ [Email] SendGrid API key not configured, skipping email send');
       return;
     }
 
@@ -36,11 +36,13 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
       replyTo: 'support@mixxfactory.com',
     };
 
+    console.log(`[Email] SendGrid API Key length: ${process.env.SENDGRID_API_KEY.length}`);
+    console.log(`[Email] From: ${msg.from}`);
     console.log(`[Email] Sending to ${options.to}...`);
-    await sgMail.send(msg as any);
-    console.log(`[Email] ✓ Sent to ${options.to}`);
+    const result = await sgMail.send(msg as any);
+    console.log(`✅ [Email] Sent to ${options.to}`, result);
   } catch (error) {
-    console.error('[Email Error]', error);
+    console.error('❌ [Email Error]', error);
     throw new Error(`Failed to send email: ${error}`);
   }
 }
