@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
-      role: user.role,
+      role: user.accountType,
     });
 
     // Send verification email
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user._id.toString(),
           email: user.email,
-          role: user.role,
+          role: user.accountType,
           token,
           emailVerified: user.emailVerified,
         },

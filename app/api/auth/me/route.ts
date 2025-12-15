@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       {
         userId: user._id.toString(),
         email: user.email,
-        role: user.role,
+        role: user.accountType,
       },
       'User data retrieved'
     );
