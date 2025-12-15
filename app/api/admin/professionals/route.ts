@@ -43,7 +43,13 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (jsonError) {
+      console.error('❌ Failed to parse request body:', jsonError);
+      return validationErrorResponse('Invalid JSON in request body');
+    }
     console.log('📝 Received body for professional creation:', JSON.stringify(body, null, 2));
 
     const validationResult = createProfessionalSchema.safeParse(body);
@@ -97,15 +103,20 @@ export async function POST(request: NextRequest) {
       priceRange: priceRange || {},
     });
     
+    console.log('💾 Saving professional to database...');
     await professional.save();
+    console.log('💾 Professional saved, populating category...');
     await professional.populate('category');
+    console.log('✅ Category populated');
 
     console.log('✅ Professional created:', { slug: professional.slug, userId: professional.userId });
 
     return successResponse(professional, 'Professional created successfully', 201);
   } catch (error) {
     console.error('❌ Error creating professional:', error);
-    return internalErrorResponse();
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Error details:', errorMessage);
+    return internalErrorResponse(errorMessage);
   }
 }
 
