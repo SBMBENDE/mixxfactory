@@ -82,12 +82,9 @@ export async function POST(request: NextRequest) {
           role: user.accountType,
           token,
           emailVerified: user.emailVerified,
+          verificationToken, // Include token for redirect
         },
         message: 'Registration successful! Please verify your email.',
-        // In development, include verification link for testing
-        ...(process.env.NODE_ENV === 'development' && {
-          verificationLink: verificationUrl,
-        }),
       },
       { status: 201 }
     );

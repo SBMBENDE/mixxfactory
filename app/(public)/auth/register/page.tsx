@@ -63,9 +63,13 @@ export default function RegisterPage() {
       setSuccess(true);
       setLoading(false);
 
-      // Redirect to email verification page after 2 seconds
+      // Redirect to email verification page with token after 2 seconds
+      const verificationToken = data.data?.verificationToken;
       setTimeout(() => {
-        window.location.href = `/auth/verify-email?email=${encodeURIComponent(email)}`;
+        const redirectUrl = verificationToken
+          ? `/auth/verify-email?email=${encodeURIComponent(email)}&token=${encodeURIComponent(verificationToken)}`
+          : `/auth/verify-email?email=${encodeURIComponent(email)}`;
+        window.location.href = redirectUrl;
       }, 2000);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Network error';
