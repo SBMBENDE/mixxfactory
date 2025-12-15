@@ -30,8 +30,10 @@ export default function NewsFlashBanner() {
       try {
         const response = await fetch('/api/news-flashes');
         const data = await response.json();
-        if (data.success && data.announcements) {
-          setAnnouncements(data.announcements);
+        // API returns the array directly as data, or wrapped in data property
+        const announcements = Array.isArray(data) ? data : (data.data || data.announcements || []);
+        if (announcements && announcements.length > 0) {
+          setAnnouncements(announcements);
         }
       } catch (err) {
         console.error('Failed to fetch announcements:', err);
