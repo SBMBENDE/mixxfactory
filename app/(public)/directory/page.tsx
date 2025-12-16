@@ -181,37 +181,107 @@ export default function DirectoryPage() {
         </div>
 
         {/* Search & Filter */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-          <input
-            type="text"
-            placeholder={t.directory.search}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              gridColumn: 'span 2',
-              padding: '0.625rem 1rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '0.375rem',
-              fontSize: '1rem',
-            }}
-          />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{
-              padding: '0.625rem 1rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '0.375rem',
-              fontSize: '1rem',
-            }}
-          >
-            <option value="">{t.directory.allCategories}</option>
-            {categories.map((category) => (
-              <option key={category._id} value={category.slug}>
-                {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
-              </option>
-            ))}
-          </select>
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '0.5rem',
+          padding: '1.5rem',
+          marginBottom: '3rem',
+          display: 'grid',
+          gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'repeat(3, 1fr)',
+          gap: '1rem',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        }}>
+          {/* Search Input */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              color: '#1f2937',
+            }}>
+              {t.directory.search}
+            </label>
+            <input
+              type="text"
+              placeholder="Name, skills..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                padding: '0.625rem 0.75rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                fontSize: '0.95rem',
+                color: '#1f2937',
+                backgroundColor: 'white',
+              }}
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              color: '#1f2937',
+            }}>
+              {t.directory.allCategories}
+            </label>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              style={{
+                padding: '0.625rem 0.75rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                fontSize: '0.95rem',
+                color: '#1f2937',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="">{t.directory.allCategories}</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category.slug}>
+                  {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Clear Filters */}
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '0.5rem' }}>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedCategory('');
+              }}
+              style={{
+                padding: '0.625rem 1.5rem',
+                backgroundColor: searchTerm || selectedCategory ? '#f3f4f6' : '#e5e7eb',
+                color: '#374151',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                cursor: searchTerm || selectedCategory ? 'pointer' : 'default',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                if (searchTerm || selectedCategory) {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (searchTerm || selectedCategory) {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                } else {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb';
+                }
+              }}
+              disabled={!searchTerm && !selectedCategory}
+            >
+              Clear Filters
+            </button>
+          </div>
         </div>
 
         {/* Quick Register Button */}

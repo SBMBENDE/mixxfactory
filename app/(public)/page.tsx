@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
-import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 import Carousel from '@/components/Carousel';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
@@ -64,8 +63,6 @@ export default function HomePage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchService, setSearchService] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
   const t = useTranslations();
 
   // Check if user is authenticated
@@ -121,13 +118,6 @@ export default function HomePage() {
     fetchCategories();
   }, []);
 
-  const handleAdvancedSearch = () => {
-    const params = new URLSearchParams();
-    if (searchService) params.append('category', searchService);
-    if (searchLocation) params.append('q', searchLocation);
-    window.location.href = `/directory?${params.toString()}`;
-  };
-
   return (
     <>
       {/* Hero Section */}
@@ -177,103 +167,6 @@ export default function HomePage() {
                 {t.home.registerBtn}
               </button>
             </div>
-          </div>
-
-          {/* Advanced Search Form */}
-          <div style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            borderRadius: '0.5rem',
-            padding: '1.5rem',
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'auto 1fr auto',
-            gap: '1rem',
-            alignItems: 'flex-end',
-            maxWidth: '700px',
-            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
-          }}>
-            {/* Service Select */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <label style={{
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: '#1f2937',
-              }}>
-                Select Service
-              </label>
-              <select
-                value={searchService}
-                onChange={(e) => setSearchService(e.target.value)}
-                style={{
-                  padding: '0.625rem 0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.95rem',
-                  color: '#1f2937',
-                  backgroundColor: 'white',
-                  cursor: 'pointer',
-                  minWidth: isMobile ? '100%' : '200px',
-                }}
-              >
-                <option value="">All Services</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat.slug}>
-                    {getEmojiForCategory(cat.slug)} {getCategoryNameTranslation(cat.slug, 'en')}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Location Input */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <label style={{
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: '#1f2937',
-              }}>
-                Postal Code or Place
-              </label>
-              <input
-                type="text"
-                placeholder="Enter city, postal code..."
-                value={searchLocation}
-                onChange={(e) => setSearchLocation(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') handleAdvancedSearch();
-                }}
-                style={{
-                  padding: '0.625rem 0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.95rem',
-                  color: '#1f2937',
-                }}
-              />
-            </div>
-
-            {/* Search Button */}
-            <button
-              onClick={handleAdvancedSearch}
-              style={{
-                padding: '0.625rem 1.5rem',
-                backgroundColor: '#2563eb',
-                color: 'white',
-                borderRadius: '0.375rem',
-                border: 'none',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'background-color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1d4ed8';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#2563eb';
-              }}
-            >
-              Search
-            </button>
           </div>
         </div>
       </section>
