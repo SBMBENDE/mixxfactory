@@ -109,15 +109,23 @@ export async function POST(req: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    // Check if slug exists and make it unique
+    // Check if slug exists and make it unique (max 50 attempts)
     let slug = baseSlug;
     let counter = 1;
-    let existingSlug = await EventModel.findOne({ slug });
+    let maxAttempts = 50;
+    let existingSlug = await EventModel.findOne({ slug }).lean();
     
-    while (existingSlug) {
+    while (existingSlug && counter < maxAttempts) {
       slug = `${baseSlug}-${counter}`;
-      existingSlug = await EventModel.findOne({ slug });
+      existingSlug = await EventModel.findOne({ slug }).lean();
       counter++;
+    }
+
+    if (counter >= maxAttempts) {
+      return NextResponse.json(
+        { success: false, error: 'Could not generate unique slug for event' },
+        { status: 400 }
+      );
     }
 
     // Create event
@@ -135,8 +143,18 @@ export async function POST(req: NextRequest) {
     );
   } catch (error: any) {
     console.error('Error creating event:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return NextResponse.json(
+        { success: false, error: `Event with this ${field} already exists` },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
-      { success: false, error: 'Failed to create event' },
+      { success: false, error: error.message || 'Failed to create event' },
       { status: 500 }
     );
   }
