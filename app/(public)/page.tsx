@@ -28,6 +28,10 @@ const categoryEmojis: Record<string, string> = {
   florist: '🌸',
   tech: '💻',
   'transport-service': '🚗',
+  'cleaning-services': '🧹',
+  childcare: '👶',
+  'grocery-stores': '🛒',
+  'handyman-services': '🔧',
 };
 
 // Map category slugs to translation keys
@@ -44,6 +48,10 @@ const categoryTranslationKeys: Record<string, string> = {
   florist: 'florist',
   tech: 'tech',
   'transport-service': 'transportService',
+  'cleaning-services': 'cleaningServices',
+  childcare: 'childcare',
+  'grocery-stores': 'groceryStores',
+  'handyman-services': 'handymanServices',
 };
 
 function getEmojiForCategory(slug: string): string {
