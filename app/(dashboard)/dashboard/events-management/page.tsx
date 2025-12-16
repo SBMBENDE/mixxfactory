@@ -1,10 +1,11 @@
 /**
- * Admin Events Management
+ * Admin Events Management - Enhanced with Cloudinary image uploads
  */
 
 'use client';
 
 import { useState, useEffect } from 'react';
+import EventImageUpload from '@/components/EventImageUpload';
 
 interface Event {
   _id: string;
@@ -13,6 +14,7 @@ interface Event {
   startDate: string;
   published: boolean;
   featured: boolean;
+  posterImage?: string;
 }
 
 export default function AdminEventsPage() {
@@ -89,9 +91,22 @@ export default function AdminEventsPage() {
     }
   };
 
+  const handleImageUploaded = (url: string, type: 'poster' | 'banner') => {
+    if (type === 'poster') {
+      setFormData({ ...formData, posterImage: url });
+    } else {
+      setFormData({ ...formData, bannerImage: url });
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
+      if (!formData.posterImage) {
+        alert('Please upload a poster image');
+        return;
+      }
+
       const method = selectedEvent ? 'PUT' : 'POST';
       const url = selectedEvent ? `/api/events/${selectedEvent._id}` : '/api/events';
 
@@ -130,6 +145,29 @@ export default function AdminEventsPage() {
     }
   };
 
+  const handleEdit = (event: any) => {
+    setSelectedEvent(event);
+    setFormData({
+      title: event.title || '',
+      description: event.description || '',
+      category: event.category || '',
+      startDate: event.startDate ? event.startDate.split('T')[0] : '',
+      endDate: event.endDate ? event.endDate.split('T')[0] : '',
+      startTime: event.startTime || '19:00',
+      endTime: event.endTime || '23:59',
+      location: event.location || { venue: '', city: '', region: '', address: '' },
+      posterImage: event.posterImage || '',
+      bannerImage: event.bannerImage || '',
+      ticketing: event.ticketing || { general: 0, vip: 0, ticketUrl: '' },
+      capacity: event.capacity || 0,
+      organizer: event.organizer || { name: '', email: '', phone: '', website: '' },
+      highlights: event.highlights || [],
+      published: event.published || false,
+      featured: event.featured || false,
+    });
+    setShowForm(true);
+  };
+
   const handleDelete = async (id: string) => {
     if (confirm('Delete this event?')) {
       try {
@@ -142,24 +180,33 @@ export default function AdminEventsPage() {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1 style={{ marginBottom: '2rem' }}>Events Management</h1>
+    <div className="p-8 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">🎉 Events Management</h1>
 
       <button
         onClick={() => {
           setShowForm(!showForm);
           setSelectedEvent(null);
+          setFormData({
+            title: '',
+            description: '',
+            category: '',
+            startDate: '',
+            endDate: '',
+            startTime: '19:00',
+            endTime: '23:59',
+            location: { venue: '', city: '', region: '', address: '' },
+            posterImage: '',
+            bannerImage: '',
+            ticketing: { general: 0, vip: 0, ticketUrl: '' },
+            capacity: 0,
+            organizer: { name: '', email: '', phone: '', website: '' },
+            highlights: [],
+            published: false,
+            featured: false,
+          });
         }}
-        style={{
-          padding: '0.75rem 1.5rem',
-          backgroundColor: '#2563eb',
-          color: 'white',
-          border: 'none',
-          borderRadius: '0.375rem',
-          cursor: 'pointer',
-          marginBottom: '2rem',
-          fontWeight: '600',
-        }}
+        className="mb-8 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
       >
         + {showForm ? 'Cancel' : 'New Event'}
       </button>
@@ -167,120 +214,297 @@ export default function AdminEventsPage() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          style={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '0.5rem',
-            marginBottom: '2rem',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '1.5rem',
-          }}
+          className="bg-white dark:bg-gray-800 rounded-lg p-8 mb-8 border border-gray-200 dark:border-gray-700 space-y-6"
         >
-          <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', gridColumn: 'span 2' }} />
-          <input type="text" name="location.venue" placeholder="Venue" value={formData.location.venue} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="text" name="location.city" placeholder="City" value={formData.location.city} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="time" name="startTime" value={formData.startTime} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="url" name="posterImage" placeholder="Poster Image URL" value={formData.posterImage} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', gridColumn: 'span 2' }} />
-          <input type="number" name="ticketing.general" placeholder="General Ticket Price" value={formData.ticketing.general} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="number" name="ticketing.vip" placeholder="VIP Ticket Price (optional)" value={formData.ticketing.vip} onChange={handleChange} style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="number" name="capacity" placeholder="Capacity" value={formData.capacity} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="text" name="organizer.name" placeholder="Organizer Name" value={formData.organizer.name} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
-          <input type="email" name="organizer.email" placeholder="Organizer Email" value={formData.organizer.email} onChange={handleChange} required style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Title */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Event Title *
+              </label>
+              <input
+                type="text"
+                name="title"
+                placeholder="Concert Name, Festival, etc."
+                value={formData.title}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-          <div style={{ display: 'flex', gap: '1rem', gridColumn: 'span 2' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <input type="checkbox" name="published" checked={formData.published} onChange={handleChange} />
-              Published
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} />
-              Featured
-            </label>
+            {/* Description */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Description *
+              </label>
+              <textarea
+                name="description"
+                placeholder="Event details, what to expect, etc."
+                value={formData.description}
+                onChange={handleChange}
+                required
+                rows={4}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Venue & City */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Venue Name *
+              </label>
+              <input
+                type="text"
+                name="location.venue"
+                placeholder="Venue Name"
+                value={formData.location.venue}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                City *
+              </label>
+              <input
+                type="text"
+                name="location.city"
+                placeholder="City"
+                value={formData.location.city}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Start & End Dates */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Start Date *
+              </label>
+              <input
+                type="date"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                End Date *
+              </label>
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Start & End Times */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Start Time *
+              </label>
+              <input
+                type="time"
+                name="startTime"
+                value={formData.startTime}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                End Time *
+              </label>
+              <input
+                type="time"
+                name="endTime"
+                value={formData.endTime}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Poster Image Upload - CLOUDINARY */}
+            <div className="md:col-span-2">
+              <EventImageUpload
+                onImageUploaded={handleImageUploaded}
+                imageType="poster"
+              />
+            </div>
+
+            {/* Banner Image Upload - CLOUDINARY */}
+            <div className="md:col-span-2">
+              <EventImageUpload
+                onImageUploaded={handleImageUploaded}
+                imageType="banner"
+              />
+            </div>
+
+            {/* General Ticket Price */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                General Ticket Price *
+              </label>
+              <input
+                type="number"
+                name="ticketing.general"
+                placeholder="0"
+                value={formData.ticketing.general}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* VIP Ticket Price */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                VIP Ticket Price (optional)
+              </label>
+              <input
+                type="number"
+                name="ticketing.vip"
+                placeholder="0"
+                value={formData.ticketing.vip}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Capacity */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Event Capacity *
+              </label>
+              <input
+                type="number"
+                name="capacity"
+                placeholder="Number of seats"
+                value={formData.capacity}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Organizer Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Organizer Name *
+              </label>
+              <input
+                type="text"
+                name="organizer.name"
+                placeholder="Organization or Person"
+                value={formData.organizer.name}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Organizer Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Organizer Email *
+              </label>
+              <input
+                type="email"
+                name="organizer.email"
+                placeholder="contact@example.com"
+                value={formData.organizer.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Publish & Featured */}
+            <div className="md:col-span-2 flex gap-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="published"
+                  checked={formData.published}
+                  onChange={handleChange}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Published (visible to public)
+                </span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={formData.featured}
+                  onChange={handleChange}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Featured (homepage)
+                </span>
+              </label>
+            </div>
           </div>
 
           <button
             type="submit"
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#10b981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.375rem',
-              cursor: 'pointer',
-              fontWeight: '600',
-              gridColumn: 'span 2',
-            }}
+            className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors"
           >
-            {selectedEvent ? 'Update Event' : 'Create Event'}
+            {selectedEvent ? '✓ Update Event' : '+ Create Event'}
           </button>
         </form>
       )}
 
       {/* Events List */}
-      <div style={{
-        display: 'grid',
-        gap: '1rem',
-      }}>
+      <div className="space-y-4">
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         ) : events.length === 0 ? (
-          <p>No events yet</p>
+          <p className="text-gray-600 dark:text-gray-400">No events yet</p>
         ) : (
           events.map((event) => (
             <div
               key={event._id}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto',
-                gap: '1rem',
-                padding: '1.5rem',
-                backgroundColor: 'white',
-                borderRadius: '0.5rem',
-                alignItems: 'center',
-              }}
+              className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between"
             >
-              <div>
-                <h3 style={{ margin: 0, marginBottom: '0.5rem' }}>{event.title}</h3>
-                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem' }}>
+              <div className="flex-1">
+                {event.posterImage && (
+                  <img
+                    src={event.posterImage}
+                    alt={event.title}
+                    className="w-16 h-20 object-cover rounded mb-2"
+                  />
+                )}
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{event.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {event.category} • {new Date(event.startDate).toLocaleDateString()}
                   {event.featured && ' ⭐'}
                   {!event.published && ' (Draft)'}
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    setSelectedEvent(event);
-                    setShowForm(true);
-                  }}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.375rem',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                  }}
+                  onClick={() => handleEdit(event)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(event._id)}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    backgroundColor: '#ef4444',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.375rem',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                  }}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors"
                 >
                   Delete
                 </button>
