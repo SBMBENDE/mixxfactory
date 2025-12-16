@@ -10,7 +10,7 @@ import { EventModel } from '@/lib/db/models';
 import mongoose from 'mongoose';
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
