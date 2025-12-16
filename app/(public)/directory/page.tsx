@@ -218,7 +218,7 @@ export default function DirectoryPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '200px' }}>
             <input
               type="text"
-              placeholder="🔍 Name, skills..."
+              placeholder={`🔍 ${t.directory.searchPlaceholder}`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
