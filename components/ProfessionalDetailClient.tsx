@@ -26,6 +26,9 @@ interface Professional {
   phone?: string;
   website?: string;
   images: string[];
+  gallery?: string[];
+  bio?: string;
+  verified?: boolean;
   category?: {
     _id: string;
     name: string;
@@ -138,6 +141,21 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                     ⭐ Featured
                   </span>
                 )}
+                {professional.verified && (
+                  <span style={{
+                    backgroundColor: '#dcfce7',
+                    color: '#15803d',
+                    padding: '0.375rem 0.75rem',
+                    borderRadius: '9999px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.375rem',
+                  }}>
+                    ✓ Verified
+                  </span>
+                )}
               </div>
             </div>
             {isOwner && (
@@ -168,6 +186,16 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             {professional.description}
           </p>
         </div>
+
+        {/* Bio Section - if available */}
+        {professional.bio && (
+          <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Bio</h2>
+            <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#374151', whiteSpace: 'pre-wrap' }}>
+              {professional.bio}
+            </p>
+          </div>
+        )}
 
         {/* Pricing Info */}
         {professional.priceRange && (professional.priceRange.min !== undefined && professional.priceRange.min > 0 || professional.priceRange.max !== undefined && professional.priceRange.max > 0) && (
@@ -461,6 +489,49 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             Share
           </button>
         </div>
+
+        {/* Portfolio Gallery Section */}
+        {professional.gallery && professional.gallery.length > 0 && (
+          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Portfolio Gallery</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+                {professional.gallery.map((image, index) => (
+                  <a
+                    key={index}
+                    href={image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      position: 'relative',
+                      overflow: 'hidden',
+                      borderRadius: '0.5rem',
+                      backgroundColor: '#f3f4f6',
+                      aspectRatio: '1',
+                    }}
+                  >
+                    <img
+                      src={image}
+                      alt={`Portfolio ${index + 1}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.2s',
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLImageElement).style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLImageElement).style.transform = 'scale(1)';
+                      }}
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Reviews Section */}
         <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>

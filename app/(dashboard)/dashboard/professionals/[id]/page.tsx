@@ -8,11 +8,15 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import ImageUpload from '@/components/ImageUpload';
 import ImageGallery from '@/components/ImageGallery';
+import GalleryUpload from '@/components/GalleryUpload';
 
 interface Professional {
   _id: string;
   name: string;
   images: string[];
+  gallery?: string[];
+  verified?: boolean;
+  bio?: string;
   [key: string]: any;
 }
 
@@ -127,6 +131,38 @@ export default function EditProfessionalPage() {
     }
   };
 
+  const handleGalleryUpdated = async (updatedGallery: string[]) => {
+    if (!professional) return;
+
+    try {
+      setSaving(true);
+      const response = await fetch(
+        `/api/admin/professionals/${professional._id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ gallery: updatedGallery }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to update gallery');
+      }
+
+      setProfessional({
+        ...professional,
+        gallery: updatedGallery,
+      });
+      setSuccess('Gallery updated');
+      setTimeout(() => setSuccess(''), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error updating gallery');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px] text-gray-600 dark:text-gray-400">
@@ -182,6 +218,18 @@ export default function EditProfessionalPage() {
         isLoading={saving}
       />
 
+      {/* Portfolio Gallery Upload */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Portfolio Gallery
+        </h3>
+        <GalleryUpload
+          gallery={professional.gallery || []}
+          onGalleryUpdated={handleGalleryUpdated}
+          isLoading={saving}
+        />
+      </div>
+
       {/* Image Gallery with Management */}
       {professional.images && professional.images.length > 0 ? (
         <ImageGallery
@@ -198,6 +246,130 @@ export default function EditProfessionalPage() {
           </p>
         </div>
       )}
+
+      {/* Bio and Verification Badge */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Profile Settings
+        </h3>
+
+        {/* Bio Section */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Professional Bio
+          </label>
+          <textarea
+            value={professional.bio || ''}
+            onChange={(e) => setProfessional({ ...professional, bio: e.target.value })}
+            onBlur={async () => {
+              try {
+                setSaving(true);
+                const response = await fetch(
+                  `/api/admin/professionals/${professional._id}`,
+                  {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ bio: professional.bio }),
+                  }
+                );
+
+                if (!response.ok) {
+                  throw new Error('Failed to update bio');
+                }
+
+                setSuccess('Bio updated');
+                setTimeout(() => setSuccess(''), 2000);
+              } catch (err) {
+                setError(
+                  err instanceof Error ? err.message : 'Error updating bio'
+                );
+              } finally {
+                setSaving(false);
+              }
+            }}
+            placeholder="Write a detailed bio about this professional..."
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white h-32 resize-none"
+            disabled={saving}
+          />
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {professional.bio?.length || 0} / 500 characters
+          </p>
+        </div>
+
+        {/* Verification Badge Toggle */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="text-lg">✓</span>
+                Verification Badge
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Mark this professional as verified for a badge on their profile
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  setSaving(true);
+                  const newVerified = !professional.verified;
+                  const response = await fetch(
+                    `/api/admin/professionals/${professional._id}`,
+                    {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({ verified: newVerified }),
+                    }
+                  );
+
+                  if (!response.ok) {
+                    throw new Error('Failed to update verification status');
+                  }
+
+                  setProfessional({
+                    ...professional,
+                    verified: newVerified,
+                  });
+                  setSuccess(
+                    newVerified
+                      ? 'Professional verified ✓'
+                      : 'Verification removed'
+                  );
+                  setTimeout(() => setSuccess(''), 2000);
+                } catch (err) {
+                  setError(
+                    err instanceof Error
+                      ? err.message
+                      : 'Error updating verification'
+                  );
+                } finally {
+                  setSaving(false);
+                }
+              }}
+              disabled={saving}
+              className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                professional.verified
+                  ? 'bg-green-500 hover:bg-green-600'
+                  : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
+              } disabled:opacity-50`}
+            >
+              <span
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                  professional.verified ? 'translate-x-7' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+          {professional.verified && (
+            <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 rounded-lg text-sm">
+              ✓ This professional is verified and will display a verification badge
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Quick Stats */}
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6">

@@ -114,6 +114,13 @@ const professionalSchema = new Schema<IProfessionalDocument>(
       min: Number,
       max: Number,
     },
+    gallery: [String], // Array of image URLs from Cloudinary
+    verified: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    bio: String, // Longer biographical/about section
   },
   { timestamps: true }
 );

@@ -41,10 +41,13 @@ export interface Professional {
   website?: string;
   location?: Location;
   images: string[]; // Cloudinary URLs
+  gallery?: string[]; // Portfolio images - Cloudinary URLs
+  bio?: string; // Longer biographical section
   rating?: number;
   reviewCount?: number;
   featured: boolean;
   active: boolean;
+  verified: boolean; // Admin-controlled verification badge
   socialLinks?: SocialLinks;
   priceRange?: {
     min?: number;
