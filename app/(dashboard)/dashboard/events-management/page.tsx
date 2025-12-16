@@ -22,12 +22,48 @@ interface Event {
   posterImage?: string;
 }
 
+interface TicketTier {
+  label: string;
+  price: number;
+  currency: string;
+}
+
+interface FormDataType {
+  title: string;
+  description: string;
+  category: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  location: {
+    venue: string;
+    city: string;
+    region: string;
+    address: string;
+  };
+  posterImage: string;
+  bannerImage: string;
+  ticketing: TicketTier[];
+  ticketUrl: string;
+  capacity: number;
+  organizer: {
+    name: string;
+    email: string;
+    phone: string;
+    website: string;
+  };
+  highlights: string[];
+  published: boolean;
+  featured: boolean;
+}
+
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     title: '',
     description: '',
     category: '',
@@ -43,11 +79,10 @@ export default function AdminEventsPage() {
     },
     posterImage: '',
     bannerImage: '',
-    ticketing: {
-      general: 0,
-      vip: 0,
-      ticketUrl: '',
-    },
+    ticketing: [
+      { label: 'General', price: 0, currency: 'EUR' },
+    ],
+    ticketUrl: '',
     capacity: 0,
     organizer: {
       name: '',
@@ -139,7 +174,8 @@ export default function AdminEventsPage() {
           location: { venue: '', city: '', region: '', address: '' },
           posterImage: '',
           bannerImage: '',
-          ticketing: { general: 0, vip: 0, ticketUrl: '' },
+          ticketing: [{ label: 'General', price: 0, currency: 'EUR' }],
+          ticketUrl: '',
           capacity: 0,
           organizer: { name: '', email: '', phone: '', website: '' },
           highlights: [],
@@ -168,7 +204,8 @@ export default function AdminEventsPage() {
       location: event.location || { venue: '', city: '', region: '', address: '' },
       posterImage: event.posterImage || '',
       bannerImage: event.bannerImage || '',
-      ticketing: event.ticketing || { general: 0, vip: 0, ticketUrl: '' },
+      ticketing: Array.isArray(event.ticketing) ? event.ticketing : [{ label: 'General', price: 0, currency: 'EUR' }],
+      ticketUrl: event.ticketUrl || '',
       capacity: event.capacity || 0,
       organizer: event.organizer || { name: '', email: '', phone: '', website: '' },
       highlights: event.highlights || [],
@@ -208,7 +245,8 @@ export default function AdminEventsPage() {
             location: { venue: '', city: '', region: '', address: '' },
             posterImage: '',
             bannerImage: '',
-            ticketing: { general: 0, vip: 0, ticketUrl: '' },
+            ticketing: [{ label: 'General', price: 0, currency: 'EUR' }],
+            ticketUrl: '',
             capacity: 0,
             organizer: { name: '', email: '', phone: '', website: '' },
             highlights: [],
@@ -385,32 +423,92 @@ export default function AdminEventsPage() {
               />
             </div>
 
-            {/* General Ticket Price */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                General Ticket Price *
-              </label>
-              <input
-                type="number"
-                name="ticketing.general"
-                placeholder="0"
-                value={formData.ticketing.general}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            {/* Pricing Tiers */}
+            <div className="md:col-span-2">
+              <div className="flex justify-between items-center mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Ticket Types & Pricing (EUR) *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      ticketing: [
+                        ...formData.ticketing,
+                        { label: '', price: 0, currency: 'EUR' },
+                      ],
+                    });
+                  }}
+                  className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-medium transition-colors"
+                >
+                  + Add Tier
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {formData.ticketing.map((tier: any, idx: number) => (
+                  <div key={idx} className="flex gap-3 items-end">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        placeholder="Tier label (e.g., BRONZE TABLE, SILVER, GOLD)"
+                        value={tier.label}
+                        onChange={(e) => {
+                          const updated = [...formData.ticketing];
+                          updated[idx].label = e.target.value;
+                          setFormData({ ...formData, ticketing: updated });
+                        }}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="w-24">
+                      <input
+                        type="number"
+                        placeholder="Price"
+                        value={tier.price}
+                        onChange={(e) => {
+                          const updated = [...formData.ticketing];
+                          updated[idx].price = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, ticketing: updated });
+                        }}
+                        required
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <span className="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">EUR</span>
+                    {formData.ticketing.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            ticketing: formData.ticketing.filter((_: any, i: number) => i !== idx),
+                          });
+                        }}
+                        className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition-colors"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* VIP Ticket Price */}
-            <div>
+            {/* Ticket URL */}
+            <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                VIP Ticket Price (optional)
+                External Ticketing Link (optional)
               </label>
               <input
-                type="number"
-                name="ticketing.vip"
-                placeholder="0"
-                value={formData.ticketing.vip}
+                type="url"
+                name="ticketUrl"
+                placeholder="https://ticketplatform.com/event"
+                value={formData.ticketUrl}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

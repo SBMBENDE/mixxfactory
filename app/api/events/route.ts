@@ -93,12 +93,14 @@ export async function POST(req: NextRequest) {
       !body.endTime ||
       !body.posterImage ||
       !body.location?.venue ||
-      !body.ticketing?.general ||
+      !Array.isArray(body.ticketing) ||
+      body.ticketing.length === 0 ||
+      !body.ticketing.every((t: any) => t.label && t.price >= 0) ||
       !body.capacity ||
       !body.organizer?.name
     ) {
       return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
+        { success: false, error: 'Missing required fields or invalid ticketing data' },
         { status: 400 }
       );
     }

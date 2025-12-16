@@ -608,21 +608,19 @@ interface IEventDocument extends Document {
   startTime: string; // Format: "HH:mm"
   endTime: string; // Format: "HH:mm"
   category: string; // DJ, Concert, Fashion, Party, etc.
-  ticketing: {
-    general: number; // General admission price
-    vip?: number; // VIP ticket price
-    earlyBird?: {
-      price: number;
-      availableUntil: Date;
-    };
-    ticketUrl?: string; // Link to external ticketing platform
-  };
+  ticketing: Array<{
+    label: string; // e.g., "General", "BRONZE TABLE", "SILVER", "GOLD", "PLATINUM"
+    price: number; // Price in EUR
+    currency: string; // e.g., "EUR"
+    quantity?: number; // Optional: available tickets
+  }>;
+  ticketUrl?: string; // External ticketing platform link
   capacity: number; // Total attendance capacity
   attendees: number; // Current number of registered attendees
   organizer: {
     name: string;
-    email: string;
-    phone?: string;
+    email?: string;
+    phone: string;
     website?: string;
   };
   featured: {
@@ -696,18 +694,24 @@ const eventSchema = new Schema<IEventDocument>(
       required: true,
       index: true,
     },
-    ticketing: {
-      general: {
-        type: Number,
-        required: true,
+    ticketing: [
+      {
+        label: {
+          type: String,
+          required: true, // e.g., "General", "BRONZE TABLE", "SILVER", "GOLD", "PLATINUM"
+        },
+        price: {
+          type: Number,
+          required: true, // Price in EUR
+        },
+        currency: {
+          type: String,
+          default: 'EUR',
+        },
+        quantity: Number, // Optional: available tickets
       },
-      vip: Number,
-      earlyBird: {
-        price: Number,
-        availableUntil: Date,
-      },
-      ticketUrl: String,
-    },
+    ],
+    ticketUrl: String, // External ticketing platform link
     capacity: {
       type: Number,
       required: true,
