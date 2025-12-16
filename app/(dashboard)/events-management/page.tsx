@@ -77,13 +77,13 @@ export default function AdminEventsPage() {
       setFormData({ ...formData, [name]: checked });
     } else if (name.includes('.')) {
       const [section, field] = name.split('.');
-      setFormData({
-        ...formData,
+      setFormData((prevState: any) => ({
+        ...prevState,
         [section]: {
-          ...formData[section as keyof typeof formData],
+          ...prevState[section],
           [field]: value,
         },
-      });
+      }));
     } else {
       setFormData({ ...formData, [name]: value });
     }
