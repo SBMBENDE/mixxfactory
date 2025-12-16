@@ -45,6 +45,9 @@ export const Navbar: React.FC = () => {
             <Link href="/directory" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
               {t.nav.directory}
             </Link>
+            <Link href="/events" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
+              🎉 Events
+            </Link>
             <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
               📝 Blog
             </Link>
@@ -158,6 +161,9 @@ export const Navbar: React.FC = () => {
           <div className="md:hidden pb-4 border-t border-gray-100 dark:border-gray-800">
             <Link href="/directory" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               {t.nav.directory}
+            </Link>
+            <Link href="/events" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+              🎉 Events
             </Link>
             <Link href="/blog" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               📝 {t.nav.blog}

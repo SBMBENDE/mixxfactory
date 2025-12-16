@@ -94,3 +94,46 @@ export interface JWTPayload {
   iat?: number;
   exp?: number;
 }
+
+export interface Event {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  location: {
+    city: string;
+    region: string;
+    venue: string;
+    address?: string;
+  };
+  posterImage: string; // Flyer/poster URL
+  bannerImage?: string;
+  startDate: Date;
+  endDate: Date;
+  startTime: string; // "HH:mm"
+  endTime: string; // "HH:mm"
+  category: string; // DJ, Concert, Party, etc.
+  ticketing: {
+    general: number;
+    vip?: number;
+    earlyBird?: {
+      price: number;
+      availableUntil: Date;
+    };
+    ticketUrl?: string;
+  };
+  capacity: number;
+  attendees: number;
+  organizer: {
+    name: string;
+    email: string;
+    phone?: string;
+    website?: string;
+  };
+  featured: boolean;
+  published: boolean;
+  tags: string[];
+  highlights: string[]; // Featured acts/performers
+  createdAt: Date;
+  updatedAt: Date;
+}

@@ -588,3 +588,165 @@ newsletterSubscriberSchema.index({ email: 1, subscribed: 1 });
 export const NewsletterSubscriberModel =
   (mongoose.models.NewsletterSubscriber as Model<INewsletterSubscriberDocument>) ||
   mongoose.model<INewsletterSubscriberDocument>('NewsletterSubscriber', newsletterSubscriberSchema);
+
+// ============ EVENT MODEL ============
+interface IEventDocument extends Document {
+  title: string;
+  slug: string;
+  description: string;
+  location: {
+    city: string;
+    region: string;
+    venue: string;
+    address?: string;
+  };
+  posterImage: string; // Cloudinary URL for event flyer/poster
+  bannerImage?: string; // Optional banner image
+  startDate: Date;
+  endDate: Date;
+  startTime: string; // Format: "HH:mm"
+  endTime: string; // Format: "HH:mm"
+  category: string; // DJ, Concert, Fashion, Party, etc.
+  ticketing: {
+    general: number; // General admission price
+    vip?: number; // VIP ticket price
+    earlyBird?: {
+      price: number;
+      availableUntil: Date;
+    };
+    ticketUrl?: string; // Link to external ticketing platform
+  };
+  capacity: number; // Total attendance capacity
+  attendees: number; // Current number of registered attendees
+  organizer: {
+    name: string;
+    email: string;
+    phone?: string;
+    website?: string;
+  };
+  featured: {
+    type: Boolean;
+    default: false;
+    index: true;
+  };
+  published: {
+    type: Boolean;
+    default: false;
+    index: true;
+  };
+  tags: string[];
+  highlights: string[]; // Featured acts, performers, etc.
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const eventSchema = new Schema<IEventDocument>(
+  {
+    title: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    location: {
+      city: String,
+      region: String,
+      venue: {
+        type: String,
+        required: true,
+      },
+      address: String,
+    },
+    posterImage: {
+      type: String,
+      required: true,
+    },
+    bannerImage: String,
+    startDate: {
+      type: Date,
+      required: true,
+      index: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    ticketing: {
+      general: {
+        type: Number,
+        required: true,
+      },
+      vip: Number,
+      earlyBird: {
+        price: Number,
+        availableUntil: Date,
+      },
+      ticketUrl: String,
+    },
+    capacity: {
+      type: Number,
+      required: true,
+    },
+    attendees: {
+      type: Number,
+      default: 0,
+    },
+    organizer: {
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
+      phone: String,
+      website: String,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    published: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    tags: [String],
+    highlights: [String],
+  },
+  { timestamps: true }
+);
+
+// Indexes for efficient queries
+eventSchema.index({ published: 1, startDate: 1 });
+eventSchema.index({ category: 1, startDate: 1 });
+eventSchema.index({ published: 1, featured: -1, startDate: -1 });
+
+export const EventModel =
+  (mongoose.models.Event as Model<IEventDocument>) ||
+  mongoose.model<IEventDocument>('Event', eventSchema);
