@@ -30,7 +30,9 @@ export async function GET(req: NextRequest) {
     }
 
     // Only show upcoming events by default (after today)
-    query.startDate = { $gte: new Date(new Date().setHours(0, 0, 0, 0)) };
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    query.startDate = { $gte: today };
 
     // Fetch events sorted by start date
     const events = await EventModel.find(query)
