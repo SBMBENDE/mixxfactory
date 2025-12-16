@@ -17,7 +17,7 @@ export async function POST(
     await connectDB();
 
     // Check authentication
-    const token = req.cookies.get('token')?.value;
+    const token = req.cookies.get('auth_token')?.value;
     if (!token) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
@@ -78,7 +78,7 @@ export async function PUT(
     await connectDB();
 
     // Check authentication
-    const token = req.cookies.get('token')?.value;
+    const token = req.cookies.get('auth_token')?.value;
     if (!token) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
@@ -139,7 +139,7 @@ export async function DELETE(
     await connectDB();
 
     // Check authentication
-    const token = req.cookies.get('token')?.value;
+    const token = req.cookies.get('auth_token')?.value;
     if (!token) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
