@@ -46,7 +46,7 @@ export const Navbar: React.FC = () => {
               {t.nav.directory}
             </Link>
             <Link href="/events" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
-              🎉 Events
+              🎉 {t.nav.events}
             </Link>
             <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
               📝 Blog
@@ -163,7 +163,7 @@ export const Navbar: React.FC = () => {
               {t.nav.directory}
             </Link>
             <Link href="/events" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
-              🎉 Events
+              🎉 {t.nav.events}
             </Link>
             <Link href="/blog" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               📝 {t.nav.blog}
