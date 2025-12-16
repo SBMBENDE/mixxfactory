@@ -41,7 +41,6 @@ export default function EventsPage() {
   const { language } = useLanguage();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   const t = useTranslations();
 
@@ -49,7 +48,6 @@ export default function EventsPage() {
     const fetchEvents = async () => {
       try {
         const params = new URLSearchParams();
-        if (selectedCategory) params.append('category', selectedCategory);
         if (showFeaturedOnly) params.append('featured', 'true');
 
         const res = await fetch(`/api/events?${params}`);
@@ -67,7 +65,7 @@ export default function EventsPage() {
     };
 
     fetchEvents();
-  }, [selectedCategory, showFeaturedOnly]);
+  }, [showFeaturedOnly]);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
