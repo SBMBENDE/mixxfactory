@@ -22,7 +22,13 @@ export default function EventImageUpload({
   const [preview, setPreview] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const cloudinaryCloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  // Get Cloudinary config safely
+  let cloudinaryCloudName: string | undefined;
+  try {
+    cloudinaryCloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  } catch (e) {
+    console.error('Error reading Cloudinary config:', e);
+  }
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
