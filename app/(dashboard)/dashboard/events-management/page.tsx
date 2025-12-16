@@ -117,6 +117,8 @@ export default function AdminEventsPage() {
         body: JSON.stringify(formData),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         fetchEvents();
         setShowForm(false);
@@ -139,9 +141,12 @@ export default function AdminEventsPage() {
           published: false,
           featured: false,
         });
+      } else {
+        alert(`Error: ${data.error || 'Failed to save event'}`);
       }
     } catch (error) {
       console.error('Error saving event:', error);
+      alert('Error saving event: ' + (error as Error).message);
     }
   };
 
