@@ -29,22 +29,36 @@ const categorySchema = new mongoose.Schema({
 
 const Category = mongoose.model('Category', categorySchema);
 
-async function checkCategories() {
+const iconUpdates = [
+  { slug: 'transport-service', icon: '🚗' },
+  { slug: 'tech', icon: '💻' },
+];
+
+async function updateIcons() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    const categories = await Category.find().sort({ createdAt: 1 }).lean();
-    
-    console.log('\n📋 Current Categories:\n');
-    categories.forEach((cat, i) => {
-      console.log(`${i + 1}. ${cat.name} (${cat.slug})`);
-      console.log(`   Icon: ${cat.icon || '(none)'}\n`);
-    });
-    
+    console.log('✓ Connected to MongoDB\n');
+
+    for (const update of iconUpdates) {
+      const result = await Category.findOneAndUpdate(
+        { slug: update.slug },
+        { icon: update.icon },
+        { new: true }
+      );
+      
+      if (result) {
+        console.log(`✓ Updated ${result.name} (${result.slug}) - Icon: ${result.icon}`);
+      } else {
+        console.log(`⚠️ Category not found: ${update.slug}`);
+      }
+    }
+
     await mongoose.disconnect();
+    console.log('\n✓ Done!');
   } catch (error) {
     console.error('Error:', error.message);
     process.exit(1);
   }
 }
 
-checkCategories();
+updateIcons();
