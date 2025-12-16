@@ -14,6 +14,26 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
+// Emoji mapping for categories
+const categoryEmojis: Record<string, string> = {
+  dj: '🎧',
+  'event-hall': '🏛️',
+  stylist: '✨',
+  restaurant: '🍽️',
+  nightclub: '🌙',
+  cameraman: '📹',
+  promoter: '📢',
+  decorator: '🎨',
+  caterer: '🍽️',
+  florist: '🌸',
+  tech: '💻',
+  'transport-service': '🚗',
+  'cleaning-services': '🧹',
+  childcare: '👶',
+  'grocery-stores': '🛒',
+  'handyman-services': '🔧',
+};
+
 // Map category slugs to tagline translation keys
 const categoryTaglineKeys: Record<string, string> = {
   dj: 'dj',
@@ -184,21 +204,26 @@ export default function DirectoryPage() {
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '0.5rem',
-          padding: '1.5rem',
+          padding: '2rem',
           marginBottom: '3rem',
           display: 'grid',
-          gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'repeat(3, 1fr)',
+          gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'auto 1fr auto',
           gap: '1rem',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+          alignItems: 'flex-end',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%)',
+          border: '1px solid rgba(229, 231, 235, 0.5)',
         }}>
           {/* Search Input */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '200px' }}>
             <label style={{
               fontSize: '0.875rem',
-              fontWeight: '600',
+              fontWeight: '700',
               color: '#1f2937',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
             }}>
-              {t.directory.search}
+              🔍 Search
             </label>
             <input
               type="text"
@@ -206,80 +231,138 @@ export default function DirectoryPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
-                padding: '0.625rem 0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.375rem',
+                padding: '0.75rem 1rem',
+                border: '2px solid #e5e7eb',
+                borderRadius: '0.5rem',
                 fontSize: '0.95rem',
                 color: '#1f2937',
-                backgroundColor: 'white',
+                backgroundColor: '#fafafa',
+                transition: 'all 0.3s ease',
+                fontWeight: '500',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#2563eb';
+                e.currentTarget.style.backgroundColor = '#ffffff';
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = '#e5e7eb';
+                e.currentTarget.style.backgroundColor = '#fafafa';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             />
           </div>
 
           {/* Category Filter */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '220px' }}>
             <label style={{
               fontSize: '0.875rem',
-              fontWeight: '600',
+              fontWeight: '700',
               color: '#1f2937',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
             }}>
-              {t.directory.allCategories}
+              ✨ Service
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
-                padding: '0.625rem 0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.375rem',
+                padding: '0.75rem 1rem',
+                border: '2px solid #e5e7eb',
+                borderRadius: '0.5rem',
                 fontSize: '0.95rem',
-                color: '#1f2937',
-                backgroundColor: 'white',
+                color: selectedCategory ? '#1f2937' : '#9ca3af',
+                backgroundColor: '#fafafa',
                 cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontWeight: '500',
+                appearance: 'none',
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231f2937' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 0.75rem center',
+                paddingRight: '2rem',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#2563eb';
+                e.currentTarget.style.backgroundColor = '#ffffff';
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = '#e5e7eb';
+                e.currentTarget.style.backgroundColor = '#fafafa';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <option value="">{t.directory.allCategories}</option>
+              <option value="">All Services</option>
               {categories.map((category) => (
                 <option key={category._id} value={category.slug}>
-                  {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
+                  {categoryEmojis[category.slug] || '•'} {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Clear Filters */}
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '0.5rem' }}>
+          {/* Clear/Search Button */}
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {(searchTerm || selectedCategory) && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('');
+                }}
+                style={{
+                  padding: '0.75rem 1.25rem',
+                  backgroundColor: '#f3f4f6',
+                  color: '#6b7280',
+                  border: '2px solid #d1d5db',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb';
+                  e.currentTarget.style.borderColor = '#9ca3af';
+                  e.currentTarget.style.color = '#374151';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                  e.currentTarget.style.borderColor = '#d1d5db';
+                  e.currentTarget.style.color = '#6b7280';
+                }}
+              >
+                Clear ✕
+              </button>
+            )}
             <button
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedCategory('');
-              }}
               style={{
-                padding: '0.625rem 1.5rem',
-                backgroundColor: searchTerm || selectedCategory ? '#f3f4f6' : '#e5e7eb',
-                color: '#374151',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.375rem',
-                cursor: searchTerm || selectedCategory ? 'pointer' : 'default',
-                fontWeight: '600',
+                padding: '0.75rem 2rem',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontWeight: '700',
                 fontSize: '0.95rem',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                whiteSpace: 'nowrap',
               }}
               onMouseEnter={(e) => {
-                if (searchTerm || selectedCategory) {
-                  e.currentTarget.style.backgroundColor = '#e5e7eb';
-                }
+                e.currentTarget.style.backgroundColor = '#1d4ed8';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.4)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
-                if (searchTerm || selectedCategory) {
-                  e.currentTarget.style.backgroundColor = '#f3f4f6';
-                } else {
-                  e.currentTarget.style.backgroundColor = '#e5e7eb';
-                }
+                e.currentTarget.style.backgroundColor = '#2563eb';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.3)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
-              disabled={!searchTerm && !selectedCategory}
             >
-              Clear Filters
+              🔎 Search
             </button>
           </div>
         </div>
