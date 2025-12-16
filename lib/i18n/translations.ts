@@ -406,7 +406,7 @@ export const translations = {
     // Directory
     directory: {
       title: 'Découvrez les Professionnels',
-      subtitle: 'Trouvez les DJs, coiffeurs, salles d\'événements, restaurants et bien d\'autres prestataires d\'exception, soigneusement sélectionnés pour répondre à vos besoins',
+      subtitle: 'Recherchez et filtrez facilement dans notre vaste annuaire.',
       search: 'Rechercher par nom, description...',
       allCategories: 'Toutes les catégories',
       registerProfessional: 'S\'inscrire en tant que professionnel',
