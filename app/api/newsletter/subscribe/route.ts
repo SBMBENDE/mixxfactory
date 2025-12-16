@@ -6,6 +6,7 @@ import { NextRequest } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { NewsletterSubscriberModel } from '@/lib/db/models';
 import { errorResponse, successResponse } from '@/utils/api-response';
+import { sendNewsletterConfirmationEmail } from '@/lib/email';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
@@ -78,6 +79,15 @@ export async function POST(request: NextRequest) {
     console.log(`   Categories: ${subscriber.categories?.join(', ') || 'None'}`);
     console.log(`   Subscribed At: ${subscriber.subscribedAt}`);
 
+    // Send confirmation email
+    try {
+      await sendNewsletterConfirmationEmail(subscriber.email, subscriber.firstName);
+      console.log(`✅ [Newsletter] Confirmation email sent to ${subscriber.email}`);
+    } catch (emailError) {
+      console.error('⚠️ [Newsletter] Failed to send confirmation email:', emailError);
+      // Don't fail the subscription if email fails to send
+    }
+
     return successResponse(
       {
         email: subscriber.email,
@@ -86,7 +96,7 @@ export async function POST(request: NextRequest) {
         id: subscriber._id,
         verified: subscriber.verified,
       },
-      'Successfully subscribed to newsletter!',
+      'Successfully subscribed to newsletter! Check your email for confirmation.',
       201
     );
   } catch (error) {
