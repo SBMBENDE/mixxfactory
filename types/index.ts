@@ -42,6 +42,7 @@ export interface Professional {
   location?: Location;
   images: string[]; // Cloudinary URLs
   gallery?: string[]; // Portfolio images - Cloudinary URLs
+  media?: string[]; // Video URLs (YouTube, Facebook, Vimeo embeds)
   bio?: string; // Longer biographical section
   rating?: number;
   reviewCount?: number;
@@ -134,6 +135,7 @@ export interface Event {
   published: boolean;
   tags: string[];
   highlights: string[]; // Featured acts/performers
+  media?: string[]; // Video URLs (YouTube, Facebook, Vimeo embeds)
   createdAt: Date;
   updatedAt: Date;
 }

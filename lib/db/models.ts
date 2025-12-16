@@ -115,6 +115,7 @@ const professionalSchema = new Schema<IProfessionalDocument>(
       max: Number,
     },
     gallery: [String], // Array of image URLs from Cloudinary
+    media: [String], // Array of video URLs (YouTube, Facebook, Vimeo embeds)
     verified: {
       type: Boolean,
       default: false,
@@ -636,6 +637,7 @@ interface IEventDocument extends Document {
   };
   tags: string[];
   highlights: string[]; // Featured acts, performers, etc.
+  media?: string[]; // Video URLs (YouTube, Facebook, Vimeo embeds)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -738,6 +740,7 @@ const eventSchema = new Schema<IEventDocument>(
     },
     tags: [String],
     highlights: [String],
+    media: [String], // Array of video URLs (YouTube, Facebook, Vimeo embeds)
   },
   { timestamps: true }
 );
