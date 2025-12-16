@@ -14,6 +14,26 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
+// Map category slugs to tagline translation keys
+const categoryTaglineKeys: Record<string, string> = {
+  dj: 'dj',
+  'event-hall': 'eventHall',
+  stylist: 'stylist',
+  restaurant: 'restaurant',
+  nightclub: 'nightclub',
+  cameraman: 'cameraman',
+  promoter: 'promoter',
+  decorator: 'decorator',
+  caterer: 'caterer',
+  florist: 'florist',
+  tech: 'tech',
+  'transport-service': 'transportService',
+  'cleaning-services': 'cleaningServices',
+  childcare: 'childcare',
+  'grocery-stores': 'groceryStores',
+  'handyman-services': 'handymanServices',
+};
+
 export default function DirectoryPage() {
   const searchParams = useSearchParams();
   const { language } = useLanguage();
@@ -138,6 +158,26 @@ export default function DirectoryPage() {
           <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>
             {t.directory.subtitle}
           </p>
+          
+          {/* Category Tagline - Display when category is selected */}
+          {selectedCategory && (
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1rem',
+              backgroundColor: '#f3f4f6',
+              borderLeft: '4px solid #2563eb',
+              borderRadius: '0.375rem'
+            }}>
+              <p style={{
+                fontSize: '1rem',
+                color: '#1f2937',
+                fontWeight: '500',
+                margin: 0
+              }}>
+                {t.categoryTaglines?.[categoryTaglineKeys[selectedCategory] as keyof typeof t.categoryTaglines] || ''}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Search & Filter */}

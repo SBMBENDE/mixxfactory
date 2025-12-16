@@ -114,6 +114,25 @@ export const translations = {
       groceryStores: 'Grocery Stores',
       handymanServices: 'Handyman Services',
     },
+    // Category Taglines
+    categoryTaglines: {
+      dj: 'Book talented DJs for your events and celebrations',
+      eventHall: 'Find the perfect venue for your special event',
+      stylist: 'Professional styling and beauty services for any occasion',
+      restaurant: 'Discover amazing culinary experiences and dining venues',
+      nightclub: 'Explore exciting nightlife and entertainment venues',
+      cameraman: 'Professional photography and videography services',
+      promoter: 'Event promotion and marketing professionals',
+      decorator: 'Transform your space with professional decoration services',
+      caterer: 'Professional catering services for all occasions',
+      florist: 'Beautiful floral arrangements and flower delivery',
+      tech: 'Technology solutions and IT services',
+      transportService: 'Reliable transportation and logistics services',
+      cleaningServices: 'Professional cleaning services for homes and businesses',
+      childcare: 'Trusted childcare and babysitting services',
+      groceryStores: 'Fresh groceries and food supplies',
+      handymanServices: 'Reliable handyman and home repair services',
+    },
     // Professional Registration
     professional: {
       title: 'Professional Registration',
@@ -413,6 +432,25 @@ export const translations = {
       childcare: 'Garde d\'enfants',
       groceryStores: 'Épiceries',
       handymanServices: 'Services de bricolage',
+    },
+    // Category Taglines
+    categoryTaglines: {
+      dj: 'Réservez des DJs talentueux pour vos événements et célébrations',
+      eventHall: 'Trouvez le lieu parfait pour votre événement spécial',
+      stylist: 'Services de coiffure et beauté professionnels pour toute occasion',
+      restaurant: 'Découvrez d\'incroyables expériences culinaires et lieux de restauration',
+      nightclub: 'Explorez les lieux de divertissement et de vie nocturne passionnants',
+      cameraman: 'Services professionnels de photographie et vidéographie',
+      promoter: 'Professionnels de la promotion et du marketing d\'événements',
+      decorator: 'Transformez votre espace avec des services de décoration professionnels',
+      caterer: 'Services de restauration professionnels pour toutes les occasions',
+      florist: 'Magnifiques arrangements floraux et livraison de fleurs',
+      tech: 'Solutions technologiques et services informatiques',
+      transportService: 'Services fiables de transport et de logistique',
+      cleaningServices: 'Services professionnels de nettoyage pour maisons et entreprises',
+      childcare: 'Services de garde d\'enfants et de babysitting de confiance',
+      groceryStores: 'Produits frais et approvisionnements alimentaires',
+      handymanServices: 'Services fiables de bricolage et de réparation à domicile',
     },
     // Authentication
     auth: {
