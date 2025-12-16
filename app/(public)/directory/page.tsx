@@ -253,7 +253,7 @@ export default function DirectoryPage() {
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
             }}>
-              ✨ Service
+              ✨ Categories
             </label>
             <select
               value={selectedCategory}
@@ -285,7 +285,7 @@ export default function DirectoryPage() {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <option value="">All Services</option>
+              <option value="">All Categories</option>
               {categories.map((category) => (
                 <option key={category._id} value={category.slug}>
                   {categoryEmojis[category.slug] || '•'} {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
