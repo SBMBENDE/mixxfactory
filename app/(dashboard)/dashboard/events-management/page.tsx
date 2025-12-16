@@ -259,6 +259,30 @@ export default function AdminEventsPage() {
               />
             </div>
 
+            {/* Category */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Event Category *
+              </label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a category...</option>
+                <option value="Music">Music</option>
+                <option value="Sports">Sports</option>
+                <option value="Theater">Theater</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Conferences">Conferences</option>
+                <option value="Festivals">Festivals</option>
+                <option value="Exhibitions">Exhibitions</option>
+                <option value="Workshops">Workshops</option>
+              </select>
+            </div>
+
             {/* Venue & City */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
