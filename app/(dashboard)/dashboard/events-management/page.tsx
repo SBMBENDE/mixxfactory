@@ -414,16 +414,16 @@ export default function AdminEventsPage() {
               />
             </div>
 
-            {/* Organizer Email */}
+            {/* Organizer Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Organizer Email *
+                Organizer Phone *
               </label>
               <input
-                type="email"
-                name="organizer.email"
-                placeholder="contact@example.com"
-                value={formData.organizer.email}
+                type="tel"
+                name="organizer.phone"
+                placeholder="+1 (555) 123-4567"
+                value={formData.organizer.phone}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
