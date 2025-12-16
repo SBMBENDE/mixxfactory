@@ -193,6 +193,31 @@ export default function AdminEventsPage() {
 
   const handleEdit = (event: any) => {
     setSelectedEvent(event);
+    
+    // Handle backward compatibility: convert old ticketing structure to new array format
+    let ticketingData: TicketTier[] = [];
+    if (Array.isArray(event.ticketing)) {
+      // New format - already an array
+      ticketingData = event.ticketing;
+    } else if (event.ticketing && typeof event.ticketing === 'object') {
+      // Old format - convert object to array
+      const old = event.ticketing;
+      if (old.general || old.general === 0) {
+        ticketingData.push({ label: 'General', price: old.general, currency: 'EUR' });
+      }
+      if (old.vip || old.vip === 0) {
+        ticketingData.push({ label: 'VIP', price: old.vip, currency: 'EUR' });
+      }
+      if (old.earlyBird && old.earlyBird.price !== undefined) {
+        ticketingData.push({ label: 'Early Bird', price: old.earlyBird.price, currency: 'EUR' });
+      }
+    }
+    
+    // Ensure at least one tier
+    if (ticketingData.length === 0) {
+      ticketingData = [{ label: 'General', price: 0, currency: 'EUR' }];
+    }
+    
     setFormData({
       title: event.title || '',
       description: event.description || '',
@@ -204,7 +229,7 @@ export default function AdminEventsPage() {
       location: event.location || { venue: '', city: '', region: '', address: '' },
       posterImage: event.posterImage || '',
       bannerImage: event.bannerImage || '',
-      ticketing: Array.isArray(event.ticketing) ? event.ticketing : [{ label: 'General', price: 0, currency: 'EUR' }],
+      ticketing: ticketingData,
       ticketUrl: event.ticketUrl || '',
       capacity: event.capacity || 0,
       organizer: event.organizer || { name: '', email: '', phone: '', website: '' },
