@@ -216,18 +216,9 @@ export default function DirectoryPage() {
         }}>
           {/* Search Input */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '200px' }}>
-            <label style={{
-              fontSize: '0.875rem',
-              fontWeight: '700',
-              color: '#1f2937',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-            }}>
-              🔍 Search
-            </label>
             <input
               type="text"
-              placeholder="Name, skills..."
+              placeholder="🔍 Name, skills..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
