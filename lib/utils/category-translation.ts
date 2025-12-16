@@ -52,6 +52,22 @@ export function getCategoryNameTranslation(categorySlug: string, language: 'en' 
       en: 'Transport Service',
       fr: 'Service de transport',
     },
+    'cleaning-services': {
+      en: 'Cleaning Services',
+      fr: 'Services de nettoyage',
+    },
+    childcare: {
+      en: 'Childcare',
+      fr: 'Garde d\'enfants',
+    },
+    'grocery-stores': {
+      en: 'Grocery Stores',
+      fr: 'Épiceries',
+    },
+    'handyman-services': {
+      en: 'Handyman Services',
+      fr: 'Services de bricolage',
+    },
   };
 
   return translations[categorySlug]?.[language] || categorySlug;

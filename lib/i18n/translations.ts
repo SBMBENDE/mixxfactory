@@ -109,6 +109,10 @@ export const translations = {
       florist: 'Florists',
       tech: 'Tech',
       transportService: 'Transport Service',
+      cleaningServices: 'Cleaning Services',
+      childcare: 'Childcare',
+      groceryStores: 'Grocery Stores',
+      handymanServices: 'Handyman Services',
     },
     // Professional Registration
     professional: {
@@ -405,6 +409,10 @@ export const translations = {
       florist: 'Fleuristes',
       tech: 'Technologie',
       transportService: 'Service de transport',
+      cleaningServices: 'Services de nettoyage',
+      childcare: 'Garde d\'enfants',
+      groceryStores: 'Épiceries',
+      handymanServices: 'Services de bricolage',
     },
     // Authentication
     auth: {
