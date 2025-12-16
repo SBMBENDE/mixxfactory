@@ -53,7 +53,6 @@ export default function AdminEventsPage() {
     published: false,
     featured: false,
   });
-  const t = useTranslations();
 
   useEffect(() => {
     fetchEvents();
