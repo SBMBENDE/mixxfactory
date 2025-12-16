@@ -721,11 +721,11 @@ const eventSchema = new Schema<IEventDocument>(
         type: String,
         required: true,
       },
-      email: {
+      email: String,
+      phone: {
         type: String,
         required: true,
       },
-      phone: String,
       website: String,
     },
     featured: {
