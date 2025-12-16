@@ -5,7 +5,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import EventImageUpload from '@/components/EventImageUpload';
+import dynamic from 'next/dynamic';
+
+const EventImageUpload = dynamic(() => import('@/components/EventImageUpload'), {
+  loading: () => <div className="p-4 bg-gray-200 rounded animate-pulse">Loading upload...</div>,
+  ssr: false,
+});
 
 interface Event {
   _id: string;
