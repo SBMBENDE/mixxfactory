@@ -246,15 +246,6 @@ export default function DirectoryPage() {
 
           {/* Category Filter */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '220px' }}>
-            <label style={{
-              fontSize: '0.875rem',
-              fontWeight: '700',
-              color: '#1f2937',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-            }}>
-              ✨ Categories
-            </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -325,7 +316,7 @@ export default function DirectoryPage() {
                   e.currentTarget.style.color = '#6b7280';
                 }}
               >
-                Clear ✕
+                {t.directory.clearBtn} ✕
               </button>
             )}
             <button
@@ -353,7 +344,7 @@ export default function DirectoryPage() {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              🔎 Search
+              🔎 {t.directory.searchBtn}
             </button>
           </div>
         </div>
