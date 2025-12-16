@@ -114,21 +114,19 @@ export interface Event {
   startTime: string; // "HH:mm"
   endTime: string; // "HH:mm"
   category: string; // DJ, Concert, Party, etc.
-  ticketing: {
-    general: number;
-    vip?: number;
-    earlyBird?: {
-      price: number;
-      availableUntil: Date;
-    };
-    ticketUrl?: string;
-  };
+  ticketing: Array<{
+    label: string; // e.g., "General", "BRONZE TABLE", "SILVER", "GOLD", "PLATINUM"
+    price: number; // Price in EUR
+    currency: string; // e.g., "EUR"
+    quantity?: number; // Optional: available tickets
+  }>;
+  ticketUrl?: string; // External ticketing platform link
   capacity: number;
   attendees: number;
   organizer: {
     name: string;
-    email: string;
-    phone?: string;
+    email?: string;
+    phone: string;
     website?: string;
   };
   featured: boolean;

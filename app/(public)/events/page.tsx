@@ -26,11 +26,13 @@ interface Event {
   startTime: string;
   endTime: string;
   category: string;
-  ticketing: {
-    general: number;
-    vip?: number;
-    ticketUrl?: string;
-  };
+  ticketing: Array<{
+    label: string;
+    price: number;
+    currency: string;
+    quantity?: number;
+  }>;
+  ticketUrl?: string;
   capacity: number;
   attendees: number;
   featured: boolean;
@@ -246,15 +248,13 @@ export default function EventsPage() {
                     gap: '1rem',
                     fontSize: '0.9rem',
                     fontWeight: '600',
+                    flexWrap: 'wrap',
                   }}>
-                    <div style={{ color: '#2563eb' }}>
-                      {t.events.general}: ${event.ticketing.general}
-                    </div>
-                    {event.ticketing.vip && (
-                      <div style={{ color: '#d97706' }}>
-                        {t.events.vip}: ${event.ticketing.vip}
+                    {Array.isArray(event.ticketing) && event.ticketing.map((tier, idx) => (
+                      <div key={idx} style={{ color: idx % 2 === 0 ? '#2563eb' : '#d97706' }}>
+                        {tier.label}: €{tier.price}
                       </div>
-                    )}
+                    ))}
                   </div>
 
                   {/* Capacity */}
@@ -269,9 +269,9 @@ export default function EventsPage() {
 
                   {/* CTA */}
                   <a
-                    href={event.ticketing.ticketUrl || `#event-${event._id}`}
-                    target={event.ticketing.ticketUrl ? '_blank' : '_self'}
-                    rel={event.ticketing.ticketUrl ? 'noopener noreferrer' : ''}
+                    href={event.ticketUrl || `#event-${event._id}`}
+                    target={event.ticketUrl ? '_blank' : '_self'}
+                    rel={event.ticketUrl ? 'noopener noreferrer' : ''}
                     style={{
                       display: 'block',
                       padding: '0.75rem 1rem',
