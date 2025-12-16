@@ -102,10 +102,21 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate slug from title
-    const slug = body.title
+    let baseSlug = body.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+
+    // Check if slug exists and make it unique
+    let slug = baseSlug;
+    let counter = 1;
+    let existingSlug = await EventModel.findOne({ slug });
+    
+    while (existingSlug) {
+      slug = `${baseSlug}-${counter}`;
+      existingSlug = await EventModel.findOne({ slug });
+      counter++;
+    }
 
     // Create event
     const event = new EventModel({
