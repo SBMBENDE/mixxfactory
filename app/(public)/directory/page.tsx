@@ -285,7 +285,7 @@ export default function DirectoryPage() {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <option value="">All Categories</option>
+              <option value="">{t.directory.allCategories}</option>
               {categories.map((category) => (
                 <option key={category._id} value={category.slug}>
                   {categoryEmojis[category.slug] || '•'} {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
