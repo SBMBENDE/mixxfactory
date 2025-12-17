@@ -11,6 +11,7 @@ interface NewsFlash {
   startDate: string;
   endDate: string;
   priority: number;
+  link?: string; // Optional redirect link
 }
 
 const typeStyles = {
@@ -73,6 +74,30 @@ export default function NewsFlashBanner() {
         alignItems: 'center',
         gap: '1rem',
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        cursor: current.link ? 'pointer' : 'default',
+        transition: current.link ? 'opacity 0.2s' : 'none',
+      }}
+      onClick={() => {
+        if (current.link) {
+          // Check if link is internal or external
+          if (current.link.startsWith('/')) {
+            // Internal link
+            window.location.href = current.link;
+          } else if (current.link.startsWith('http')) {
+            // External link
+            window.open(current.link, '_blank');
+          }
+        }
+      }}
+      onMouseEnter={(e) => {
+        if (current.link) {
+          (e.currentTarget as HTMLElement).style.opacity = '0.9';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (current.link) {
+          (e.currentTarget as HTMLElement).style.opacity = '1';
+        }
       }}
     >
       {/* Icon */}
@@ -81,7 +106,10 @@ export default function NewsFlashBanner() {
       {/* Content */}
       <div style={{ flex: 1 }}>
         <h3 style={{ fontWeight: '600', marginBottom: '0.25rem', margin: 0 }}>{current.title}</h3>
-        <p style={{ marginBottom: 0, margin: 0, fontSize: '0.875rem' }}>{current.message}</p>
+        <p style={{ marginBottom: 0, margin: 0, fontSize: '0.875rem' }}>
+          {current.message}
+          {current.link && <span style={{ marginLeft: '0.5rem', fontStyle: 'italic' }}>→</span>}
+        </p>
       </div>
 
       {/* Close Button */}

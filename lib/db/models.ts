@@ -337,6 +337,7 @@ interface INewsFlashDocument extends Document {
   startDate: Date;
   endDate: Date;
   priority: number;
+  link?: string; // Optional link to redirect when clicked
   createdAt: Date;
   updatedAt: Date;
 }
@@ -373,6 +374,10 @@ const newsFlashSchema = new Schema<INewsFlashDocument>(
       type: Number,
       default: 0,
       index: true,
+    },
+    link: {
+      type: String,
+      default: null, // Optional: redirect link when clicked
     },
   },
   { timestamps: true }

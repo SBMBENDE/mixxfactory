@@ -12,6 +12,7 @@ interface NewsFlash {
   priority: number;
   startDate: string;
   endDate: string;
+  link?: string;
   createdAt: string;
 }
 

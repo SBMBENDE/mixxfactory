@@ -15,6 +15,7 @@ export default function NewNewsFlashPage() {
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     published: false,
+    link: '',
   });
 
   const handleChange = (
@@ -180,6 +181,24 @@ export default function NewNewsFlashPage() {
           />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             Higher priority flashes appear first
+          </p>
+        </div>
+
+        {/* Link */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Redirect Link (optional)
+          </label>
+          <input
+            type="text"
+            name="link"
+            value={formData.link}
+            onChange={handleChange}
+            placeholder="e.g., /events or https://example.com"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Users will be redirected when clicking this news flash. Use internal paths (e.g., /events) or full URLs (e.g., https://example.com)
           </p>
         </div>
 
