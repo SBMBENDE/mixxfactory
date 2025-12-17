@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface NewsFlash {
   _id: string;
@@ -22,9 +23,11 @@ const typeStyles = {
 };
 
 export default function NewsFlashBanner() {
+  const router = useRouter();
   const [announcements, setAnnouncements] = useState<NewsFlash[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -34,6 +37,7 @@ export default function NewsFlashBanner() {
         // API returns the array directly as data, or wrapped in data property
         const announcements = Array.isArray(data) ? data : (data.data || data.announcements || []);
         if (announcements && announcements.length > 0) {
+          console.log('Fetched announcements:', announcements);
           setAnnouncements(announcements);
         }
       } catch (err) {
@@ -62,6 +66,20 @@ export default function NewsFlashBanner() {
   const current = announcements[currentIndex];
   const style = typeStyles[current.type] || typeStyles.info;
 
+  const handleClick = () => {
+    if (current.link) {
+      console.log('Clicking news flash with link:', current.link);
+      // Check if link is internal or external
+      if (current.link.startsWith('/')) {
+        // Internal link - use router
+        router.push(current.link);
+      } else if (current.link.startsWith('http')) {
+        // External link - open in new tab
+        window.open(current.link, '_blank');
+      }
+    }
+  };
+
   return (
     <div
       style={{
@@ -75,30 +93,17 @@ export default function NewsFlashBanner() {
         gap: '1rem',
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         cursor: current.link ? 'pointer' : 'default',
-        transition: current.link ? 'opacity 0.2s' : 'none',
+        opacity: current.link && isHovering ? 0.9 : 1,
+        transition: 'opacity 0.2s ease-in-out',
       }}
-      onClick={() => {
+      onClick={handleClick}
+      onMouseEnter={() => {
         if (current.link) {
-          // Check if link is internal or external
-          if (current.link.startsWith('/')) {
-            // Internal link
-            window.location.href = current.link;
-          } else if (current.link.startsWith('http')) {
-            // External link
-            window.open(current.link, '_blank');
-          }
+          console.log('Hovering over clickable news flash');
+          setIsHovering(true);
         }
       }}
-      onMouseEnter={(e) => {
-        if (current.link) {
-          (e.currentTarget as HTMLElement).style.opacity = '0.9';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (current.link) {
-          (e.currentTarget as HTMLElement).style.opacity = '1';
-        }
-      }}
+      onMouseLeave={() => setIsHovering(false)}
     >
       {/* Icon */}
       <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>{style.icon}</div>
@@ -143,7 +148,10 @@ export default function NewsFlashBanner() {
           {announcements.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentIndex(i)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentIndex(i);
+              }}
               style={{
                 width: '8px',
                 height: '8px',
