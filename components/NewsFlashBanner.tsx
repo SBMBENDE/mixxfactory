@@ -34,11 +34,23 @@ export default function NewsFlashBanner() {
       try {
         const response = await fetch('/api/news-flashes');
         const data = await response.json();
-        // API returns the array directly as data, or wrapped in data property
-        const announcements = Array.isArray(data) ? data : (data.data || data.announcements || []);
+        console.log('Raw API response:', data);
+        
+        // API returns wrapped in { success, data, message }
+        let announcements: NewsFlash[] = [];
+        if (data.success && data.data) {
+          announcements = Array.isArray(data.data) ? data.data : [];
+        } else if (Array.isArray(data)) {
+          announcements = data;
+        }
+        
+        console.log('Parsed announcements:', announcements);
+        
         if (announcements && announcements.length > 0) {
-          console.log('Fetched announcements:', announcements);
+          console.log('Setting announcements:', announcements);
           setAnnouncements(announcements);
+        } else {
+          console.log('No announcements found');
         }
       } catch (err) {
         console.error('Failed to fetch announcements:', err);
@@ -59,11 +71,21 @@ export default function NewsFlashBanner() {
     };
   }, [announcements.length]);
 
-  if (loading || announcements.length === 0) {
+  if (loading) {
+    return null;
+  }
+
+  if (announcements.length === 0) {
+    console.log('No announcements to display');
     return null;
   }
 
   const current = announcements[currentIndex];
+  if (!current) {
+    console.error('Current announcement is null or undefined');
+    return null;
+  }
+  
   const style = typeStyles[current.type] || typeStyles.info;
 
   const handleClick = () => {
