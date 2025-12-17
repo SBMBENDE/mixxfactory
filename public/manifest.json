@@ -59,7 +59,7 @@
       "url": "/directory",
       "icons": [
         {
-          "src": "/icons/directory.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]
@@ -71,7 +71,7 @@
       "url": "/auth/login",
       "icons": [
         {
-          "src": "/icons/admin.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]
