@@ -105,6 +105,7 @@ export const createNewsFlashSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   priority: z.number().min(0).max(100).optional().default(0),
+  link: z.string().url().or(z.string().startsWith('/')).optional().nullable(),
 });
 
 // Type exports

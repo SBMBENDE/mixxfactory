@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
-    const { title, message, type, priority, startDate, endDate } = validationResult.data;
+    const { title, message, type, priority, startDate, endDate, link } = validationResult.data;
 
     const newsFlash = new NewsFlashModel({
       title,
@@ -94,6 +94,7 @@ export async function POST(request: NextRequest) {
       startDate: startDate ? new Date(startDate) : new Date(),
       endDate: endDate ? new Date(endDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       published: false,
+      link: link || null,
     });
 
     await newsFlash.save();
@@ -136,7 +137,7 @@ export async function PUT(request: NextRequest) {
     // Validate update data if present
     if (Object.keys(updateData).length > 0) {
       // Only allow specific fields to be updated
-      const allowedFields = ['title', 'message', 'type', 'priority', 'startDate', 'endDate', 'published'];
+      const allowedFields = ['title', 'message', 'type', 'priority', 'startDate', 'endDate', 'published', 'link'];
       const updateKeys = Object.keys(updateData);
       
       for (const key of updateKeys) {
