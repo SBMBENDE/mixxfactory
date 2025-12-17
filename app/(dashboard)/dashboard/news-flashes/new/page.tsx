@@ -138,7 +138,7 @@ export default function NewNewsFlashPage() {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="info">ℹ️ Info</option>
+            <option value="info">📰 Info</option>
             <option value="warning">⚠️ Warning</option>
             <option value="error">❌ Error</option>
             <option value="success">✅ Success</option>
