@@ -118,7 +118,7 @@ export default function EditNewsFlashPage() {
           startDate: formData.startDate,
           endDate: formData.endDate,
           published: formData.published,
-          link: formData.link || null,
+          link: (formData.link || '').trim() === '' ? null : formData.link,
         }),
       });
 

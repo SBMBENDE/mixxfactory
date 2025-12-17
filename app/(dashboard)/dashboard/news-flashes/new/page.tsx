@@ -63,7 +63,7 @@ export default function NewNewsFlashPage() {
         priority: formData.priority,
         startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
-        link: formData.link || null,
+        link: formData.link.trim() === '' ? null : formData.link,
       };
 
       const response = await fetch('/api/admin/news-flashes', {
