@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faStar } from '@fortawesome/free-solid-svg-icons';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface Testimonial {
   id: number;
   name: string;
-  role: string;
+  role: { en: string; fr: string };
   image: string;
-  content: string;
+  content: { en: string; fr: string };
   rating: number;
 }
 
@@ -17,41 +18,56 @@ const testimonials: Testimonial[] = [
   {
     id: 1,
     name: 'Sarah Johnson',
-    role: 'Event Organizer',
+    role: { en: 'Event Organizer', fr: 'Organisatrice d\'événements' },
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-    content: 'MixxFactory made finding the perfect DJ for our wedding incredibly easy. The platform is intuitive and the professionals are top-notch!',
+    content: {
+      en: 'MixxFactory made finding the perfect DJ for our wedding incredibly easy. The platform is intuitive and the professionals are top-notch!',
+      fr: 'MixxFactory a rendu la recherche du DJ parfait pour notre mariage incroyablement facile. La plateforme est intuitive et les professionnels sont de premier ordre !',
+    },
     rating: 5,
   },
   {
     id: 2,
     name: 'Marcus Williams',
-    role: 'Professional DJ',
+    role: { en: 'Professional DJ', fr: 'DJ Professionnel' },
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus',
-    content: 'As a DJ, this platform has opened up so many new opportunities. The booking system is smooth and clients are always professional.',
+    content: {
+      en: 'As a DJ, this platform has opened up so many new opportunities. The booking system is smooth and clients are always professional.',
+      fr: 'En tant que DJ, cette plateforme m\'a ouvert tellement de nouvelles opportunités. Le système de réservation est fluide et les clients sont toujours professionnels.',
+    },
     rating: 5,
   },
   {
     id: 3,
     name: 'Elena Rodriguez',
-    role: 'Venue Owner',
+    role: { en: 'Venue Owner', fr: 'Propriétaire de lieu' },
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena',
-    content: 'Our venue bookings have tripled since joining MixxFactory. The exposure and the quality of clients is simply amazing!',
+    content: {
+      en: 'Our venue bookings have tripled since joining MixxFactory. The exposure and the quality of clients is simply amazing!',
+      fr: 'Nos réservations de salle ont triplé depuis que nous avons rejoint MixxFactory. L\'exposition et la qualité des clients sont tout simplement incroyables !',
+    },
     rating: 5,
   },
   {
     id: 4,
     name: 'David Chen',
-    role: 'Corporate Event Planner',
+    role: { en: 'Corporate Event Planner', fr: 'Planificateur d\'événements d\'entreprise' },
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-    content: 'Finding reliable event professionals used to be a nightmare. MixxFactory changed everything - highly recommended!',
+    content: {
+      en: 'Finding reliable event professionals used to be a nightmare. MixxFactory changed everything - highly recommended!',
+      fr: 'Trouver des professionnels de l\'événement fiables était autrefois un cauchemar. MixxFactory a tout changé - très recommandé !',
+    },
     rating: 5,
   },
   {
     id: 5,
     name: 'Jessica Martinez',
-    role: 'Fashion Stylist',
+    role: { en: 'Fashion Stylist', fr: 'Styliste de mode' },
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica',
-    content: 'This platform connects me with amazing clients who appreciate quality styling. Best decision ever!',
+    content: {
+      en: 'This platform connects me with amazing clients who appreciate quality styling. Best decision ever!',
+      fr: 'Cette plateforme me connecte avec des clients extraordinaires qui apprécient le style de qualité. La meilleure décision jamais prise !',
+    },
     rating: 5,
   },
 ];
@@ -122,6 +138,7 @@ const CSS_ANIMATIONS = `
 `;
 
 export default function TestimonialCarousel() {
+  const t = useTranslations();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [animated, setAnimated] = useState(false);
@@ -176,11 +193,11 @@ export default function TestimonialCarousel() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            What Our Clients Say
+            {t.testimonials.title}
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full mb-6"></div>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Join thousands of satisfied professionals and event organizers who trust MixxFactory
+            {t.testimonials.subtitle}
           </p>
         </div>
 
@@ -201,7 +218,7 @@ export default function TestimonialCarousel() {
               >
                 <div className="quote-icon">&ldquo;</div>
                 <p className="text-xl md:text-2xl text-gray-800 dark:text-gray-100 font-light leading-relaxed mb-8">
-                  {current.content}
+                  {current.content[t.nav.home === 'Home' ? 'en' : 'fr']}
                 </p>
 
                 {/* Rating */}
@@ -231,7 +248,7 @@ export default function TestimonialCarousel() {
                       {current.name}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {current.role}
+                      {current.role[t.nav.home === 'Home' ? 'en' : 'fr']}
                     </p>
                   </div>
                 </div>
@@ -282,7 +299,7 @@ export default function TestimonialCarousel() {
                 onMouseEnter={() => setIsAutoPlay(false)}
                 onMouseLeave={() => setIsAutoPlay(true)}
                 className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-                aria-label="Previous testimonial"
+                aria-label={t.testimonials.previousTestimonial}
               >
                 <FontAwesomeIcon icon={faChevronLeft} className="w-6 h-6" />
               </button>
@@ -298,7 +315,7 @@ export default function TestimonialCarousel() {
                         ? 'bg-blue-600 dark:bg-blue-400 w-8'
                         : 'bg-gray-300 dark:bg-slate-600 hover:bg-gray-400 dark:hover:bg-slate-500'
                     }`}
-                    aria-label={`Go to testimonial ${index + 1}`}
+                    aria-label={`${t.testimonials.goToTestimonial} ${index + 1}`}
                   />
                 ))}
               </div>
@@ -308,7 +325,7 @@ export default function TestimonialCarousel() {
                 onMouseEnter={() => setIsAutoPlay(false)}
                 onMouseLeave={() => setIsAutoPlay(true)}
                 className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-                aria-label="Next testimonial"
+                aria-label={t.testimonials.nextTestimonial}
               >
                 <FontAwesomeIcon icon={faChevronRight} className="w-6 h-6" />
               </button>
@@ -334,7 +351,7 @@ export default function TestimonialCarousel() {
               98%
             </p>
             <p className="text-gray-600 dark:text-gray-400">
-              Client Satisfaction Rate
+              {t.testimonials.satisfaction}
             </p>
           </div>
           <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg text-center">
@@ -342,7 +359,7 @@ export default function TestimonialCarousel() {
               50K+
             </p>
             <p className="text-gray-600 dark:text-gray-400">
-              Successful Bookings
+              {t.testimonials.bookings}
             </p>
           </div>
           <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg text-center">
@@ -350,7 +367,7 @@ export default function TestimonialCarousel() {
               4.9★
             </p>
             <p className="text-gray-600 dark:text-gray-400">
-              Average Rating
+              {t.testimonials.rating}
             </p>
           </div>
         </div>

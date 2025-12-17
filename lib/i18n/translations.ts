@@ -263,6 +263,17 @@ export const translations = {
       ctaDesc: 'Join thousands of satisfied clients who have found exactly what they need through MixxFactory.',
       browseDir: 'Browse Directory',
     },
+    // Testimonials
+    testimonials: {
+      title: 'What Our Clients Say',
+      subtitle: 'Join thousands of satisfied professionals and event organizers who trust MixxFactory',
+      satisfaction: 'Client Satisfaction Rate',
+      bookings: 'Successful Bookings',
+      rating: 'Average Rating',
+      previousTestimonial: 'Previous testimonial',
+      nextTestimonial: 'Next testimonial',
+      goToTestimonial: 'Go to testimonial',
+    },
     // Contact page
     contact: {
       title: 'Get in Touch',
@@ -642,6 +653,17 @@ export const translations = {
       cta: 'Prêt à trouver votre professionnel parfait ?',
       ctaDesc: 'Rejoignez des milliers de clients satisfaits qui ont trouvé exactement ce dont ils avaient besoin via MixxFactory.',
       browseDir: 'Parcourir l\'annuaire',
+    },
+    // Testimonials
+    testimonials: {
+      title: 'Ce que disent nos clients',
+      subtitle: 'Rejoignez des milliers de professionnels et d\'organisateurs d\'événements satisfaits qui font confiance à MixxFactory',
+      satisfaction: 'Taux de satisfaction des clients',
+      bookings: 'Réservations réussies',
+      rating: 'Note moyenne',
+      previousTestimonial: 'Témoignage précédent',
+      nextTestimonial: 'Témoignage suivant',
+      goToTestimonial: 'Aller au témoignage',
     },
     // Contact page
     contact: {
