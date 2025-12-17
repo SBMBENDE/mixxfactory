@@ -13,6 +13,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import Carousel from '@/components/Carousel';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
+import TestimonialCarousel from '@/components/TestimonialCarousel';
 
 // Emoji mapping for categories
 const categoryEmojis: Record<string, string> = {
@@ -281,6 +282,9 @@ export default function HomePage() {
           fullWidth={false}
         />
       </section>
+
+      {/* Testimonial Carousel Section */}
+      <TestimonialCarousel />
 
       {/* Auth Modal */}
       <AuthModal
