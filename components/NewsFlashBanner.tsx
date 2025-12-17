@@ -22,12 +22,111 @@ const typeStyles = {
   error: { bg: '#fee2e2', text: '#991b1b', icon: '✕' },
 };
 
+// CSS animations
+const animationStyles = `
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.98);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-2px);
+    }
+    75% {
+      transform: translateX(2px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .news-flash-banner {
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .news-flash-banner.exiting {
+      animation: slideInDown 0.3s ease-in forwards;
+    }
+
+    .news-flash-banner.tapped {
+      animation: pulse 0.3s ease-in-out;
+    }
+
+    .news-flash-content {
+      animation: fadeInOut 5s ease-in-out;
+    }
+
+    .news-flash-icon {
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+`;
+
 export default function NewsFlashBanner() {
   const router = useRouter();
   const [announcements, setAnnouncements] = useState<NewsFlash[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isTapped, setIsTapped] = useState(false);
+
+  useEffect(() => {
+    // Inject animation styles
+    const styleElement = document.createElement('style');
+    styleElement.textContent = animationStyles;
+    document.head.appendChild(styleElement);
+
+    return () => {
+      styleElement.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -88,8 +187,22 @@ export default function NewsFlashBanner() {
   
   const style = typeStyles[current.type] || typeStyles.info;
 
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExiting(true);
+    setTimeout(() => {
+      setAnnouncements((prev) => prev.filter((_, i) => i !== currentIndex));
+      if (currentIndex >= announcements.length - 1) {
+        setCurrentIndex(0);
+      }
+      setIsExiting(false);
+    }, 300);
+  };
+
   const handleClick = () => {
     if (current.link) {
+      setIsTapped(true);
+      setTimeout(() => setIsTapped(false), 300);
       console.log('Clicking news flash with link:', current.link);
       // Check if link is internal or external
       if (current.link.startsWith('/')) {
@@ -104,6 +217,7 @@ export default function NewsFlashBanner() {
 
   return (
     <div
+      className={`news-flash-banner ${isExiting ? 'exiting' : ''} ${isTapped ? 'tapped' : ''}`}
       style={{
         backgroundColor: style.bg,
         color: style.text,
@@ -128,10 +242,10 @@ export default function NewsFlashBanner() {
       onMouseLeave={() => setIsHovering(false)}
     >
       {/* Icon */}
-      <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>{style.icon}</div>
+      <div className="news-flash-icon" style={{ fontSize: '1.5rem', flexShrink: 0 }}>{style.icon}</div>
 
       {/* Content */}
-      <div style={{ flex: 1 }}>
+      <div className="news-flash-content" style={{ flex: 1 }}>
         <h3 style={{ fontWeight: '600', marginBottom: '0.25rem', margin: 0 }}>{current.title}</h3>
         <p style={{ marginBottom: 0, margin: 0, fontSize: '0.875rem' }}>
           {current.message}
@@ -141,13 +255,7 @@ export default function NewsFlashBanner() {
 
       {/* Close Button */}
       <button
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent triggering the main div's click
-          setAnnouncements((prev) => prev.filter((_, i) => i !== currentIndex));
-          if (currentIndex >= announcements.length - 1) {
-            setCurrentIndex(0);
-          }
-        }}
+        onClick={handleClose}
         style={{
           backgroundColor: 'transparent',
           border: 'none',
