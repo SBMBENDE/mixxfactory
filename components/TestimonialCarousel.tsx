@@ -19,7 +19,7 @@ const testimonials: Testimonial[] = [
     id: 1,
     name: 'Sarah Johnson',
     role: { en: 'Event Organizer', fr: 'Organisatrice d\'événements' },
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+    image: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=FF6B9D&color=fff&size=200&bold=true',
     content: {
       en: 'MixxFactory made finding the perfect DJ for our wedding incredibly easy. The platform is intuitive and the professionals are top-notch!',
       fr: 'MixxFactory a rendu la recherche du DJ parfait pour notre mariage incroyablement facile. La plateforme est intuitive et les professionnels sont de premier ordre !',
@@ -30,7 +30,7 @@ const testimonials: Testimonial[] = [
     id: 2,
     name: 'Marcus Williams',
     role: { en: 'Professional DJ', fr: 'DJ Professionnel' },
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus',
+    image: 'https://ui-avatars.com/api/?name=Marcus+Williams&background=4ECDC4&color=fff&size=200&bold=true',
     content: {
       en: 'As a DJ, this platform has opened up so many new opportunities. The booking system is smooth and clients are always professional.',
       fr: 'En tant que DJ, cette plateforme m\'a ouvert tellement de nouvelles opportunités. Le système de réservation est fluide et les clients sont toujours professionnels.',
@@ -41,7 +41,7 @@ const testimonials: Testimonial[] = [
     id: 3,
     name: 'Elena Rodriguez',
     role: { en: 'Venue Owner', fr: 'Propriétaire de lieu' },
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena',
+    image: 'https://ui-avatars.com/api/?name=Elena+Rodriguez&background=95E1D3&color=fff&size=200&bold=true',
     content: {
       en: 'Our venue bookings have tripled since joining MixxFactory. The exposure and the quality of clients is simply amazing!',
       fr: 'Nos réservations de salle ont triplé depuis que nous avons rejoint MixxFactory. L\'exposition et la qualité des clients sont tout simplement incroyables !',
@@ -52,7 +52,7 @@ const testimonials: Testimonial[] = [
     id: 4,
     name: 'David Chen',
     role: { en: 'Corporate Event Planner', fr: 'Planificateur d\'événements d\'entreprise' },
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+    image: 'https://ui-avatars.com/api/?name=David+Chen&background=C7CEEA&color=fff&size=200&bold=true',
     content: {
       en: 'Finding reliable event professionals used to be a nightmare. MixxFactory changed everything - highly recommended!',
       fr: 'Trouver des professionnels de l\'événement fiables était autrefois un cauchemar. MixxFactory a tout changé - très recommandé !',
@@ -63,7 +63,7 @@ const testimonials: Testimonial[] = [
     id: 5,
     name: 'Jessica Martinez',
     role: { en: 'Fashion Stylist', fr: 'Styliste de mode' },
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica',
+    image: 'https://ui-avatars.com/api/?name=Jessica+Martinez&background=FFB6C1&color=fff&size=200&bold=true',
     content: {
       en: 'This platform connects me with amazing clients who appreciate quality styling. Best decision ever!',
       fr: 'Cette plateforme me connecte avec des clients extraordinaires qui apprécient le style de qualité. La meilleure décision jamais prise !',
