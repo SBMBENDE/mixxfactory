@@ -115,16 +115,48 @@ const CSS_ANIMATIONS = `
     }
   }
 
-  .testimonial-card {
-    animation: scaleIn 0.6s ease-out;
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
-  .testimonial-card.prev {
-    animation: slideInLeft 0.3s ease-out;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
-  .testimonial-card.next {
-    animation: slideInRight 0.3s ease-out;
+  /* Desktop: Slide animations */
+  @media (min-width: 769px) {
+    .testimonial-card {
+      animation: scaleIn 0.6s ease-out;
+    }
+
+    .testimonial-card.prev {
+      animation: slideInLeft 0.3s ease-out;
+    }
+
+    .testimonial-card.next {
+      animation: slideInRight 0.3s ease-out;
+    }
+  }
+
+  /* Mobile: Fade animations */
+  @media (max-width: 768px) {
+    .testimonial-card {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .testimonial-card.exiting {
+      animation: fadeOut 0.3s ease-out forwards;
+    }
   }
 
   .testimonial-image {
@@ -143,6 +175,8 @@ export default function TestimonialCarousel() {
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [animated, setAnimated] = useState(false);
   const [direction, setDirection] = useState<'prev' | 'next'>('next');
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   useEffect(() => {
     // Inject CSS animations
@@ -185,6 +219,29 @@ export default function TestimonialCarousel() {
     setTimeout(() => setAnimated(false), 300);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setTouchEnd(e.changedTouches[0].clientX);
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNext();
+    }
+    if (isRightSwipe) {
+      handlePrev();
+    }
+  };
+
   const current = testimonials[currentIndex];
 
   return (
@@ -204,7 +261,11 @@ export default function TestimonialCarousel() {
         {/* Main Carousel */}
         <div className="relative">
           {/* Testimonial Card */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+          <div 
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12">
               {/* Left - Quote */}
               <div
@@ -292,8 +353,8 @@ export default function TestimonialCarousel() {
               </div>
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex items-center justify-between p-6 md:p-8 bg-gray-50 dark:bg-slate-700/50 border-t border-gray-200 dark:border-slate-700">
+            {/* Navigation Buttons - Hidden on mobile */}
+            <div className="hidden md:flex items-center justify-between p-6 md:p-8 bg-gray-50 dark:bg-slate-700/50 border-t border-gray-200 dark:border-slate-700">
               <button
                 onClick={handlePrev}
                 onMouseEnter={() => setIsAutoPlay(false)}
@@ -332,14 +393,19 @@ export default function TestimonialCarousel() {
             </div>
           </div>
 
-          {/* Testimonial Counter */}
+          {/* Testimonial Counter - More prominent on mobile */}
           <div className="text-center mt-8">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
               <span className="font-semibold text-gray-900 dark:text-white">
                 {currentIndex + 1}
               </span>
               {' / '}
               <span>{testimonials.length}</span>
+            </p>
+            
+            {/* Mobile swipe hint */}
+            <p className="md:hidden text-xs text-gray-500 dark:text-gray-500 mt-2">
+              {t.nav.home === 'Home' ? 'Swipe left or right' : 'Glissez vers la gauche ou droite'}
             </p>
           </div>
         </div>
