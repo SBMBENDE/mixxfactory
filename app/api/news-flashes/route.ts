@@ -27,12 +27,16 @@ export async function GET(_request: NextRequest) {
       .lean();
 
     return successResponse(
-      newsFlashes.map((n) => ({
+      newsFlashes.map((n: any) => ({
         _id: n._id.toString(),
         title: n.title,
         message: n.message,
         type: n.type,
         priority: n.priority,
+        link: n.link || null,
+        startDate: n.startDate,
+        endDate: n.endDate,
+        published: n.published,
         createdAt: n.createdAt,
       })),
       'News flashes fetched successfully',

@@ -114,7 +114,8 @@ export default function NewsFlashBanner() {
 
       {/* Close Button */}
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent triggering the main div's click
           setAnnouncements((prev) => prev.filter((_, i) => i !== currentIndex));
           if (currentIndex >= announcements.length - 1) {
             setCurrentIndex(0);
