@@ -128,7 +128,7 @@ export default function HomePage() {
         color: 'white',
       }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
+          <div style={{ textAlign: 'left' }}>
             <h1 style={{ 
               fontSize: isMobile ? '1.75rem' : '2.5rem', 
               fontWeight: 'bold', 
