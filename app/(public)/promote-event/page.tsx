@@ -19,9 +19,24 @@ interface EventFormData {
     venue: string;
     city: string;
     region: string;
+    address: string;
   };
   posterImage: string;
+  bannerImage: string;
   capacity: number;
+  ticketing: Array<{
+    label: string;
+    price: number;
+    currency: string;
+  }>;
+  ticketUrl: string;
+  organizer: {
+    name: string;
+    email: string;
+    phone: string;
+    website: string;
+  };
+  highlights: string[];
   pricingTier: 'free' | 'featured' | 'boost';
 }
 
@@ -80,15 +95,28 @@ export default function PromoteEventPage() {
     description: '',
     startDate: '',
     endDate: '',
-    startTime: '',
-    endTime: '',
+    startTime: '19:00',
+    endTime: '23:59',
     location: {
       venue: '',
       city: '',
       region: '',
+      address: '',
     },
     posterImage: '',
+    bannerImage: '',
     capacity: 0,
+    ticketing: [
+      { label: 'General', price: 0, currency: 'EUR' },
+    ],
+    ticketUrl: '',
+    organizer: {
+      name: '',
+      email: '',
+      phone: '',
+      website: '',
+    },
+    highlights: [],
     pricingTier: 'free',
   });
   const [categories, setCategories] = useState<any[]>([]);
@@ -573,18 +601,17 @@ export default function PromoteEventPage() {
               </div>
             </div>
 
-            {/* Capacity */}
+            {/* Address */}
             <div>
               <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                Expected Capacity
+                Full Address
               </label>
               <input
-                type="number"
-                name="capacity"
-                value={formData.capacity}
+                type="text"
+                name="location.address"
+                value={formData.location.address}
                 onChange={handleInputChange}
-                placeholder="Expected number of attendees"
-                min="0"
+                placeholder="Street address"
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -596,15 +623,99 @@ export default function PromoteEventPage() {
               />
             </div>
 
-            {/* Poster Image */}
+            {/* Poster & Banner Images */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Poster Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData(prev => ({ ...prev, posterImage: reader.result as string }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.375rem',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                {formData.posterImage && (
+                  <img
+                    src={formData.posterImage}
+                    alt="Poster Preview"
+                    style={{
+                      marginTop: '0.5rem',
+                      maxWidth: '100%',
+                      maxHeight: '150px',
+                      borderRadius: '0.375rem',
+                    }}
+                  />
+                )}
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Banner Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData(prev => ({ ...prev, bannerImage: reader.result as string }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.375rem',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                {formData.bannerImage && (
+                  <img
+                    src={formData.bannerImage}
+                    alt="Banner Preview"
+                    style={{
+                      marginTop: '0.5rem',
+                      maxWidth: '100%',
+                      maxHeight: '100px',
+                      borderRadius: '0.375rem',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Ticket URL */}
             <div>
               <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                Event Poster Image
+                Ticket Purchase URL
               </label>
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
+                type="url"
+                name="ticketUrl"
+                value={formData.ticketUrl}
+                onChange={handleInputChange}
+                placeholder="https://example.com/tickets"
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -614,17 +725,93 @@ export default function PromoteEventPage() {
                   boxSizing: 'border-box',
                 }}
               />
-              {formData.posterImage && (
-                <img
-                  src={formData.posterImage}
-                  alt="Preview"
-                  style={{
-                    marginTop: '1rem',
-                    maxWidth: '200px',
-                    borderRadius: '0.375rem',
-                  }}
-                />
-              )}
+            </div>
+
+            {/* Organizer Info */}
+            <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem', marginTop: '1.5rem', marginBottom: '1.5rem', borderLeft: '4px solid #2563eb' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>Organizer Information</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.875rem' }}>
+                    Organizer Name
+                  </label>
+                  <input
+                    type="text"
+                    name="organizer.name"
+                    value={formData.organizer.name}
+                    onChange={handleInputChange}
+                    placeholder="Organization name"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.875rem' }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="organizer.email"
+                    value={formData.organizer.email}
+                    onChange={handleInputChange}
+                    placeholder="contact@example.com"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.875rem' }}>
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    name="organizer.phone"
+                    value={formData.organizer.phone}
+                    onChange={handleInputChange}
+                    placeholder="+1234567890"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.875rem' }}>
+                    Website
+                  </label>
+                  <input
+                    type="url"
+                    name="organizer.website"
+                    value={formData.organizer.website}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Description */}
