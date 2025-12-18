@@ -177,8 +177,33 @@ export default function PromoteEventPage() {
 
     try {
       // Validate required fields
-      if (!formData.title || !formData.category || !formData.startDate) {
-        setError('Please fill in all required fields');
+      if (!formData.title || !formData.category || !formData.startDate || !formData.description) {
+        setError('Please fill in title, category, start date, and description');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.location.venue) {
+        setError('Please fill in the venue name');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.capacity || formData.capacity <= 0) {
+        setError('Please enter a valid capacity');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.organizer.name) {
+        setError('Please enter organizer name');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.posterImage) {
+        setError('Please upload a poster image');
+        setLoading(false);
         return;
       }
 
@@ -188,7 +213,9 @@ export default function PromoteEventPage() {
         published: true,
       };
 
-      const res = await fetch('/api/events', {
+      console.log('Submitting event data:', submitData);
+
+      const res = await fetch('/api/promote-event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -196,6 +223,8 @@ export default function PromoteEventPage() {
       });
 
       const data = await res.json();
+
+      console.log('API response:', data);
 
       if (data.success) {
         setSuccess('Event submitted successfully!');
@@ -220,11 +249,12 @@ export default function PromoteEventPage() {
         // Redirect after 2 seconds
         setTimeout(() => window.location.href = '/events', 2000);
       } else {
-        setError(data.message || 'Failed to submit event');
+        setError(data.error || data.message || 'Failed to submit event');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
-      console.error(err);
+      const errorMsg = err instanceof Error ? err.message : 'An error occurred';
+      setError(`Error: ${errorMsg}`);
+      console.error('Submission error:', err);
     } finally {
       setLoading(false);
     }
@@ -835,7 +865,7 @@ export default function PromoteEventPage() {
             {/* Description */}
             <div>
               <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                Description
+                Description *
               </label>
               <textarea
                 name="description"
@@ -843,6 +873,7 @@ export default function PromoteEventPage() {
                 onChange={handleInputChange}
                 placeholder="Describe your event"
                 rows={6}
+                required
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -851,6 +882,30 @@ export default function PromoteEventPage() {
                   fontSize: '1rem',
                   boxSizing: 'border-box',
                   fontFamily: 'inherit',
+                }}
+              />
+            </div>
+
+            {/* Capacity */}
+            <div>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                Expected Attendees/Capacity *
+              </label>
+              <input
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleInputChange}
+                placeholder="Number of attendees"
+                min="1"
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.375rem',
+                  fontSize: '1rem',
+                  boxSizing: 'border-box',
                 }}
               />
             </div>
