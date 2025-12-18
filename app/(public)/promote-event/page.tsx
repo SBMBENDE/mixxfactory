@@ -182,9 +182,10 @@ export default function PromoteEventPage() {
       const submitData = {
         ...formData,
         pricingTier: selectedTier,
+        published: true,
       };
 
-      const res = await fetch('/api/admin/professionals', {
+      const res = await fetch('/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
