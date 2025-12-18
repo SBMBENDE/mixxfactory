@@ -121,48 +121,130 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero Section - Mobile First */}
       <section style={{
-        padding: '3rem 1rem',
+        padding: isMobile ? '2rem 1rem' : '4rem 1rem',
         background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #7c3aed 100%)',
         color: 'white',
       }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ maxWidth: '700px', marginBottom: '2.5rem' }}>
-            <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+          <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
+            <h1 style={{ 
+              fontSize: isMobile ? '1.75rem' : '2.5rem', 
+              fontWeight: 'bold', 
+              marginBottom: '0.75rem',
+              lineHeight: '1.2'
+            }}>
               {t.home.title}
             </h1>
-            <p style={{ fontSize: '1.125rem', marginBottom: '2rem', color: '#f0f9ff' }}>
-              {isMobile ? t.home.subtitleMobile : t.home.subtitle}
+            <p style={{ 
+              fontSize: '1rem', 
+              marginBottom: '1.5rem', 
+              color: '#e0e7ff',
+              fontWeight: '500',
+              letterSpacing: '0.05em'
+            }}>
+              {t.home.tagline}
             </p>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <p style={{ 
+              fontSize: isMobile ? '0.95rem' : '1.125rem', 
+              marginBottom: '2rem', 
+              color: '#f0f9ff',
+              lineHeight: '1.5',
+              maxWidth: isMobile ? '100%' : '500px'
+            }}>
+              {t.home.subtitle}
+            </p>
+            
+            {/* Three CTAs - Mobile: stack vertically, Desktop: side by side */}
+            <div style={{ 
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: isMobile ? '1rem' : '1.5rem',
+              maxWidth: isMobile ? '100%' : '800px'
+            }}>
+              {/* Find Professionals */}
               <a 
                 href="/directory"
                 style={{
-                  padding: '0.875rem 2rem',
-                  backgroundColor: 'white',
-                  color: '#2563eb',
-                  borderRadius: '0.375rem',
+                  padding: isMobile ? '1rem' : '1.125rem 1.5rem',
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  borderRadius: '0.5rem',
                   textDecoration: 'none',
                   fontWeight: '600',
-                  fontSize: '1rem',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
                   cursor: 'pointer',
-                  border: 'none',
+                  border: '2px solid #3b82f6',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#3b82f6';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#3b82f6';
+                  e.currentTarget.style.color = 'white';
                 }}
               >
-                {t.home.browseDir}
+                {t.home.discoverBtn}
               </a>
+
+              {/* Explore Events */}
+              <a 
+                href="/events"
+                style={{
+                  padding: isMobile ? '1rem' : '1.125rem 1.5rem',
+                  backgroundColor: 'white',
+                  color: '#2563eb',
+                  borderRadius: '0.5rem',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid white',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f0f9ff';
+                  e.currentTarget.style.color = '#2563eb';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#2563eb';
+                }}
+              >
+                {t.home.eventsBtn}
+              </a>
+
+              {/* Register as Professional */}
               <button
                 onClick={() => setIsAuthModalOpen(true)}
                 style={{
-                  padding: '0.875rem 2rem',
-                  backgroundColor: '#f97316',
+                  padding: isMobile ? '1rem' : '1.125rem 1.5rem',
+                  backgroundColor: '#10b981',
                   color: 'white',
-                  borderRadius: '0.375rem',
+                  borderRadius: '0.5rem',
                   fontWeight: '600',
-                  fontSize: '1rem',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
                   cursor: 'pointer',
-                  border: 'none',
+                  border: '2px solid #10b981',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block',
+                  width: '100%'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#10b981';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#10b981';
+                  e.currentTarget.style.color = 'white';
                 }}
               >
                 {t.home.registerBtn}
