@@ -119,11 +119,8 @@ export default function EventsPage() {
             </p>
             
             {/* Promote Event CTA */}
-            <button
-              onClick={() => {
-                // TODO: Handle promote event action
-                alert('Promote Your Event feature coming soon');
-              }}
+            <a
+              href="/promote-event"
               style={{
                 padding: isMobile ? '1rem' : '1rem 2rem',
                 backgroundColor: 'rgb(249, 115, 22)',
@@ -136,6 +133,7 @@ export default function EventsPage() {
                 transition: 'all 0.3s ease',
                 textAlign: 'center',
                 display: 'inline-block',
+                textDecoration: 'none',
                 width: 'auto'
               }}
               onMouseEnter={(e) => {
@@ -148,7 +146,7 @@ export default function EventsPage() {
               }}
             >
               {t.events.promoteEvent}
-            </button>
+            </a>
           </div>
         </div>
       </section>
