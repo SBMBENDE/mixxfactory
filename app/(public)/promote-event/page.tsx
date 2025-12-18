@@ -166,17 +166,6 @@ export default function PromoteEventPage() {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, posterImage: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -214,9 +203,14 @@ export default function PromoteEventPage() {
           endDate: '',
           startTime: '',
           endTime: '',
-          location: { venue: '', city: '', region: '' },
+          location: { venue: '', city: '', region: '', address: '' },
           posterImage: '',
+          bannerImage: '',
           capacity: 0,
+          ticketing: [{ label: 'General', price: 0, currency: 'EUR' }],
+          ticketUrl: '',
+          organizer: { name: '', email: '', phone: '', website: '' },
+          highlights: [],
           pricingTier: 'free',
         });
         // Redirect after 2 seconds
