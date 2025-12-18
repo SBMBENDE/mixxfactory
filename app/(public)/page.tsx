@@ -226,13 +226,13 @@ export default function HomePage() {
                 onClick={() => setIsAuthModalOpen(true)}
                 style={{
                   padding: isMobile ? '1rem' : '1.125rem 1.5rem',
-                  backgroundColor: '#10b981',
+                  backgroundColor: 'rgb(249, 115, 22)',
                   color: 'white',
                   borderRadius: '0.5rem',
                   fontWeight: '600',
                   fontSize: isMobile ? '0.95rem' : '1rem',
                   cursor: 'pointer',
-                  border: '2px solid #10b981',
+                  border: '2px solid rgb(249, 115, 22)',
                   transition: 'all 0.3s ease',
                   textAlign: 'center',
                   display: 'block',
@@ -240,10 +240,10 @@ export default function HomePage() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.color = '#10b981';
+                  e.currentTarget.style.color = 'rgb(249, 115, 22)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#10b981';
+                  e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
                   e.currentTarget.style.color = 'white';
                 }}
               >
