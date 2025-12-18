@@ -118,36 +118,107 @@ export default function EventsPage() {
               {t.events.subtitle}
             </p>
             
-            {/* Promote Event CTA - Mobile: full width, Desktop: inline */}
-            <button
-              onClick={() => {
-                // TODO: Handle promote event action
-                alert('Promote Your Event feature coming soon');
-              }}
-              style={{
-                padding: isMobile ? '1rem' : '1rem 2rem',
-                backgroundColor: 'rgb(249, 115, 22)',
-                color: 'white',
-                borderRadius: '0.5rem',
-                fontWeight: '600',
-                fontSize: isMobile ? '0.95rem' : '1rem',
-                cursor: 'pointer',
-                border: '2px solid rgb(249, 115, 22)',
-                transition: 'all 0.3s ease',
-                textAlign: 'center',
-                display: isMobile ? 'block' : 'inline-block',
-                width: isMobile ? '100%' : 'auto'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-                e.currentTarget.style.color = 'rgb(249, 115, 22)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
-                e.currentTarget.style.color = 'white';
-              }}
-            >
-              {t.events.promoteEvent}
+            {/* CTAs Container - Mobile: stacked, Desktop: side by side */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              flexDirection: isMobile ? 'column' : 'row',
+              width: isMobile ? '100%' : 'auto'
+            }}>
+              {/* Promote Event CTA */}
+              <button
+                onClick={() => {
+                  // TODO: Handle promote event action
+                  alert('Promote Your Event feature coming soon');
+                }}
+                style={{
+                  padding: isMobile ? '1rem' : '1rem 2rem',
+                  backgroundColor: 'rgb(249, 115, 22)',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid rgb(249, 115, 22)',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block',
+                  flex: isMobile ? '1' : '0 1 auto',
+                  width: isMobile ? '100%' : 'auto'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = 'rgb(249, 115, 22)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                {t.events.promoteEvent}
+              </button>
+
+              {/* Browse Events CTA */}
+              <a
+                href="#events-grid"
+                style={{
+                  padding: isMobile ? '1rem' : '1rem 2rem',
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid #3b82f6',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block',
+                  flex: isMobile ? '1' : '0 1 auto',
+                  width: isMobile ? '100%' : 'auto',
+                  textDecoration: 'none'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#3b82f6';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#3b82f6';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                {t.events.browseEvents}
+              </a>
+            </div>              {/* Browse Events CTA */}
+              <a
+                href="#events-grid"
+                style={{
+                  padding: isMobile ? '1rem' : '1rem 2rem',
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid #3b82f6',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block',
+                  flex: isMobile ? '1' : '0 1 auto',
+                  width: isMobile ? '100%' : 'auto',
+                  textDecoration: 'none'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#3b82f6';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#3b82f6';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                {t.events.browseEvents}
+              </a>
+            </div>
             </button>
           </div>
         </div>
