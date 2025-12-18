@@ -6,7 +6,6 @@
 
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
-import { useLanguage } from '@/hooks/useLanguage';
 
 interface EventFormData {
   title: string;
@@ -72,7 +71,6 @@ const PRICING_TIERS = [
 ];
 
 export default function PromoteEventPage() {
-  const { language } = useLanguage();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<'free' | 'featured' | 'boost'>('free');
