@@ -188,38 +188,7 @@ export default function EventsPage() {
               >
                 {t.events.browseEvents}
               </a>
-            </div>              {/* Browse Events CTA */}
-              <a
-                href="#events-grid"
-                style={{
-                  padding: isMobile ? '1rem' : '1rem 2rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  borderRadius: '0.5rem',
-                  fontWeight: '600',
-                  fontSize: isMobile ? '0.95rem' : '1rem',
-                  cursor: 'pointer',
-                  border: '2px solid #3b82f6',
-                  transition: 'all 0.3s ease',
-                  textAlign: 'center',
-                  display: 'block',
-                  flex: isMobile ? '1' : '0 1 auto',
-                  width: isMobile ? '100%' : 'auto',
-                  textDecoration: 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.color = '#3b82f6';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#3b82f6';
-                  e.currentTarget.style.color = 'white';
-                }}
-              >
-                {t.events.browseEvents}
-              </a>
             </div>
-            </button>
           </div>
         </div>
       </section>
