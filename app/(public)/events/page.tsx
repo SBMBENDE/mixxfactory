@@ -44,7 +44,18 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const t = useTranslations();
+
+  // Detect mobile window size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize(); // Set initial value
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -77,27 +88,79 @@ export default function EventsPage() {
   };
 
   return (
-    <div style={{ padding: '3rem 1rem', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
-          <h1 style={{
-            fontSize: '2.25rem',
-            fontWeight: 'bold',
-            marginBottom: '1rem',
-            color: '#1f2937',
-          }}>
-            {t.events.title}
-          </h1>
-          <p style={{ color: '#6b7280', fontSize: '1.125rem', marginBottom: '2rem' }}>
-            {t.events.subtitle}
-          </p>
+    <>
+      {/* Hero Section - Mobile First */}
+      <section style={{
+        paddingTop: isMobile ? '4rem' : '6rem',
+        paddingBottom: isMobile ? '2rem' : '4rem',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+        background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #ec4899 100%)',
+        color: 'white',
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'left' }}>
+            <h1 style={{ 
+              fontSize: isMobile ? '1.75rem' : '2.5rem', 
+              fontWeight: 'bold', 
+              marginBottom: '0.75rem',
+              lineHeight: '1.2'
+            }}>
+              {t.events.title}
+            </h1>
+            <p style={{ 
+              fontSize: isMobile ? '0.95rem' : '1.125rem', 
+              marginBottom: '2rem', 
+              color: '#f0f9ff',
+              lineHeight: '1.5',
+              maxWidth: isMobile ? '100%' : '600px'
+            }}>
+              {t.events.subtitle}
+            </p>
+            
+            {/* Promote Event CTA - Mobile: full width, Desktop: inline */}
+            <button
+              onClick={() => {
+                // TODO: Handle promote event action
+                alert('Promote Your Event feature coming soon');
+              }}
+              style={{
+                padding: isMobile ? '1rem' : '1rem 2rem',
+                backgroundColor: 'rgb(249, 115, 22)',
+                color: 'white',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                fontSize: isMobile ? '0.95rem' : '1rem',
+                cursor: 'pointer',
+                border: '2px solid rgb(249, 115, 22)',
+                transition: 'all 0.3s ease',
+                textAlign: 'center',
+                display: isMobile ? 'block' : 'inline-block',
+                width: isMobile ? '100%' : 'auto'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.color = 'rgb(249, 115, 22)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
+                e.currentTarget.style.color = 'white';
+              }}
+            >
+              {t.events.promoteEvent}
+            </button>
+          </div>
+        </div>
+      </section>
 
+      {/* Events Section */}
+      <div style={{ padding: isMobile ? '2rem 1rem' : '3rem 1rem', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           {/* Filters */}
           <div style={{
             display: 'flex',
             gap: '1rem',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             flexWrap: 'wrap',
             marginBottom: '2rem',
           }}>
@@ -127,19 +190,18 @@ export default function EventsPage() {
               ⭐ {t.events.featured}
             </button>
           </div>
-        </div>
 
-        {/* Events Grid */}
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>
-            <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>{t.events.noEvents}</p>
-          </div>
-        ) : events.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>
-            <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>{t.events.noEvents}</p>
-          </div>
-        ) : (
-          <div style={{
+          {/* Events Grid */}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>{t.events.noEvents}</p>
+            </div>
+          ) : events.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>{t.events.noEvents}</p>
+            </div>
+          ) : (
+            <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: '2rem',
@@ -297,8 +359,9 @@ export default function EventsPage() {
               </div>
             ))}
           </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

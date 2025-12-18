@@ -70,8 +70,9 @@ export const translations = {
     },
     // Events
     events: {
-      title: 'Upcoming Events',
-      subtitle: 'Discover exciting events happening near you',
+      title: 'Upcoming Events & Showbiz',
+      subtitle: 'Discover concerts, parties, networking events, and more — promoted by trusted organizers.',
+      promoteEvent: 'Promote Your Event',
       noEvents: 'No events found',
       viewDetails: 'View Details',
       buyTickets: 'Buy Tickets',
@@ -461,8 +462,9 @@ export const translations = {
     },
     // Events
     events: {
-      title: 'Événements à venir',
-      subtitle: 'Découvrez des événements passionnants près de chez vous',
+      title: 'Événements à venir & Showbiz',
+      subtitle: 'Découvrez des concerts, des fêtes, des événements de réseautage, et plus — promus par des organisateurs de confiance.',
+      promoteEvent: 'Promouvoir votre événement',
       noEvents: 'Aucun événement trouvé',
       viewDetails: 'Voir les détails',
       buyTickets: 'Acheter des billets',
