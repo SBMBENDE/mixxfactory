@@ -119,7 +119,6 @@ export default function PromoteEventPage() {
     highlights: [],
     pricingTier: 'free',
   });
-  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -137,21 +136,17 @@ export default function PromoteEventPage() {
     checkAuth();
   }, []);
 
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch('/api/categories');
-        const data = await res.json();
-        if (data.success) {
-          setCategories(data.data);
-        }
-      } catch (err) {
-        console.error('Failed to fetch categories:', err);
-      }
-    };
-    fetchCategories();
-  }, []);
+  // Event categories (hardcoded to match admin dashboard)
+  const eventCategories = [
+    'Music',
+    'Sports',
+    'Theater',
+    'Comedy',
+    'Conferences',
+    'Festivals',
+    'Exhibitions',
+    'Workshops',
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -435,9 +430,9 @@ export default function PromoteEventPage() {
                 }}
               >
                 <option value="">Select a category</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={String(cat._id)}>
-                    {cat.name}
+                {eventCategories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
                   </option>
                 ))}
               </select>
