@@ -20,6 +20,7 @@ interface EventFormData {
     city: string;
     region: string;
     address: string;
+    country: string;
   };
   posterImage: string;
   bannerImage: string;
@@ -102,6 +103,7 @@ export default function PromoteEventPage() {
       city: '',
       region: '',
       address: '',
+      country: '',
     },
     posterImage: '',
     bannerImage: '',
@@ -156,6 +158,12 @@ export default function PromoteEventPage() {
         ...prev,
         location: { ...prev.location, [key]: value }
       }));
+    } else if (name.startsWith('organizer.')) {
+      const key = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        organizer: { ...prev.organizer, [key]: value }
+      }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -199,7 +207,7 @@ export default function PromoteEventPage() {
           endDate: '',
           startTime: '',
           endTime: '',
-          location: { venue: '', city: '', region: '', address: '' },
+          location: { venue: '', city: '', region: '', address: '', country: '' },
           posterImage: '',
           bannerImage: '',
           capacity: 0,
@@ -546,8 +554,8 @@ export default function PromoteEventPage() {
               />
             </div>
 
-            {/* City & Region */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            {/* City, Region & Country */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
               <div>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
                   City *
@@ -579,6 +587,26 @@ export default function PromoteEventPage() {
                   value={formData.location.region}
                   onChange={handleInputChange}
                   placeholder="Region/State"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.375rem',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Country
+                </label>
+                <input
+                  type="text"
+                  name="location.country"
+                  value={formData.location.country}
+                  onChange={handleInputChange}
+                  placeholder="Country"
                   style={{
                     width: '100%',
                     padding: '0.75rem',
