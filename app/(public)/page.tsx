@@ -123,7 +123,10 @@ export default function HomePage() {
     <>
       {/* Hero Section - Mobile First */}
       <section style={{
-        padding: isMobile ? '2rem 1rem' : '4rem 1rem',
+        paddingTop: isMobile ? '4rem' : '6rem',
+        paddingBottom: isMobile ? '2rem' : '4rem',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
         background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #7c3aed 100%)',
         color: 'white',
       }}>
@@ -135,7 +138,7 @@ export default function HomePage() {
               marginBottom: '0.75rem',
               lineHeight: '1.2'
             }}>
-              {t.home.title}
+              MixxFactory
             </h1>
             <p style={{ 
               fontSize: '1rem', 
