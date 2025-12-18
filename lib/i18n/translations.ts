@@ -656,7 +656,7 @@ export const translations = {
     },
     // Testimonials
     testimonials: {
-      title: 'Ce que disent nos clients',
+      title: 'Témoignages',
       subtitle: 'Rejoignez des milliers de professionnels et d\'organisateurs d\'événements satisfaits qui font confiance à MixxFactory',
       satisfaction: 'Taux de satisfaction des clients',
       bookings: 'Réservations réussies',
