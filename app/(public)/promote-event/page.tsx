@@ -436,7 +436,7 @@ export default function PromoteEventPage() {
               >
                 <option value="">Select a category</option>
                 {categories.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
+                  <option key={cat._id} value={String(cat._id)}>
                     {cat.name}
                   </option>
                 ))}
