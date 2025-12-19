@@ -43,6 +43,12 @@ interface EventFormData {
     website: string;
   };
   highlights: string[];
+  media: Array<{
+    url: string;
+    platform: 'youtube' | 'facebook' | 'vimeo';
+    videoId: string;
+    embedUrl: string;
+  }>;
   pricingTier: 'free' | 'featured' | 'boost';
 }
 
@@ -53,6 +59,7 @@ const PRICING_TIERS = [
     description: 'Basic event listing',
     price: 0,
     imageLimit: 1,
+    videoLimit: 0,
     features: [
       'Basic event profile',
       'Search visibility',
@@ -68,12 +75,14 @@ const PRICING_TIERS = [
     price: 25,
     duration: 'per week',
     imageLimit: 5,
+    videoLimit: 1,
     features: [
       'Everything in Free',
       'Featured on homepage',
       'Top search results',
       'Event badge',
       'Up to 5 images',
+      '1 video embed',
       'Social media promotion',
     ],
   },
@@ -84,12 +93,14 @@ const PRICING_TIERS = [
     price: 99,
     duration: 'per month',
     imageLimit: 10,
+    videoLimit: 3,
     features: [
       'Everything in Featured',
       'Homepage banner',
       'News Flash inclusion',
       'Priority support',
       'Up to 10 images',
+      'Up to 3 videos',
       'Analytics dashboard',
       'Extended duration (30 days)',
     ],
@@ -130,6 +141,7 @@ export default function PromoteEventPage() {
       website: '',
     },
     highlights: [],
+    media: [],
     pricingTier: 'free',
   });
   const [loading, setLoading] = useState(false);
@@ -251,6 +263,7 @@ export default function PromoteEventPage() {
           posterImage: '',
           bannerImage: '',
           images: [],
+          media: [],
           capacity: 0,
           ticketing: [{ label: 'General', price: 0, currency: 'EUR' }],
           ticketUrl: '',
@@ -814,6 +827,158 @@ export default function PromoteEventPage() {
                   border: '1px dashed #d1d5db',
                 }}>
                   <p>No images added yet. Add images to showcase your event.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Video Gallery Section */}
+            <div style={{
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e5e7eb',
+            }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1f2937' }}>Event Videos</h3>
+                <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  {formData.media.length} / {PRICING_TIERS.find(t => t.id === selectedTier)?.videoLimit || 0} videos
+                </span>
+              </div>
+
+              {/* Add Video URL */}
+              {formData.media.length < (PRICING_TIERS.find(t => t.id === selectedTier)?.videoLimit || 0) && (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    Add Video (YouTube, Facebook, or Vimeo)
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.5rem' }}>
+                    <input
+                      type="url"
+                      id="videoUrl"
+                      placeholder="Paste YouTube, Facebook, or Vimeo link..."
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '0.375rem',
+                        fontSize: '1rem',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        const videoInput = document.getElementById('videoUrl') as HTMLInputElement;
+                        if (videoInput?.value) {
+                          const { validateVideoUrl } = require('@/utils/videoValidation');
+                          const videoData = validateVideoUrl(videoInput.value);
+                          
+                          if (videoData) {
+                            setFormData(prev => ({
+                              ...prev,
+                              media: [...prev.media, videoData],
+                            }));
+                            videoInput.value = '';
+                          } else {
+                            alert('Invalid video URL. Please use YouTube, Facebook, or Vimeo links.');
+                          }
+                        }
+                      }}
+                      style={{
+                        padding: '0.75rem 1.5rem',
+                        backgroundColor: '#3b82f6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.375rem',
+                        cursor: 'pointer',
+                        fontWeight: '600',
+                        fontSize: '0.875rem',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Add Video
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Video Gallery Display */}
+              {formData.media.length > 0 && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                  gap: '1rem',
+                }}>
+                  {formData.media.map((video, index) => (
+                    <div key={index} style={{
+                      position: 'relative',
+                      borderRadius: '0.375rem',
+                      overflow: 'hidden',
+                      backgroundColor: '#1f2937',
+                      aspectRatio: '16/9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '2rem',
+                    }}>
+                      {video.platform === 'youtube' && '▶'}
+                      {video.platform === 'facebook' && '📘'}
+                      {video.platform === 'vimeo' && '▶'}
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0 0 0 0.375rem',
+                      }}>
+                        <button
+                          onClick={() => {
+                            setFormData(prev => ({
+                              ...prev,
+                              media: prev.media.filter((_, i) => i !== index),
+                            }));
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontSize: '1rem',
+                            padding: 0,
+                          }}
+                          title="Remove video"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <div style={{
+                        position: 'absolute',
+                        top: '0.5rem',
+                        left: '0.5rem',
+                        backgroundColor: 'rgb(249, 115, 22)',
+                        color: 'white',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0.25rem',
+                        fontSize: '0.65rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                      }}>
+                        {video.platform}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {formData.media.length === 0 && (PRICING_TIERS.find(t => t.id === selectedTier)?.videoLimit || 0) > 0 && (
+                <div style={{
+                  padding: '2rem',
+                  textAlign: 'center',
+                  color: '#6b7280',
+                  backgroundColor: 'white',
+                  borderRadius: '0.375rem',
+                  border: '1px dashed #d1d5db',
+                }}>
+                  <p>No videos added yet. Add videos to showcase your event.</p>
                 </div>
               )}
             </div>

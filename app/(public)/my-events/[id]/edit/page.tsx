@@ -51,6 +51,12 @@ interface EventFormData {
   ticketUrl: string;
   organizer: OrganizerData;
   highlights: string[];
+  media: Array<{
+    url: string;
+    platform: 'youtube' | 'facebook' | 'vimeo';
+    videoId: string;
+    embedUrl: string;
+  }>;
 }
 
 const EVENT_CATEGORIES = [
@@ -99,6 +105,7 @@ export default function EditEventPage() {
       website: '',
     },
     highlights: [],
+    media: [],
   });
 
   const [loading, setLoading] = useState(true);
@@ -148,6 +155,7 @@ export default function EditEventPage() {
               website: '',
             },
             highlights: event.highlights || [],
+            media: event.media || [],
           });
           if (event.posterImage) setPosterPreview(event.posterImage);
           if (event.bannerImage) setBannerPreview(event.bannerImage);
@@ -958,6 +966,152 @@ export default function EditEventPage() {
                 boxSizing: 'border-box',
               }}
             />
+          </div>
+
+          {/* Event Videos */}
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', marginTop: '2rem', color: '#1f2937' }}>
+            Event Videos
+          </h2>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.5rem', marginBottom: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
+                  Add Video (YouTube, Facebook, or Vimeo)
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.5rem' }}>
+                  <input
+                    type="url"
+                    id="videoUrl"
+                    placeholder="Paste YouTube, Facebook, or Vimeo link..."
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const videoInput = document.getElementById('videoUrl') as HTMLInputElement;
+                      if (videoInput?.value) {
+                        const { validateVideoUrl } = require('@/utils/videoValidation');
+                        const videoData = validateVideoUrl(videoInput.value);
+                        
+                        if (videoData) {
+                          setFormData(prev => ({
+                            ...prev,
+                            media: [...prev.media, videoData],
+                          }));
+                          videoInput.value = '';
+                        } else {
+                          alert('Invalid video URL. Please use YouTube, Facebook, or Vimeo links.');
+                        }
+                      }
+                    }}
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      fontSize: '0.875rem',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Add Video
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Video List */}
+            {formData.media.length > 0 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                gap: '1rem',
+              }}>
+                {formData.media.map((video, index) => (
+                  <div key={index} style={{
+                    position: 'relative',
+                    borderRadius: '0.375rem',
+                    overflow: 'hidden',
+                    backgroundColor: '#1f2937',
+                    aspectRatio: '16/9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '2rem',
+                  }}>
+                    {video.platform === 'youtube' && '▶'}
+                    {video.platform === 'facebook' && '📘'}
+                    {video.platform === 'vimeo' && '▶'}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0 0 0 0.375rem',
+                    }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            media: prev.media.filter((_, i) => i !== index),
+                          }));
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'white',
+                          cursor: 'pointer',
+                          fontSize: '1rem',
+                          padding: 0,
+                        }}
+                        title="Remove video"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      left: '0.5rem',
+                      backgroundColor: 'rgb(249, 115, 22)',
+                      color: 'white',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.65rem',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                    }}>
+                      {video.platform}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {formData.media.length === 0 && (
+              <div style={{
+                padding: '2rem',
+                textAlign: 'center',
+                color: '#6b7280',
+                backgroundColor: 'white',
+                borderRadius: '0.375rem',
+                border: '1px dashed #d1d5db',
+              }}>
+                <p>No videos added. Add videos to showcase your event.</p>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}

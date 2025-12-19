@@ -7,6 +7,7 @@ import { connectDB } from '@/lib/db/connection';
 import { EventModel } from '@/lib/db/models';
 import { verifyAuth } from '@/lib/auth/verify';
 import { generateSlug } from '@/utils/slug';
+import { validateVideoUrl } from '@/utils/videoValidation';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,13 @@ export async function POST(req: NextRequest) {
       free: 1,
       featured: 5,
       boost: 10,
+    };
+
+    // Define video limits per tier
+    const VIDEO_LIMITS: { [key: string]: number } = {
+      free: 0,
+      featured: 1,
+      boost: 3,
     };
 
     // Validate required fields
@@ -87,6 +95,48 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validate video count and URLs for tier
+    const videoLimit = VIDEO_LIMITS[tier] || 0;
+    const videoCount = Array.isArray(body.media) ? body.media.length : 0;
+
+    if (videoCount > videoLimit) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `${tier} tier allows maximum ${videoLimit} video(s), but ${videoCount} were provided`
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate each video URL format
+    if (Array.isArray(body.media) && body.media.length > 0) {
+      for (const video of body.media) {
+        // Media should already be validated on client side, but validate again on server
+        if (!video.url || !video.platform || !video.videoId || !video.embedUrl) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              error: 'Invalid video data structure. Please ensure all videos are valid YouTube, Facebook, or Vimeo links.'
+            },
+            { status: 400 }
+          );
+        }
+        
+        // Verify the video data is valid
+        const revalidated = validateVideoUrl(video.url);
+        if (!revalidated) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              error: `Invalid video URL: ${video.url}`
+            },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     // Generate slug from title
     let slug = generateSlug(body.title);
 
@@ -132,6 +182,7 @@ export async function POST(req: NextRequest) {
       posterImage: body.posterImage,
       bannerImage: body.bannerImage || '',
       images: Array.isArray(body.images) ? body.images : [],
+      media: Array.isArray(body.media) ? body.media.map((v: any) => v.embedUrl) : [],
       ticketing: body.ticketing,
       ticketUrl: body.ticketUrl || '',
       capacity: body.capacity,

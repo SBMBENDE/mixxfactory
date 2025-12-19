@@ -32,6 +32,7 @@ interface EventData {
     caption?: string;
     order: number;
   }>;
+  media?: string[];
   capacity: number;
   attendees: number;
   ticketing: Array<{
@@ -359,6 +360,74 @@ export default function EventDetailPage() {
                   </p>
                 </div>
               </div>
+
+              {/* Videos */}
+              {event.media && event.media.length > 0 && (
+                <div style={{ marginBottom: '2rem' }}>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>
+                    Event Videos
+                  </h2>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '1rem',
+                  }}>
+                    {event.media.map((embedUrl, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          backgroundColor: 'white',
+                          borderRadius: '0.375rem',
+                          overflow: 'hidden',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                        }}
+                      >
+                        <div style={{ aspectRatio: '16/9', position: 'relative' }}>
+                          {/* YouTube Embed */}
+                          {embedUrl?.includes('youtube.com') && (
+                            // eslint-disable-next-line jsx-a11y/iframe-has-title
+                            <iframe
+                              src={embedUrl}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                border: 'none',
+                              }}
+                              allowFullScreen
+                            />
+                          )}
+                          {/* Vimeo Embed */}
+                          {embedUrl?.includes('vimeo.com') && (
+                            // eslint-disable-next-line jsx-a11y/iframe-has-title
+                            <iframe
+                              src={embedUrl}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                border: 'none',
+                              }}
+                              allowFullScreen
+                            />
+                          )}
+                          {/* Facebook Embed */}
+                          {embedUrl?.includes('facebook.com') && (
+                            // eslint-disable-next-line jsx-a11y/iframe-has-title
+                            <iframe
+                              src={embedUrl}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                border: 'none',
+                              }}
+                              allowFullScreen
+                            />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Organizer */}
               <div>
