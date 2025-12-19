@@ -238,6 +238,17 @@ export default function MyEventsPage() {
                           }}>
                             View
                           </Link>
+                          <Link href={`/my-events/${event._id}/edit`} style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#10b981',
+                            color: 'white',
+                            textDecoration: 'none',
+                            borderRadius: '0.375rem',
+                            fontSize: '0.875rem',
+                            fontWeight: '600',
+                          }}>
+                            Edit
+                          </Link>
                           <button
                             onClick={() => {
                               setSelectedEventId(event._id);
