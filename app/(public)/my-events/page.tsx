@@ -227,17 +227,6 @@ export default function MyEventsPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          <Link href={`/events/${event.slug}`} style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: '#e5e7eb',
-                            color: '#1f2937',
-                            textDecoration: 'none',
-                            borderRadius: '0.375rem',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
-                          }}>
-                            View
-                          </Link>
                           <Link href={`/my-events/${event._id}/edit`} style={{
                             padding: '0.5rem 1rem',
                             backgroundColor: '#10b981',
@@ -247,7 +236,7 @@ export default function MyEventsPage() {
                             fontSize: '0.875rem',
                             fontWeight: '600',
                           }}>
-                            Edit
+                            ✏️ Edit
                           </Link>
                           <button
                             onClick={() => {
@@ -265,7 +254,7 @@ export default function MyEventsPage() {
                               cursor: 'pointer',
                             }}
                           >
-                            Upgrade Tier
+                            ⭐ Upgrade Tier
                           </button>
                         </div>
                       </div>
@@ -310,6 +299,22 @@ export default function MyEventsPage() {
                   </button>
                 </div>
               )}
+
+              {/* Back to Events Button */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                <Link href="/events" style={{
+                  display: 'inline-block',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#e5e7eb',
+                  color: '#1f2937',
+                  textDecoration: 'none',
+                  borderRadius: '0.375rem',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                }}>
+                  ← Back to Events
+                </Link>
+              </div>
             </>
           )}
         </div>
