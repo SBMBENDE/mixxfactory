@@ -48,6 +48,7 @@ interface Event {
   promotionTier: string;
   promotionExpiryDate?: string;
   createdAt: string;
+  posterImage?: string;
 }
 
 export default function MyEventsPage() {
@@ -192,10 +193,34 @@ export default function MyEventsPage() {
                         borderRadius: '0.375rem',
                         border: '1px solid #e5e7eb',
                         display: 'grid',
-                        gridTemplateColumns: '1fr auto',
-                        gap: '1rem',
+                        gridTemplateColumns: '120px 1fr auto',
+                        gap: '1.5rem',
+                        alignItems: 'start',
                       }}
                     >
+                      {/* Event Thumbnail */}
+                      {event.posterImage && (
+                        <div style={{
+                          width: '120px',
+                          height: '120px',
+                          borderRadius: '0.375rem',
+                          overflow: 'hidden',
+                          backgroundColor: '#e5e7eb',
+                          flexShrink: 0,
+                        }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={event.posterImage}
+                            alt={event.title}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        </div>
+                      )}
+
                       <div>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#1f2937' }}>
                           {event.title}
