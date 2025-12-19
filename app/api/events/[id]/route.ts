@@ -20,15 +20,17 @@ export async function GET(
 
     const { id } = params;
 
-    // Check if valid MongoDB ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid event ID' },
-        { status: 400 }
-      );
+    let event;
+
+    // Try to find by ObjectId first (for /my-events edit links)
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      event = await EventModel.findById(id).lean();
     }
 
-    const event = await EventModel.findById(id).lean();
+    // If not found by ID, try to find by slug (for event detail pages)
+    if (!event) {
+      event = await EventModel.findOne({ slug: id }).lean();
+    }
 
     if (!event) {
       return NextResponse.json(
