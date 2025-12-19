@@ -628,19 +628,15 @@ interface IEventDocument extends Document {
     phone: string;
     website?: string;
   };
-  featured: {
-    type: Boolean;
-    default: false;
-    index: true;
-  };
-  published: {
-    type: Boolean;
-    default: false;
-    index: true;
-  };
+  featured: boolean;
+  published: boolean;
   tags: string[];
   highlights: string[]; // Featured acts, performers, etc.
   media?: string[]; // Video URLs (YouTube, Facebook, Vimeo embeds)
+  userId?: mongoose.Types.ObjectId; // User who created the event
+  promotionTier?: string; // 'free', 'featured', 'boost'
+  promotionStartDate?: Date;
+  promotionExpiryDate?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -750,6 +746,21 @@ const eventSchema = new Schema<IEventDocument>(
     tags: [String],
     highlights: [String],
     media: [String], // Array of video URLs (YouTube, Facebook, Vimeo embeds)
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      index: true,
+    },
+    promotionTier: {
+      type: String,
+      enum: ['free', 'featured', 'boost'],
+      default: 'free',
+    },
+    promotionStartDate: {
+      type: Date,
+      default: Date.now,
+    },
+    promotionExpiryDate: Date, // For featured (1 week) and boost (1 month) tiers
   },
   { timestamps: true }
 );
@@ -758,6 +769,8 @@ const eventSchema = new Schema<IEventDocument>(
 eventSchema.index({ published: 1, startDate: 1 });
 eventSchema.index({ category: 1, startDate: 1 });
 eventSchema.index({ published: 1, featured: -1, startDate: -1 });
+eventSchema.index({ userId: 1, createdAt: -1 });
+eventSchema.index({ userId: 1, promotionTier: 1 });
 
 export const EventModel =
   (mongoose.models.Event as Model<IEventDocument>) ||

@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const userId = auth.payload.userId;
     const body = await req.json();
 
     // Validate required fields
@@ -85,6 +86,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Calculate promotion expiry date based on tier
+    let promotionExpiryDate = null;
+    if (body.pricingTier === 'featured') {
+      // Featured: 1 week
+      promotionExpiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    } else if (body.pricingTier === 'boost') {
+      // Boost: 1 month
+      promotionExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    }
+
     // Create event with promotion tier info
     const event = new EventModel({
       title: body.title,
@@ -105,8 +116,10 @@ export async function POST(req: NextRequest) {
       highlights: body.highlights || [],
       published: body.published || false,
       featured: body.pricingTier === 'featured' || body.pricingTier === 'boost',
-      // TODO: Store promotion tier and payment info
+      userId,
       promotionTier: body.pricingTier || 'free',
+      promotionStartDate: new Date(),
+      promotionExpiryDate,
     });
 
     await event.save();
