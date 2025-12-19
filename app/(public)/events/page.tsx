@@ -118,35 +118,66 @@ export default function EventsPage() {
               {t.events.subtitle}
             </p>
             
-            {/* Promote Event CTA */}
-            <a
-              href="/promote-event"
-              style={{
-                padding: isMobile ? '1rem' : '1rem 2rem',
-                backgroundColor: 'rgb(249, 115, 22)',
-                color: 'white',
-                borderRadius: '0.5rem',
-                fontWeight: '600',
-                fontSize: isMobile ? '0.95rem' : '1rem',
-                cursor: 'pointer',
-                border: '2px solid rgb(249, 115, 22)',
-                transition: 'all 0.3s ease',
-                textAlign: 'center',
-                display: 'inline-block',
-                textDecoration: 'none',
-                width: 'auto'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-                e.currentTarget.style.color = 'rgb(249, 115, 22)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
-                e.currentTarget.style.color = 'white';
-              }}
-            >
-              {t.events.promoteEvent}
-            </a>
+            {/* Promote Event & My Events CTAs */}
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <a
+                href="/promote-event"
+                style={{
+                  padding: isMobile ? '1rem' : '1rem 2rem',
+                  backgroundColor: 'rgb(249, 115, 22)',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid rgb(249, 115, 22)',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'inline-block',
+                  textDecoration: 'none',
+                  width: 'auto'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = 'rgb(249, 115, 22)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                {t.events.promoteEvent}
+              </a>
+
+              <a
+                href="/my-events"
+                style={{
+                  padding: isMobile ? '1rem' : '1rem 2rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid white',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'inline-block',
+                  textDecoration: 'none',
+                  width: 'auto'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#7c3aed';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                📋 My Events
+              </a>
+            </div>
           </div>
         </div>
       </section>
