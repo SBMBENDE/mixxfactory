@@ -26,6 +26,13 @@ export async function POST(req: NextRequest) {
     const userId = auth.payload.userId;
     const body = await req.json();
 
+    // Define image limits per tier
+    const IMAGE_LIMITS: { [key: string]: number } = {
+      free: 1,
+      featured: 5,
+      boost: 10,
+    };
+
     // Validate required fields
     if (
       !body.title ||
@@ -60,6 +67,21 @@ export async function POST(req: NextRequest) {
         { 
           success: false, 
           error: 'Missing required fields: title, description, startDate, startTime, endTime, posterImage, venue, ticketing, capacity, organizer name, and category are all required'
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate image count for tier
+    const tier = body.pricingTier || 'free';
+    const imageLimit = IMAGE_LIMITS[tier] || 1;
+    const imageCount = Array.isArray(body.images) ? body.images.length : 0;
+
+    if (imageCount > imageLimit) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `${tier} tier allows maximum ${imageLimit} image(s), but ${imageCount} were provided`
         },
         { status: 400 }
       );
@@ -109,6 +131,7 @@ export async function POST(req: NextRequest) {
       location: body.location,
       posterImage: body.posterImage,
       bannerImage: body.bannerImage || '',
+      images: Array.isArray(body.images) ? body.images : [],
       ticketing: body.ticketing,
       ticketUrl: body.ticketUrl || '',
       capacity: body.capacity,

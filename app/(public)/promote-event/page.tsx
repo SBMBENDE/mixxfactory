@@ -24,6 +24,11 @@ interface EventFormData {
   };
   posterImage: string;
   bannerImage: string;
+  images: Array<{
+    url: string;
+    caption: string;
+    order: number;
+  }>;
   capacity: number;
   ticketing: Array<{
     label: string;
@@ -47,10 +52,11 @@ const PRICING_TIERS = [
     name: '🆓 Free Listing',
     description: 'Basic event listing',
     price: 0,
+    imageLimit: 1,
     features: [
       'Basic event profile',
       'Search visibility',
-      'Up to 5 photos',
+      '1 image',
       'Contact information',
     ],
   },
@@ -61,11 +67,13 @@ const PRICING_TIERS = [
     pricePerWeek: 25,
     price: 25,
     duration: 'per week',
+    imageLimit: 5,
     features: [
       'Everything in Free',
       'Featured on homepage',
       'Top search results',
       'Event badge',
+      'Up to 5 images',
       'Social media promotion',
     ],
   },
@@ -75,11 +83,13 @@ const PRICING_TIERS = [
     description: 'Maximum exposure',
     price: 99,
     duration: 'per month',
+    imageLimit: 10,
     features: [
       'Everything in Featured',
       'Homepage banner',
       'News Flash inclusion',
       'Priority support',
+      'Up to 10 images',
       'Analytics dashboard',
       'Extended duration (30 days)',
     ],
@@ -107,6 +117,7 @@ export default function PromoteEventPage() {
     },
     posterImage: '',
     bannerImage: '',
+    images: [],
     capacity: 0,
     ticketing: [
       { label: 'General', price: 0, currency: 'EUR' },
@@ -239,6 +250,7 @@ export default function PromoteEventPage() {
           location: { venue: '', city: '', region: '', address: '', country: '' },
           posterImage: '',
           bannerImage: '',
+          images: [],
           capacity: 0,
           ticketing: [{ label: 'General', price: 0, currency: 'EUR' }],
           ticketUrl: '',
@@ -671,11 +683,146 @@ export default function PromoteEventPage() {
               />
             </div>
 
-            {/* Poster & Banner Images */}
+            {/* Image Gallery */}
+            <div style={{ padding: '1.5rem', backgroundColor: '#f3f4f6', borderRadius: '0.375rem', marginTop: '1.5rem', marginBottom: '1.5rem', borderLeft: '4px solid #10b981' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1f2937' }}>Event Gallery</h3>
+                <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  {formData.images.length} / {PRICING_TIERS.find(t => t.id === selectedTier)?.imageLimit || 1} images
+                </span>
+              </div>
+
+              {/* Upload New Image */}
+              {formData.images.length < (PRICING_TIERS.find(t => t.id === selectedTier)?.imageLimit || 1) && (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    Add Image
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          const newImage = {
+                            url: reader.result as string,
+                            caption: '',
+                            order: formData.images.length,
+                          };
+                          setFormData(prev => ({
+                            ...prev,
+                            images: [...prev.images, newImage],
+                            posterImage: prev.posterImage || (reader.result as string), // Set as poster if first image
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '2px dashed #d1d5db',
+                      borderRadius: '0.375rem',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Image Gallery Display */}
+              {formData.images.length > 0 && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                  gap: '1rem',
+                }}>
+                  {formData.images.map((image, index) => (
+                    <div key={index} style={{
+                      position: 'relative',
+                      borderRadius: '0.375rem',
+                      overflow: 'hidden',
+                      backgroundColor: '#e5e7eb',
+                      aspectRatio: '1',
+                    }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={image.url}
+                        alt={`Gallery ${index + 1}`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0 0 0 0.375rem',
+                      }}>
+                        <button
+                          onClick={() => {
+                            setFormData(prev => ({
+                              ...prev,
+                              images: prev.images.filter((_, i) => i !== index),
+                            }));
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontSize: '1rem',
+                            padding: 0,
+                          }}
+                          title="Remove image"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      {index === 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '0.5rem',
+                          left: '0.5rem',
+                          backgroundColor: 'rgb(249, 115, 22)',
+                          color: 'white',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '0.25rem',
+                          fontSize: '0.75rem',
+                          fontWeight: '600',
+                        }}>
+                          Featured
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {formData.images.length === 0 && (
+                <div style={{
+                  padding: '2rem',
+                  textAlign: 'center',
+                  color: '#6b7280',
+                  backgroundColor: 'white',
+                  borderRadius: '0.375rem',
+                  border: '1px dashed #d1d5db',
+                }}>
+                  <p>No images added yet. Add images to showcase your event.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Poster & Banner Images (Legacy - kept for backward compatibility) */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Poster Image
+                  Poster Image (Legacy)
                 </label>
                 <input
                   type="file"
@@ -700,6 +847,7 @@ export default function PromoteEventPage() {
                   }}
                 />
                 {formData.posterImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={formData.posterImage}
                     alt="Poster Preview"
@@ -714,7 +862,7 @@ export default function PromoteEventPage() {
               </div>
               <div>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Banner Image
+                  Banner Image (Legacy)
                 </label>
                 <input
                   type="file"

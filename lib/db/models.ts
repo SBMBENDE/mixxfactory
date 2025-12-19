@@ -606,8 +606,13 @@ interface IEventDocument extends Document {
     venue: string;
     address?: string;
   };
-  posterImage: string; // Cloudinary URL for event flyer/poster
-  bannerImage?: string; // Optional banner image
+  posterImage: string; // Primary image (for backward compatibility)
+  bannerImage?: string; // Optional banner image (deprecated - use images array)
+  images: Array<{
+    url: string; // Base64 or Cloudinary URL
+    caption?: string;
+    order: number; // For gallery ordering
+  }>; // Full image gallery (Free: 1, Featured: 3-5, Boost: 10+)
   startDate: Date;
   endDate: Date;
   startTime: string; // Format: "HH:mm"
@@ -673,6 +678,20 @@ const eventSchema = new Schema<IEventDocument>(
       required: true,
     },
     bannerImage: String,
+    images: [
+      {
+        url: {
+          type: String,
+          required: true,
+        },
+        caption: String,
+        order: {
+          type: Number,
+          required: true,
+          default: 0,
+        },
+      },
+    ],
     startDate: {
       type: Date,
       required: true,

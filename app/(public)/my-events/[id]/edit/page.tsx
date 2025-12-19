@@ -28,6 +28,12 @@ interface TicketingData {
   currency: string;
 }
 
+interface ImageData {
+  url: string;
+  caption: string;
+  order: number;
+}
+
 interface EventFormData {
   title: string;
   category: string;
@@ -39,6 +45,7 @@ interface EventFormData {
   location: LocationData;
   posterImage: string;
   bannerImage: string;
+  images: ImageData[];
   capacity: number;
   ticketing: TicketingData[];
   ticketUrl: string;
@@ -79,6 +86,7 @@ export default function EditEventPage() {
     },
     posterImage: '',
     bannerImage: '',
+    images: [],
     capacity: 0,
     ticketing: [
       { label: 'General', price: 0, currency: 'EUR' },
@@ -129,6 +137,7 @@ export default function EditEventPage() {
             },
             posterImage: event.posterImage || '',
             bannerImage: event.bannerImage || '',
+            images: event.images || [],
             capacity: event.capacity || 0,
             ticketing: event.ticketing || [{ label: 'General', price: 0, currency: 'EUR' }],
             ticketUrl: event.ticketUrl || '',
@@ -591,12 +600,116 @@ export default function EditEventPage() {
 
           {/* Media */}
           <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', marginTop: '2rem', color: '#1f2937' }}>
-            Media
+            Event Gallery
           </h2>
+
+          {/* Image Gallery */}
+          <div style={{ padding: '1.5rem', backgroundColor: '#f3f4f6', borderRadius: '0.375rem', marginBottom: '1.5rem', borderLeft: '4px solid #10b981' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1f2937' }}>Gallery Images</h3>
+              <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                {formData.images.length} images
+              </span>
+            </div>
+
+            {/* Upload New Image */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                Add Image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      const newImage = {
+                        url: reader.result as string,
+                        caption: '',
+                        order: formData.images.length,
+                      };
+                      setFormData(prev => ({
+                        ...prev,
+                        images: [...prev.images, newImage],
+                      }));
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px dashed #d1d5db',
+                  borderRadius: '0.375rem',
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
+
+            {/* Image Gallery Display */}
+            {formData.images.length > 0 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                gap: '1rem',
+              }}>
+                {formData.images.map((image, index) => (
+                  <div key={index} style={{
+                    position: 'relative',
+                    borderRadius: '0.375rem',
+                    overflow: 'hidden',
+                    backgroundColor: '#e5e7eb',
+                    aspectRatio: '1',
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={image.url}
+                      alt={`Gallery ${index + 1}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0 0 0 0.375rem',
+                    }}>
+                      <button
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            images: prev.images.filter((_, i) => i !== index),
+                          }));
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'white',
+                          cursor: 'pointer',
+                          fontSize: '1rem',
+                          padding: 0,
+                        }}
+                        title="Remove image"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
-              Poster Image
+              Poster Image (Legacy)
             </label>
             <input
               type="file"
@@ -616,7 +729,7 @@ export default function EditEventPage() {
 
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
-              Banner Image
+              Banner Image (Legacy)
             </label>
             <input
               type="file"
