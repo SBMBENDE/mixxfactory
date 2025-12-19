@@ -55,7 +55,7 @@ export async function POST(
     }
 
     // Calculate new expiry date based on tier
-    let promotionExpiryDate = null;
+    let promotionExpiryDate: Date | undefined = undefined;
     if (newTier === 'featured') {
       // Featured: 1 week
       promotionExpiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
