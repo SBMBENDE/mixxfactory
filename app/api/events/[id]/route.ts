@@ -100,13 +100,13 @@ export async function PUT(
     // Define editable fields based on user type
     const adminEditableFields = [
       'title', 'description', 'category', 'startDate', 'endDate', 'startTime', 'endTime',
-      'location', 'posterImage', 'bannerImage', 'ticketing', 'ticketUrl', 'capacity',
+      'location', 'posterImage', 'bannerImage', 'images', 'media', 'ticketing', 'ticketUrl', 'capacity',
       'organizer', 'highlights', 'tags', 'published', 'featured', 'promotionTier',
     ];
 
     const userEditableFields = [
       'title', 'description', 'category', 'startDate', 'endDate', 'startTime', 'endTime',
-      'location', 'posterImage', 'bannerImage', 'ticketing', 'ticketUrl', 'capacity',
+      'location', 'posterImage', 'bannerImage', 'images', 'media', 'ticketing', 'ticketUrl', 'capacity',
       'organizer', 'highlights', 'tags',
     ];
 

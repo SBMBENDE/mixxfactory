@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
+import { validateVideoUrl } from '@/utils/videoValidation';
 
 interface EventFormData {
   title: string;
@@ -865,10 +866,10 @@ export default function PromoteEventPage() {
                       }}
                     />
                     <button
+                      type="button"
                       onClick={() => {
                         const videoInput = document.getElementById('videoUrl') as HTMLInputElement;
                         if (videoInput?.value) {
-                          const { validateVideoUrl } = require('@/utils/videoValidation');
                           const videoData = validateVideoUrl(videoInput.value);
                           
                           if (videoData) {

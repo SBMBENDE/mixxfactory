@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { validateVideoUrl } from '@/utils/videoValidation';
 
 interface LocationData {
   venue: string;
@@ -998,7 +999,6 @@ export default function EditEventPage() {
                     onClick={() => {
                       const videoInput = document.getElementById('videoUrl') as HTMLInputElement;
                       if (videoInput?.value) {
-                        const { validateVideoUrl } = require('@/utils/videoValidation');
                         const videoData = validateVideoUrl(videoInput.value);
                         
                         if (videoData) {
