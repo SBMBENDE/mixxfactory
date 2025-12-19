@@ -10,6 +10,7 @@ import { EventModel } from '@/lib/db/models';
 import { verifyAuth } from '@/lib/auth/verify';
 import { verifyAdminAuth } from '@/lib/auth/middleware';
 import mongoose from 'mongoose';
+import { validateVideoUrl } from '@/utils/videoValidation';
 
 export async function GET(
   _req: NextRequest,
@@ -112,6 +113,31 @@ export async function PUT(
 
     const editableFields = adminAuth.isValid ? adminEditableFields : userEditableFields;
 
+    // Validate and transform media if present
+    if ('media' in body && Array.isArray(body.media)) {
+      // If media contains objects with embedUrl, extract just the URLs
+      // Otherwise, validate each URL
+      body.media = body.media.map((item: any) => {
+        // If it's a full video object with embedUrl, extract that
+        if (typeof item === 'object' && item.embedUrl) {
+          return item.embedUrl;
+        }
+        // If it's already a string (embed URL), return as-is
+        if (typeof item === 'string') {
+          return item;
+        }
+        // If it's a URL that needs validation, validate and get embedUrl
+        if (typeof item === 'object' && item.url && !item.embedUrl) {
+          const validated = validateVideoUrl(item.url);
+          if (!validated) {
+            throw new Error(`Invalid video URL: ${item.url}`);
+          }
+          return validated.embedUrl;
+        }
+        return item;
+      });
+    }
+
     // Update only allowed fields
     editableFields.forEach(field => {
       if (field in body && body[field] !== undefined) {
@@ -128,7 +154,7 @@ export async function PUT(
   } catch (error: any) {
     console.error('Error updating event:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to update event' },
+      { success: false, error: error.message || 'Failed to update event' },
       { status: 500 }
     );
   }
