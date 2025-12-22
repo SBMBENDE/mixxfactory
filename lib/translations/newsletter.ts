@@ -7,9 +7,9 @@ export type Language = 'en' | 'fr';
 
 export const newsletterTranslations = {
   en: {
-    title: 'Subscribe to Our Newsletter',
+    title: 'Stay updated',
     subtitle:
-      'Get the latest updates, exclusive offers, and industry insights delivered to your inbox.',
+      'Get events & new professionals delivered to you.',
     placeholder: 'Enter your email address',
     namePlaceholder: 'Your name (optional)',
     buttonText: 'Subscribe',
@@ -17,12 +17,12 @@ export const newsletterTranslations = {
     errorMessage: 'Failed to subscribe',
     networkError: 'Network error. Please try again later.',
     alreadySubscribed: 'Already subscribed with this email',
-    privacyMessage: 'We respect your privacy. Unsubscribe at any time.',
+    privacyMessage: 'We respect your privacy.',
   },
   fr: {
-    title: 'Restez informé avec MixxFactory',
+    title: 'Restez informé',
     subtitle:
-      'Recevez des offres exclusives, de nouveaux profils de professionnels et les actualités du secteur directement dans votre boîte mail.',
+      'Recevez les événements et les nouveaux professionnels directement.',
     placeholder: 'Entrez votre adresse e-mail',
     namePlaceholder: 'Votre nom (optionnel)',
     buttonText: 'S\'abonner',
@@ -31,7 +31,7 @@ export const newsletterTranslations = {
     errorMessage: 'Échec de l\'abonnement',
     networkError: 'Erreur réseau. Veuillez réessayer plus tard.',
     alreadySubscribed: 'Déjà abonné à cet e-mail',
-    privacyMessage: 'Nous respectons votre vie privée. Désinscription possible à tout moment.',
+    privacyMessage: 'Nous respectons votre vie privée.',
   },
 };
 
