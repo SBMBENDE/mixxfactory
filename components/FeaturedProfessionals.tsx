@@ -100,7 +100,8 @@ export default function FeaturedProfessionals() {
     const fetchFeatured = async () => {
       try {
         setLoading(true);
-        // Query by rating - API automatically sorts featured first
+        // Fetch professionals sorted by featured first, then by rating
+        // The API automatically sorts featured first in the sortMap
         const url = '/api/professionals?sort=rating&limit=8';
         console.log('[FeaturedProfessionals] Fetching from:', url);
         const res = await fetch(url);
@@ -110,10 +111,18 @@ export default function FeaturedProfessionals() {
           dataLength: data.data?.length,
           total: data.total,
           error: data.error,
+          firstItem: data.data?.[0] ? {
+            name: data.data[0].name,
+            featured: data.data[0].featured,
+            rating: data.data[0].rating,
+          } : null,
         });
         if (data.success && Array.isArray(data.data)) {
-          console.log('[FeaturedProfessionals] Setting professionals count:', data.data.length);
-          setProfessionals(data.data.slice(0, 8));
+          // Filter to show only featured professionals, or all if no featured exist
+          const featured = data.data.filter((p: Professional) => p.featured);
+          const toShow = featured.length > 0 ? featured : data.data;
+          console.log('[FeaturedProfessionals] Showing professionals count:', toShow.length);
+          setProfessionals(toShow.slice(0, 8));
         }
       } catch (error) {
         console.error('[FeaturedProfessionals] Fetch error:', error);
