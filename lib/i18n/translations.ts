@@ -43,7 +43,7 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connect with\nVerified & Trusted\nProfessionals',
+      title: 'Discover Verified & Trusted\nProfessionals',
       tagline: 'Find trusted experts and upcoming events near you.',
       subtitle: 'Discover trusted professionals, venues, and events—instantly.',
       discoverBtn: 'Find a professional',
@@ -487,7 +487,7 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connectez-vous avec\ndes professionnels\nde confiance',
+      title: 'Découvrez les Professionnels\nde Confiance Vérifiés',
       tagline: 'Trouvez des experts de confiance et les événements à proximité.',
       subtitle: 'Découvrez instantanément des professionnels de confiance, des lieux et des événements d\'exception.',
       discoverBtn: 'Trouver un professionnel',
