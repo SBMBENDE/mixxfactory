@@ -5,23 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-
-interface Professional {
-  _id: string;
-  name: string;
-  slug: string;
-  photo?: string;
-  category: {
-    _id: string;
-    name: string;
-    slug: string;
-  };
-  rating: number;
-  reviewCount: number;
-  featured: boolean;
-  priceFrom?: number;
-  tier?: 'free' | 'featured' | 'boost';
-}
+import { Professional } from '@/types';
 
 // Skeleton Loader
 function SkeletonCard() {
@@ -220,14 +204,14 @@ export default function FeaturedProfessionals() {
                   }}
                 >
                   {/* Badge */}
-                  {(pro.featured || pro.tier === 'boost') && (
+                  {pro.featured && (
                     <div
                       style={{
                         position: 'absolute',
                         top: '0.75rem',
                         right: '0.75rem',
                         zIndex: 10,
-                        backgroundColor: pro.tier === 'boost' ? '#f59e0b' : '#2563eb',
+                        backgroundColor: '#2563eb',
                         color: 'white',
                         padding: '0.25rem 0.75rem',
                         borderRadius: '9999px',
@@ -236,7 +220,7 @@ export default function FeaturedProfessionals() {
                         textTransform: 'uppercase',
                       }}
                     >
-                      {pro.tier === 'boost' ? '🚀 Boost' : 'Featured'}
+                      Featured
                     </div>
                   )}
 
@@ -294,34 +278,24 @@ export default function FeaturedProfessionals() {
                     </h3>
 
                     {/* Category */}
-                    <p
-                      style={{
-                        fontSize: '0.875rem',
-                        color: '#6b7280',
-                        marginBottom: '0.75rem',
-                      }}
-                    >
-                      {pro.category.name}
-                    </p>
-
-                    {/* Rating */}
-                    <div style={{ marginBottom: '0.75rem' }}>
-                      {renderRating(pro.rating, pro.reviewCount)}
-                    </div>
-
-                    {/* Price */}
-                    {pro.priceFrom && (
+                    {typeof pro.category === 'object' && pro.category && 'name' in pro.category ? (
                       <p
                         style={{
                           fontSize: '0.875rem',
-                          color: '#2563eb',
-                          fontWeight: '600',
-                          marginBottom: '1rem',
+                          color: '#6b7280',
+                          marginBottom: '0.75rem',
                         }}
                       >
-                        From €{pro.priceFrom}
+                        {(pro.category as any).name}
                       </p>
-                    )}
+                    ) : null}
+
+                    {/* Rating */}
+                    <div style={{ marginBottom: '0.75rem' }}>
+                      {renderRating(pro.rating || 0, pro.reviewCount || 0)}
+                    </div>
+
+                    {/* Price */}
 
                     {/* Button */}
                     <button
