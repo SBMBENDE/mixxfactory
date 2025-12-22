@@ -19,7 +19,7 @@ const testimonials: Testimonial[] = [
     id: 1,
     name: 'Sarah Johnson',
     role: { en: 'Event Organizer', fr: 'Organisatrice d\'événements' },
-    image: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=FF6B9D&color=fff&size=200&bold=true',
+    image: 'https://res.cloudinary.com/dkd3k6eau/image/upload/v1766415917/Screenshot_2025-12-22_at_15.59.52_k3nvmy.png',
     content: {
       en: 'MixxFactory made finding the perfect DJ for our wedding incredibly easy. The platform is intuitive and the professionals are top-notch!',
       fr: 'MixxFactory a rendu la recherche du DJ parfait pour notre mariage incroyablement facile. La plateforme est intuitive et les professionnels sont de premier ordre !',
@@ -28,9 +28,9 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 2,
-    name: 'Marcus Williams',
+    name: 'David Williams',
     role: { en: 'Professional DJ', fr: 'DJ Professionnel' },
-    image: 'https://ui-avatars.com/api/?name=Marcus+Williams&background=4ECDC4&color=fff&size=200&bold=true',
+    image: 'https://res.cloudinary.com/dkd3k6eau/image/upload/v1766415917/Screenshot_2025-12-22_at_16.00.02_txancg.png',
     content: {
       en: 'As a DJ, this platform has opened up so many new opportunities. The booking system is smooth and clients are always professional.',
       fr: 'En tant que DJ, cette plateforme m\'a ouvert tellement de nouvelles opportunités. Le système de réservation est fluide et les clients sont toujours professionnels.',
@@ -39,9 +39,9 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 3,
-    name: 'Elena Rodriguez',
+    name: 'Amina Rodriguez',
     role: { en: 'Venue Owner', fr: 'Propriétaire de lieu' },
-    image: 'https://ui-avatars.com/api/?name=Elena+Rodriguez&background=95E1D3&color=fff&size=200&bold=true',
+    image: 'https://res.cloudinary.com/dkd3k6eau/image/upload/v1766415917/Screenshot_2025-12-22_at_16.00.14_momykv.png',
     content: {
       en: 'Our venue bookings have tripled since joining MixxFactory. The exposure and the quality of clients is simply amazing!',
       fr: 'Nos réservations de salle ont triplé depuis que nous avons rejoint MixxFactory. L\'exposition et la qualité des clients sont tout simplement incroyables !',
