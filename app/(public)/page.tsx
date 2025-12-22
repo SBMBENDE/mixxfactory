@@ -62,7 +62,7 @@ export default function HomePage() {
           <div style={{ textAlign: 'left' }}>
             {/* MixxFactory Branding */}
             <h2 style={{ 
-              fontSize: isMobile ? '2rem' : '3.5rem', 
+              fontSize: isMobile ? '2.5rem' : '3.5rem', 
               fontWeight: 'bold', 
               marginBottom: isMobile ? '1rem' : '1.5rem',
               marginTop: '2rem',
@@ -74,10 +74,10 @@ export default function HomePage() {
             
             {/* Main Title with Line Breaks */}
             <h1 style={{ 
-              fontSize: isMobile ? '2.5rem' : '2rem', 
+              fontSize: isMobile ? '1.75rem' : '2rem', 
               fontWeight: 'bold', 
               marginBottom: '2.5rem',
-              lineHeight: isMobile ? '1.3' : '1.4',
+              lineHeight: isMobile ? '1.15' : '1.4',
               maxWidth: isMobile ? '100%' : '700px'
             }}>
               Connect with<br />
