@@ -61,23 +61,14 @@ export default function HomePage() {
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ textAlign: 'left' }}>
             <h1 style={{ 
-              fontSize: isMobile ? '2rem' : '3.5rem', 
+              fontSize: isMobile ? '2.5rem' : '3.5rem', 
               fontWeight: 'bold', 
-              marginBottom: '1rem',
+              marginBottom: '2.5rem',
               marginTop: '2rem',
               lineHeight: '1.3'
             }}>
               {t.home.title}
             </h1>
-            <p style={{ 
-              fontSize: '1rem', 
-              marginBottom: '1.5rem', 
-              color: '#e0e7ff',
-              fontWeight: '500',
-              letterSpacing: '0.05em'
-            }}>
-              {t.home.tagline}
-            </p>
             <p style={{ 
               fontSize: isMobile ? '1rem' : '1.25rem', 
               marginBottom: '2.5rem', 
