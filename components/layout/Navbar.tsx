@@ -21,9 +21,13 @@ export const Navbar: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const t = useTranslations();
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   const handleLogout = async () => {
     await logout();
-    setIsOpen(false);
+    closeMenu();
     router.push('/');
     router.refresh();
   };
@@ -159,23 +163,23 @@ export const Navbar: React.FC = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-4 border-t border-gray-100 dark:border-gray-800">
-            <Link href="/directory" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="/directory" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
               {t.nav.directory}
             </Link>
-            <Link href="/events" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="/events" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
               🎉 {t.nav.events}
             </Link>
-            <Link href="/blog" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="/blog" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
               📝 {t.nav.blog}
             </Link>
-            <Link href="/about" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="/about" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
               {t.nav.about}
             </Link>
-            <Link href="/contact" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="/contact" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
               {t.nav.contact}
             </Link>
             {user?.role === 'admin' && (
-              <Link href="/dashboard" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700">
+              <Link href="/dashboard" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700" onClick={closeMenu}>
                 📊 {t.nav.dashboard}
               </Link>
             )}
@@ -195,7 +199,7 @@ export const Navbar: React.FC = () => {
                       </button>
                     </>
                   ) : (
-                    <Link href="/auth/login" className="block">
+                    <Link href="/auth/login" className="block" onClick={closeMenu}>
                       <Button variant="primary" size="sm" className="w-full">
                         {t.nav.login}
                       </Button>
