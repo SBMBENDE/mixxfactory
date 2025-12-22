@@ -57,7 +57,12 @@ export default function AboutPage() {
 
       {/* Mission Section */}
       <section style={{ padding: '4rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+        <div className="mission-grid" style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr 1fr',
+          gap: '3rem', 
+          alignItems: 'center',
+        }}>
           <div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#111827' }}>
               {t.about.mission}
@@ -86,6 +91,15 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .mission-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
 
       {/* Stats Section */}
       <section style={{ padding: '4rem 1rem', backgroundColor: 'white' }}>
