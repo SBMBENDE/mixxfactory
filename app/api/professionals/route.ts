@@ -2,7 +2,7 @@
  * Get professionals API route with filtering
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 import { searchQuerySchema } from '@/lib/validations';
