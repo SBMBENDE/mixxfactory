@@ -27,7 +27,7 @@ export default function ContactPage() {
     {
       icon: faPhone,
       title: t.contact.phone,
-      value: '+1 (555) 123-4567',
+      value: '+33 (0)6 17 48 91 70',
       color: '#2563eb',
     },
     {
@@ -39,7 +39,7 @@ export default function ContactPage() {
     {
       icon: faMapPin,
       title: t.contact.address,
-      value: 'New York, NY 10001, USA',
+      value: 'Head Office Tournan-en-Brie, France',
       color: '#06b6d4',
     },
     {
