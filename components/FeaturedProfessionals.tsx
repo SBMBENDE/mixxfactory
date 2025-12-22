@@ -108,19 +108,19 @@ export default function FeaturedProfessionals() {
         const data = await res.json();
         console.log('[FeaturedProfessionals] API Response:', {
           success: data.success,
-          dataLength: data.data?.length,
-          total: data.total,
+          dataLength: data.data?.data?.length,
+          total: data.data?.total,
           error: data.error,
-          firstItem: data.data?.[0] ? {
-            name: data.data[0].name,
-            featured: data.data[0].featured,
-            rating: data.data[0].rating,
+          firstItem: data.data?.data?.[0] ? {
+            name: data.data.data[0].name,
+            featured: data.data.data[0].featured,
+            rating: data.data.data[0].rating,
           } : null,
         });
-        if (data.success && Array.isArray(data.data)) {
+        if (data.success && data.data?.data && Array.isArray(data.data.data)) {
           // Filter to show only featured professionals, or all if no featured exist
-          const featured = data.data.filter((p: Professional) => p.featured);
-          const toShow = featured.length > 0 ? featured : data.data;
+          const featured = data.data.data.filter((p: Professional) => p.featured);
+          const toShow = featured.length > 0 ? featured : data.data.data;
           console.log('[FeaturedProfessionals] Showing professionals count:', toShow.length);
           setProfessionals(toShow.slice(0, 8));
         }
