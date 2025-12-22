@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
+import { StickySearchBar } from '@/components/StickySearchBar';
 import Carousel from '@/components/Carousel';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
@@ -121,6 +122,9 @@ export default function HomePage() {
 
   return (
     <>
+      {/* Sticky Search Bar */}
+      <StickySearchBar />
+
       {/* Hero Section - Mobile First */}
       <section style={{
         paddingTop: isMobile ? '4rem' : '6rem',
@@ -138,11 +142,11 @@ export default function HomePage() {
               marginBottom: '0.75rem',
               lineHeight: '1.2'
             }}>
-              MixxFactory
+              {t.home.title}
             </h1>
             <p style={{ 
               fontSize: '1rem', 
-              marginBottom: '1.5rem', 
+              marginBottom: '1rem', 
               color: '#e0e7ff',
               fontWeight: '500',
               letterSpacing: '0.05em'
@@ -159,45 +163,16 @@ export default function HomePage() {
               {t.home.subtitle}
             </p>
             
-            {/* Three CTAs - Mobile: stack vertically, Desktop: side by side */}
+            {/* Two Primary CTAs - Mobile: stack vertically, Desktop: side by side */}
             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
               gap: isMobile ? '1rem' : '1.5rem',
-              maxWidth: isMobile ? '100%' : '800px'
+              maxWidth: isMobile ? '100%' : '600px'
             }}>
-              {/* Find Professionals */}
+              {/* Find a Professional - Primary CTA */}
               <a 
                 href="/directory"
-                style={{
-                  padding: isMobile ? '1rem' : '1.125rem 1.5rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  borderRadius: '0.5rem',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  fontSize: isMobile ? '0.95rem' : '1rem',
-                  cursor: 'pointer',
-                  border: '2px solid #3b82f6',
-                  transition: 'all 0.3s ease',
-                  textAlign: 'center',
-                  display: 'block'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.color = '#3b82f6';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#3b82f6';
-                  e.currentTarget.style.color = 'white';
-                }}
-              >
-                {t.home.discoverBtn}
-              </a>
-
-              {/* Explore Events */}
-              <a 
-                href="/events"
                 style={{
                   padding: isMobile ? '1rem' : '1.125rem 1.5rem',
                   backgroundColor: 'white',
@@ -214,44 +189,40 @@ export default function HomePage() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#f0f9ff';
-                  e.currentTarget.style.color = '#2563eb';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.color = '#2563eb';
+                }}
+              >
+                {t.home.discoverBtn}
+              </a>
+
+              {/* View Events - Secondary CTA */}
+              <a 
+                href="/events"
+                style={{
+                  padding: isMobile ? '1rem' : '1.125rem 1.5rem',
+                  backgroundColor: 'transparent',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: isMobile ? '0.95rem' : '1rem',
+                  cursor: 'pointer',
+                  border: '2px solid white',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  display: 'block'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
                 {t.home.eventsBtn}
               </a>
-
-              {/* Register as Professional */}
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                style={{
-                  padding: isMobile ? '1rem' : '1.125rem 1.5rem',
-                  backgroundColor: 'rgb(249, 115, 22)',
-                  color: 'white',
-                  borderRadius: '0.5rem',
-                  fontWeight: '600',
-                  fontSize: isMobile ? '0.95rem' : '1rem',
-                  cursor: 'pointer',
-                  border: '2px solid rgb(249, 115, 22)',
-                  transition: 'all 0.3s ease',
-                  textAlign: 'center',
-                  display: 'block',
-                  width: '100%'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.color = 'rgb(249, 115, 22)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
-                  e.currentTarget.style.color = 'white';
-                }}
-              >
-                {t.home.registerBtn}
-              </button>
             </div>
           </div>
         </div>

@@ -42,11 +42,11 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Professionals Hub',
-      tagline: 'Connect. Discover. Attend.',
-      subtitle: 'Find verified professionals and stay updated on upcoming events — all in one app.',
-      discoverBtn: 'Find Professionals',
-      eventsBtn: 'Explore Events',
+      title: 'Connect with verified professionals.',
+      tagline: 'Find trusted experts and upcoming events near you.',
+      subtitle: 'Discover top-rated professionals, venues, and events in your area. Book instantly, build your network.',
+      discoverBtn: 'Find a professional',
+      eventsBtn: 'View events',
       registerBtn: 'Register as Professional',
       popularCategories: 'Popular Categories',
       loadingCategories: 'Loading categories...',
@@ -460,11 +460,11 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Hub des Professionnels',
-      tagline: 'Connectez. Découvrez. Participez.',
-      subtitle: 'Trouvez des professionnels vérifiés et restez à jour sur les événements à venir — tout dans une application.',
-      discoverBtn: 'Trouver des professionnels',
-      eventsBtn: 'Explorer les événements',
+      title: 'Connectez-vous avec des professionnels vérifiés.',
+      tagline: 'Trouvez des experts de confiance et les événements à proximité.',
+      subtitle: 'Découvrez les meilleurs professionnels, lieux et événements de votre région. Réservez instantanément, développez votre réseau.',
+      discoverBtn: 'Trouver un professionnel',
+      eventsBtn: 'Voir les événements',
       registerBtn: 'S\'inscrire en tant que professionnel',
       popularCategories: 'Catégories populaires',
       loadingCategories: 'Chargement des catégories...',

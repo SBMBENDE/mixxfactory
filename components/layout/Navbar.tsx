@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslations } from '@/hooks/useTranslations';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
@@ -134,6 +136,15 @@ export const Navbar: React.FC = () => {
             <span className="absolute left-1.5 text-xs font-bold text-white">EN</span>
             <span className="absolute right-1.5 text-xs font-bold text-white">FR</span>
           </button>
+
+          {/* Mobile Search Icon */}
+          <Link 
+            href="/directory" 
+            className="md:hidden p-2 text-gray-700 dark:text-white hover:text-primary-600 transition"
+            title="Search professionals"
+          >
+            <FontAwesomeIcon icon={faSearch} className="w-5 h-5" />
+          </Link>
 
           {/* Mobile Menu Button */}
           <button
