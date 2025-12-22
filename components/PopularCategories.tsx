@@ -34,7 +34,7 @@ function getEmojiForCategory(slug: string): string {
   return categoryEmojis[slug] || '⭐';
 }
 
-// Skeleton Loader
+// Skeleton Loader with enhanced animation
 function SkeletonCard() {
   return (
     <div
@@ -49,14 +49,29 @@ function SkeletonCard() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        overflow: 'hidden',
+        position: 'relative',
       }}
     >
+      {/* Shimmer effect overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '-100%',
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+          animation: 'shimmer 2s infinite',
+        }}
+      />
       <div
         style={{
           fontSize: '2rem',
           marginBottom: '0.5rem',
-          opacity: 0.5,
+          opacity: 0.4,
+          animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         }}
       >
         ✨
@@ -67,6 +82,7 @@ function SkeletonCard() {
           backgroundColor: '#e5e7eb',
           borderRadius: '0.25rem',
           width: '60%',
+          animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         }}
       />
     </div>
@@ -163,7 +179,7 @@ export default function PopularCategories() {
               ))}
             </>
           ) : (
-            categories.map((category) => (
+            categories.map((category, index) => (
               <Link
                 key={category._id}
                 href={`/directory?category=${category.slug}`}
@@ -173,6 +189,7 @@ export default function PopularCategories() {
                   minWidth: isMobile ? '100px' : '140px',
                   textDecoration: 'none',
                   color: 'inherit',
+                  animation: `fadeInScale 0.5s ease-out ${index * 0.05}s both`,
                 }}
               >
                 <div
@@ -244,8 +261,37 @@ export default function PopularCategories() {
         )}
       </div>
 
-      {/* Pulse animation */}
+      {/* Enhanced animations */}
       <style>{`
+        @keyframes skeleton-pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            left: -100%;
+          }
+          100% {
+            left: 100%;
+          }
+        }
+
+        @keyframes fadeInScale {
+          0% {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
         @keyframes pulse {
           0%, 100% {
             opacity: 1;
