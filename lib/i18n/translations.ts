@@ -880,7 +880,6 @@ export const translations = {
       terms: 'Conditions d\'utilisation',
       cookies: 'Politique de cookies',
       contact: 'Nous contacter',
-      forPros: 'Pour les professionnels',
       joinUs: 'Nous rejoindre',
       dashboard: 'Tableau de bord',
       support: 'Assistance',
