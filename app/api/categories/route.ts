@@ -6,7 +6,8 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 
-export const dynamic = 'force-dynamic';
+// Cache for 1 hour (3600 seconds) - categories don't change frequently
+export const revalidate = 3600;
 
 export async function GET() {
   const MONGODB_URI = process.env.MONGODB_URI;
@@ -52,11 +53,9 @@ export async function GET() {
       data,
     });
 
-    // Set aggressive no-cache headers
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
-    response.headers.set('Surrogate-Control', 'no-store');
+    // Allow caching for 1 hour (3600 seconds)
+    // Categories are static and rarely change
+    response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400');
 
     return response;
   } catch (error) {
