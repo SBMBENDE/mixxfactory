@@ -79,7 +79,8 @@ export async function GET(request: NextRequest) {
         .populate('category', 'name slug')
         .sort(sortMap[sort])
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
       ProfessionalModel.countDocuments(filter),
     ]);
 
