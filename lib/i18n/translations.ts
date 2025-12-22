@@ -426,7 +426,7 @@ export const translations = {
     },
     // Footer
     footer: {
-      description: 'Connecting professionals and venues with event organizers worldwide.',
+      description: 'Connecting users with professionals, venues, and events.',
       quickLinks: 'Quick Links',
       home: 'Home',
       directory: 'Directory',
@@ -869,7 +869,7 @@ export const translations = {
     },
     // Footer
     footer: {
-      description: 'Connecter les professionnels et les lieux avec les organisateurs d\'événements du monde entier.',
+      description: 'Connecter les utilisateurs avec les professionnels, les lieux et les événements.',
       quickLinks: 'Liens rapides',
       home: 'Accueil',
       directory: 'Annuaire',
