@@ -6,7 +6,7 @@ import { NextRequest } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 import { searchQuerySchema } from '@/lib/validations';
-import { successResponse, errorResponse, validationErrorResponse } from '@/utils/api-response';
+import { successResponse, validationErrorResponse } from '@/utils/api-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
     // Validate query parameters
     const validationResult = searchQuerySchema.safeParse(query);
     if (!validationResult.success) {
+      console.error('[API] Validation error:', validationResult.error.errors);
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
@@ -78,8 +79,7 @@ export async function GET(request: NextRequest) {
         .populate('category', 'name slug')
         .sort(sortMap[sort])
         .skip(skip)
-        .limit(limit)
-        .lean(),
+        .limit(limit),
       ProfessionalModel.countDocuments(filter),
     ]);
 
@@ -96,6 +96,17 @@ export async function GET(request: NextRequest) {
 
     const totalPages = Math.ceil(total / limit);
 
+    // Debug logging
+    console.log(`[API] Professionals query - Filter: ${JSON.stringify(filter)}, Sort: ${sort}, Found: ${professionals.length}, Total: ${total}`);
+    if (professionals.length > 0) {
+      console.log(`[API] First professional:`, {
+        name: professionals[0].name,
+        rating: professionals[0].rating,
+        featured: professionals[0].featured,
+        active: professionals[0].active,
+      });
+    }
+
     return successResponse({
       data: processedProfessionals,
       total,
@@ -104,7 +115,17 @@ export async function GET(request: NextRequest) {
       totalPages,
     });
   } catch (error) {
-    console.error('Error fetching professionals:', error);
-    return errorResponse('Internal server error', 500);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('[API] Error fetching professionals:', { message: errorMessage, stack: errorStack });
+    console.error('[API] Full error:', error);
+    return Response.json(
+      {
+        success: false,
+        error: errorMessage,
+        debug: process.env.NODE_ENV === 'development' ? errorStack : undefined,
+      },
+      { status: 500 }
+    );
   }
 }

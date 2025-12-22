@@ -101,13 +101,22 @@ export default function FeaturedProfessionals() {
       try {
         setLoading(true);
         // Query by rating - API automatically sorts featured first
-        const res = await fetch('/api/professionals?sort=rating&limit=8');
+        const url = '/api/professionals?sort=rating&limit=8';
+        console.log('[FeaturedProfessionals] Fetching from:', url);
+        const res = await fetch(url);
         const data = await res.json();
+        console.log('[FeaturedProfessionals] API Response:', {
+          success: data.success,
+          dataLength: data.data?.length,
+          total: data.total,
+          error: data.error,
+        });
         if (data.success && Array.isArray(data.data)) {
+          console.log('[FeaturedProfessionals] Setting professionals count:', data.data.length);
           setProfessionals(data.data.slice(0, 8));
         }
       } catch (error) {
-        console.error('Failed to fetch featured professionals:', error);
+        console.error('[FeaturedProfessionals] Fetch error:', error);
       } finally {
         setLoading(false);
       }

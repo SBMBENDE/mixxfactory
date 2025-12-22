@@ -61,8 +61,8 @@ export const searchQuerySchema = z.object({
   q: z.string().optional(),
   category: z.string().optional(),
   slug: z.string().optional(),
-  page: z.string().transform(Number).optional().default('1'),
-  limit: z.string().transform(Number).optional().default('12'),
+  page: z.string().optional().default('1').transform(Number),
+  limit: z.string().optional().default('12').transform(Number),
   sort: z.enum(['newest', 'rating', 'name']).optional().default('newest'),
 });
 
