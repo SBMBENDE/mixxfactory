@@ -88,8 +88,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/categories" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
-                  {t.footer?.categories || 'Categories'}
+                <Link href="/blog" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                  {t.footer?.blog || 'Blog'}
                 </Link>
               </li>
               <li>
