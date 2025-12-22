@@ -67,7 +67,8 @@ export default function HomePage() {
               marginBottom: isMobile ? '1rem' : '1.5rem',
               marginTop: '2rem',
               lineHeight: '1.2',
-              letterSpacing: '0.02em'
+              letterSpacing: '0.02em',
+              color: 'rgb(249, 115, 22)'
             }}>
               MixxFactory
             </h2>
@@ -107,23 +108,25 @@ export default function HomePage() {
                 href="/directory"
                 style={{
                   padding: isMobile ? '1rem' : '1.125rem 1.5rem',
-                  backgroundColor: 'white',
-                  color: '#2563eb',
+                  backgroundColor: 'rgb(249, 115, 22)',
+                  color: 'white',
                   borderRadius: '0.5rem',
                   textDecoration: 'none',
                   fontWeight: '600',
                   fontSize: isMobile ? '0.95rem' : '1rem',
                   cursor: 'pointer',
-                  border: '2px solid white',
+                  border: '2px solid rgb(249, 115, 22)',
                   transition: 'all 0.3s ease',
                   textAlign: 'center',
                   display: 'block'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f0f9ff';
+                  e.currentTarget.style.backgroundColor = 'rgb(234, 88, 12)';
+                  e.currentTarget.style.borderColor = 'rgb(234, 88, 12)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
+                  e.currentTarget.style.borderColor = 'rgb(249, 115, 22)';
                 }}
               >
                 {t.home.discoverBtn}
