@@ -100,7 +100,8 @@ export default function FeaturedProfessionals() {
     const fetchFeatured = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/professionals?sort=rating&limit=8&featured=true');
+        // Query by rating - API automatically sorts featured first
+        const res = await fetch('/api/professionals?sort=rating&limit=8');
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           setProfessionals(data.data.slice(0, 8));
