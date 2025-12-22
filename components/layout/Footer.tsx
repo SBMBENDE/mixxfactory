@@ -105,23 +105,23 @@ export function Footer() {
             <h4 className="text-base font-semibold mb-4 text-white">{t.footer?.forPros || 'For Professionals'}</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/register" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
-                  {t.footer?.joinUs || 'Join Us'}
+                <Link href="/pricing" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                  {t.footer?.pricing || 'Pricing'}
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
-                  {t.footer?.dashboard || 'Dashboard'}
+                <Link href="/premium-listings" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                  {t.footer?.premiumListings || 'Premium Listings'}
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
-                  {t.footer?.support || 'Support'}
+                <Link href="/featured-events" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                  {t.footer?.featuredEvents || 'Featured Events'}
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
-                  {t.footer?.blog || 'Blog'}
+                <Link href="/advertise" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                  {t.footer?.advertise || 'Advertise on MixxFactory'}
                 </Link>
               </li>
             </ul>
