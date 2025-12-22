@@ -61,16 +61,17 @@ export default function HomePage() {
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ textAlign: 'left' }}>
             <h1 style={{ 
-              fontSize: isMobile ? '1.75rem' : '2.5rem', 
+              fontSize: isMobile ? '2rem' : '3.5rem', 
               fontWeight: 'bold', 
-              marginBottom: '0.75rem',
-              lineHeight: '1.2'
+              marginBottom: '1rem',
+              marginTop: '2rem',
+              lineHeight: '1.3'
             }}>
               {t.home.title}
             </h1>
             <p style={{ 
               fontSize: '1rem', 
-              marginBottom: '1rem', 
+              marginBottom: '1.5rem', 
               color: '#e0e7ff',
               fontWeight: '500',
               letterSpacing: '0.05em'
@@ -78,11 +79,12 @@ export default function HomePage() {
               {t.home.tagline}
             </p>
             <p style={{ 
-              fontSize: isMobile ? '0.95rem' : '1.125rem', 
-              marginBottom: '2rem', 
+              fontSize: isMobile ? '1rem' : '1.25rem', 
+              marginBottom: '2.5rem', 
               color: '#f0f9ff',
-              lineHeight: '1.5',
-              maxWidth: isMobile ? '100%' : '500px'
+              lineHeight: '1.6',
+              maxWidth: isMobile ? '100%' : '550px',
+              fontWeight: '500'
             }}>
               {t.home.subtitle}
             </p>

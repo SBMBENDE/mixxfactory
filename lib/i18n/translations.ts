@@ -42,9 +42,9 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connect with verified professionals.',
+      title: 'Connect with Verified & Trusted Professionals.',
       tagline: 'Find trusted experts and upcoming events near you.',
-      subtitle: 'Discover top-rated professionals, venues, and events in your area. Book instantly, build your network.',
+      subtitle: 'Discover trusted professionals, venues, and events—instantly.',
       discoverBtn: 'Find a professional',
       eventsBtn: 'View events',
       registerBtn: 'Register as Professional',
@@ -460,9 +460,9 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connectez-vous avec des professionnels vérifiés.',
+      title: 'Connectez-vous avec des professionnels vérifiés et de confiance.',
       tagline: 'Trouvez des experts de confiance et les événements à proximité.',
-      subtitle: 'Découvrez les meilleurs professionnels, lieux et événements de votre région. Réservez instantanément, développez votre réseau.',
+      subtitle: 'Découvrez des professionnels, lieux et événements de confiance—instantanément.',
       discoverBtn: 'Trouver un professionnel',
       eventsBtn: 'Voir les événements',
       registerBtn: 'S\'inscrire en tant que professionnel',
