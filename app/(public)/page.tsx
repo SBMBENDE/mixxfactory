@@ -68,7 +68,8 @@ export default function HomePage() {
               marginTop: '2rem',
               lineHeight: '1.2',
               letterSpacing: '0.02em',
-              color: 'rgb(249, 115, 22)'
+              color: 'white',
+              textShadow: '0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(249, 115, 22, 0.2)'
             }}>
               MixxFactory
             </h2>
