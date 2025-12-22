@@ -48,28 +48,6 @@ const testimonials: Testimonial[] = [
     },
     rating: 5,
   },
-  {
-    id: 4,
-    name: 'David Chen',
-    role: { en: 'Corporate Event Planner', fr: 'Planificateur d\'événements d\'entreprise' },
-    image: 'https://ui-avatars.com/api/?name=David+Chen&background=C7CEEA&color=fff&size=200&bold=true',
-    content: {
-      en: 'Finding reliable event professionals used to be a nightmare. MixxFactory changed everything - highly recommended!',
-      fr: 'Trouver des professionnels de l\'événement fiables était autrefois un cauchemar. MixxFactory a tout changé - très recommandé !',
-    },
-    rating: 5,
-  },
-  {
-    id: 5,
-    name: 'Jessica Martinez',
-    role: { en: 'Fashion Stylist', fr: 'Styliste de mode' },
-    image: 'https://ui-avatars.com/api/?name=Jessica+Martinez&background=FFB6C1&color=fff&size=200&bold=true',
-    content: {
-      en: 'This platform connects me with amazing clients who appreciate quality styling. Best decision ever!',
-      fr: 'Cette plateforme me connecte avec des clients extraordinaires qui apprécient le style de qualité. La meilleure décision jamais prise !',
-    },
-    rating: 5,
-  },
 ];
 
 const CSS_ANIMATIONS = `
