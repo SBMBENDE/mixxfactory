@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Professional } from '@/types';
+import { useTranslations } from '@/hooks/useTranslations';
 
 // Skeleton Loader
 function SkeletonCard() {
@@ -68,6 +69,7 @@ export default function FeaturedProfessionals() {
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const t = useTranslations();
 
   // Detect mobile
   useEffect(() => {
@@ -149,7 +151,7 @@ export default function FeaturedProfessionals() {
             color: '#1f2937',
           }}
         >
-          Top-rated professionals
+          {t.home.topRatedProfessionals}
         </h2>
 
         {/* Grid Container */}
