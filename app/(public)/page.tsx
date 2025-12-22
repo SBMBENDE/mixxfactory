@@ -60,15 +60,31 @@ export default function HomePage() {
       }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ textAlign: 'left' }}>
+            {/* MixxFactory Branding */}
+            <h2 style={{ 
+              fontSize: isMobile ? '2rem' : '3.5rem', 
+              fontWeight: 'bold', 
+              marginBottom: isMobile ? '1rem' : '1.5rem',
+              marginTop: '2rem',
+              lineHeight: '1.2',
+              letterSpacing: '0.02em'
+            }}>
+              MixxFactory
+            </h2>
+            
+            {/* Main Title with Line Breaks */}
             <h1 style={{ 
-              fontSize: isMobile ? '2.5rem' : '3.5rem', 
+              fontSize: isMobile ? '2.5rem' : '2rem', 
               fontWeight: 'bold', 
               marginBottom: '2.5rem',
-              marginTop: '2rem',
-              lineHeight: '1.3'
+              lineHeight: isMobile ? '1.3' : '1.4',
+              maxWidth: isMobile ? '100%' : '700px'
             }}>
-              {t.home.title}
+              Connect with<br />
+              Verified & Trusted<br />
+              Professionals
             </h1>
+            
             <p style={{ 
               fontSize: isMobile ? '1rem' : '1.25rem', 
               marginBottom: '2.5rem', 
