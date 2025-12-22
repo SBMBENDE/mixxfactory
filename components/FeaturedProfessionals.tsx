@@ -240,7 +240,7 @@ export default function FeaturedProfessionals() {
                         alt={pro.name}
                         fill
                         unoptimized
-                        style={{ objectFit: 'cover', objectPosition: 'top' }}
+                        style={{ objectFit: 'cover', objectPosition: '50% 20%' }}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 220px"
                       />
                     ) : (
