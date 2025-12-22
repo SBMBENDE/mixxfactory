@@ -14,7 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslations } from '@/hooks/useTranslations';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
@@ -49,7 +49,7 @@ export const Navbar: React.FC = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <Link href="/directory" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
-              {t.nav.directory}
+              🔍 {t.nav.directory}
             </Link>
             <Link href="/events" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
               🎉 {t.nav.events}
@@ -97,13 +97,18 @@ export const Navbar: React.FC = () => {
               <>
                 {isAuthenticated && user ? (
                   <>
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {user.email}
-                    </span>
+                    <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                      <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {user.email}
+                      </span>
+                    </div>
                     <button
                       onClick={handleLogout}
-                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
+                      title="Logout"
                     >
+                      <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
                       {t.nav.logout}
                     </button>
                   </>
@@ -175,7 +180,7 @@ export const Navbar: React.FC = () => {
         {isOpen && (
           <div className="md:hidden pb-4 border-t border-gray-100 dark:border-gray-800">
             <Link href="/directory" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
-              {t.nav.directory}
+              🔍 {t.nav.directory}
             </Link>
             <Link href="/events" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600" onClick={closeMenu}>
               🎉 {t.nav.events}
@@ -199,13 +204,17 @@ export const Navbar: React.FC = () => {
                 <>
                   {isAuthenticated && user ? (
                     <>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                        {user.email}
-                      </p>
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          {user.email}
+                        </span>
+                      </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                       >
+                        <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
                         {t.nav.logout}
                       </button>
                     </>

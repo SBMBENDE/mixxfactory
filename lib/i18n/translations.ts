@@ -9,8 +9,8 @@ export const translations = {
     // Navigation
     nav: {
       home: 'Home',
-      directory: 'Directory',
-      events: 'Events',
+      directory: 'Find Professionals',
+      events: 'Upcoming Events',
       blog: 'Blog',
       about: 'About',
       contact: 'Contact',
@@ -18,6 +18,7 @@ export const translations = {
       login: 'Login',
       register: 'Register',
       logout: 'Logout',
+      profile: 'Profile',
     },
     // Common
     common: {
@@ -452,8 +453,8 @@ export const translations = {
     // Navigation
     nav: {
       home: 'Accueil',
-      directory: 'Annuaire',
-      events: 'Événements',
+      directory: 'Trouver des Professionnels',
+      events: 'Événements à Venir',
       blog: 'Blog',
       about: 'À propos',
       contact: 'Nous contacter',
@@ -461,6 +462,7 @@ export const translations = {
       login: 'Connexion',
       register: 'Inscription',
       logout: 'Déconnexion',
+      profile: 'Profil',
     },
     // Common
     common: {
