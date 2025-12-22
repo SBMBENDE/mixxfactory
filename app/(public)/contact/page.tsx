@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faMapPin, faClock, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { useTranslations } from '@/hooks/useTranslations';
+import { FAQAccordion } from '@/components/FAQAccordion';
 
 export default function ContactPage() {
   const t = useTranslations();
@@ -406,47 +407,71 @@ export default function ContactPage() {
 
       {/* FAQ Section */}
       <section style={{ padding: '4rem 1rem', backgroundColor: 'white', marginTop: '2rem' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', marginBottom: '3rem', textAlign: 'center', color: '#111827' }}>
-            {t.contact.faq}
-          </h2>
-          <div>
-            {[
-              {
-                question: t.contact.faqQ1,
-                answer: t.contact.faqA1,
-              },
-              {
-                question: t.contact.faqQ2,
-                answer: t.contact.faqA2,
-              },
-              {
-                question: t.contact.faqQ3,
-                answer: t.contact.faqA3,
-              },
-              {
-                question: t.contact.faqQ4,
-                answer: t.contact.faqA4,
-              },
-            ].map((faq, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: '#f9fafb',
-                  borderRadius: '0.75rem',
-                  padding: '1.5rem',
-                  marginBottom: '1.5rem',
-                  borderLeft: '4px solid #2563eb',
-                }}
-              >
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>
-                  {faq.question}
-                </h3>
-                <p style={{ color: '#6b7280', lineHeight: '1.6' }}>{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <FAQAccordion
+          title={t.contact.faq}
+          items={[
+            {
+              question: t.contact.faqQ1,
+              answer: t.contact.faqA1,
+            },
+            {
+              question: t.contact.faqQ2,
+              answer: t.contact.faqA2,
+            },
+            {
+              question: t.contact.faqQ3,
+              answer: t.contact.faqA3,
+            },
+            {
+              question: t.contact.faqQ4,
+              answer: t.contact.faqA4,
+            },
+            {
+              question: t.contact.faqQ5,
+              answer: t.contact.faqA5,
+            },
+            {
+              question: t.contact.faqQ6,
+              answer: t.contact.faqA6,
+            },
+            {
+              question: t.contact.faqQ7,
+              answer: t.contact.faqA7,
+            },
+            {
+              question: t.contact.faqQ8,
+              answer: t.contact.faqA8,
+            },
+            {
+              question: t.contact.faqQ9,
+              answer: t.contact.faqA9,
+            },
+            {
+              question: t.contact.faqQ10,
+              answer: t.contact.faqA10,
+            },
+            {
+              question: t.contact.faqQ11,
+              answer: t.contact.faqA11,
+            },
+            {
+              question: t.contact.faqQ12,
+              answer: t.contact.faqA12,
+            },
+            {
+              question: t.contact.faqQ13,
+              answer: t.contact.faqA13,
+            },
+            {
+              question: t.contact.faqQ14,
+              answer: t.contact.faqA14,
+            },
+            {
+              question: t.contact.faqQ15,
+              answer: t.contact.faqA15,
+            },
+          ]}
+        />
       </section>
     </div>
   );
