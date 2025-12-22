@@ -78,11 +78,10 @@ export default function HomePage() {
               fontWeight: 'bold', 
               marginBottom: '2.5rem',
               lineHeight: isMobile ? '1.15' : '1.4',
-              maxWidth: isMobile ? '100%' : '700px'
+              maxWidth: isMobile ? '100%' : '700px',
+              whiteSpace: 'pre-line'
             }}>
-              Connect with<br />
-              Verified & Trusted<br />
-              Professionals
+              {t.home.title}
             </h1>
             
             <p style={{ 
