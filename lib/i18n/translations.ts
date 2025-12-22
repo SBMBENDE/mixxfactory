@@ -42,7 +42,7 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connect with Verified & Trusted Professionals.',
+      title: 'Connect with\nVerified & Trusted\nProfessionals',
       tagline: 'Find trusted experts and upcoming events near you.',
       subtitle: 'Discover trusted professionals, venues, and events—instantly.',
       discoverBtn: 'Find a professional',
@@ -50,6 +50,7 @@ export const translations = {
       registerBtn: 'Register as Professional',
       popularCategories: 'Popular Categories',
       loadingCategories: 'Loading categories...',
+      brandName: 'MixxFactory',
       featuredTitle: 'Want to be featured?',
       featuredDesc: 'If you\'re a professional or venue owner, join our directory and reach thousands of potential customers.',
       getStarted: 'Get Started',
@@ -460,7 +461,7 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connectez-vous avec des professionnels vérifiés et de confiance.',
+      title: 'Connectez-vous avec\ndes professionnels\nvérifiés et de confiance',
       tagline: 'Trouvez des experts de confiance et les événements à proximité.',
       subtitle: 'Découvrez des professionnels, lieux et événements de confiance—instantanément.',
       discoverBtn: 'Trouver un professionnel',
@@ -468,6 +469,7 @@ export const translations = {
       registerBtn: 'S\'inscrire en tant que professionnel',
       popularCategories: 'Catégories populaires',
       loadingCategories: 'Chargement des catégories...',
+      brandName: 'MixxFactory',
       featuredTitle: 'À la une',
       featuredDesc: 'Si vous êtes un professionnel ou propriétaire de lieu, rejoignez notre annuaire et atteignez des milliers de clients potentiels.',
       getStarted: 'Commencer',
