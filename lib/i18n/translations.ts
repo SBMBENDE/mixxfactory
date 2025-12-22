@@ -889,6 +889,7 @@ export const translations = {
       sitemap: 'Plan du site',
       accessibility: 'Accessibilité',
       followUs: 'Nous suivre',
+      forPros: 'Les Professionnels',
     },
   },
 };
