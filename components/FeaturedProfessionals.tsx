@@ -342,18 +342,23 @@ export default function FeaturedProfessionals() {
                 </div>
               </Link>
             ))
-          ) : (
+          ) : !loading && professionals.length === 0 ? (
             <div
               style={{
                 gridColumn: '1 / -1',
                 textAlign: 'center',
-                padding: '2rem',
+                padding: '3rem 2rem',
                 color: '#9ca3af',
               }}
             >
-              No professionals found
+              <p style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>
+                No top-rated professionals available yet
+              </p>
+              <p style={{ fontSize: '0.875rem', color: '#d1d5db' }}>
+                Be the first to join our community!
+              </p>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* See All Link */}
