@@ -250,11 +250,12 @@ export default function FeaturedProfessionals() {
                       overflow: 'hidden',
                     }}
                   >
-                    {pro.photo ? (
+                    {pro.images && pro.images.length > 0 ? (
                       <Image
-                        src={pro.photo}
+                        src={pro.images[0]}
                         alt={pro.name}
                         fill
+                        unoptimized
                         style={{ objectFit: 'cover' }}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 220px"
                       />
@@ -347,10 +348,6 @@ export default function FeaturedProfessionals() {
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = '#2563eb';
                         e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                      onClick={(e) => {
-                        // This will be handled by the Link wrapper
-                        e.preventDefault();
                       }}
                     >
                       View profile
