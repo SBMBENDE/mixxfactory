@@ -878,7 +878,7 @@ export const translations = {
       legal: 'Mentions légales',
       privacy: 'Politique de confidentialité',
       terms: 'Conditions d\'utilisation',
-      cookies: 'Politique relative aux cookies',
+      cookies: 'Politique de cookies',
       contact: 'Nous contacter',
       forPros: 'Pour les professionnels',
       joinUs: 'Nous rejoindre',
