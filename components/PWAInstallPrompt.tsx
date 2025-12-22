@@ -21,13 +21,17 @@ export default function PWAInstallPrompt() {
     // Check if dismissed in this session
     const isDismissed = sessionStorage.getItem('pwa-prompt-dismissed') === 'true';
     if (isDismissed) {
+      console.log('[PWAInstallPrompt] Prompt was dismissed in this session');
       setDismissed(true);
       return;
     }
 
+    console.log('[PWAInstallPrompt] Listening for beforeinstallprompt event...');
+
     const handleBeforeInstallPrompt = (e: Event) => {
       // Prevent the default mini-infobar or install dialog
       e.preventDefault();
+      console.log('[PWAInstallPrompt] beforeinstallprompt event fired');
       // Store the event for later use
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       // Show custom install prompt
@@ -35,6 +39,7 @@ export default function PWAInstallPrompt() {
     };
 
     const handleAppInstalled = () => {
+      console.log('[PWAInstallPrompt] App installed');
       // Hide prompt after app is installed
       setShowPrompt(false);
       setDeferredPrompt(null);
