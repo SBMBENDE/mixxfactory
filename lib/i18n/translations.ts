@@ -463,7 +463,7 @@ export const translations = {
     home: {
       title: 'Connectez-vous avec\ndes professionnels\nde confiance',
       tagline: 'Trouvez des experts de confiance et les événements à proximité.',
-      subtitle: 'Découvrez des professionnels, lieux et événements de confiance—instantanément.',
+      subtitle: 'Découvrez instantanément des professionnels de confiance, des lieux et des événements d\'exception.',
       discoverBtn: 'Trouver un professionnel',
       eventsBtn: 'Voir les événements',
       registerBtn: 'S\'inscrire en tant que professionnel',
