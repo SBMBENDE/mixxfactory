@@ -6,6 +6,7 @@
 
 import { LanguageProvider } from '@/hooks/useLanguage';
 import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     <LanguageProvider>
       <Navbar />
       <main>{children}</main>
+      <Footer />
       <PWAInstallPrompt />
     </LanguageProvider>
   );
