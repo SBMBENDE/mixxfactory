@@ -2,13 +2,15 @@
  * Get professionals API route with filtering
  */
 
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 import { searchQuerySchema } from '@/lib/validations';
 import { successResponse, validationErrorResponse } from '@/utils/api-response';
 
-export const dynamic = 'force-dynamic';
+// Cache for 30 minutes (1800 seconds) when no search/filter params
+// Professionals list changes less frequently than you'd think
+export const revalidate = 1800;
 
 export async function GET(request: NextRequest) {
   try {

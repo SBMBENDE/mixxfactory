@@ -13,7 +13,7 @@ export function successResponse<T>(
   message?: string,
   status = 200
 ) {
-  return NextResponse.json(
+  const response = NextResponse.json(
     {
       success: true,
       data,
@@ -21,6 +21,11 @@ export function successResponse<T>(
     } as ApiResponse<T>,
     { status }
   );
+  
+  // Add cache headers for API responses (typically 30 minutes)
+  response.headers.set('Cache-Control', 'public, max-age=1800, s-maxage=1800, stale-while-revalidate=3600');
+  
+  return response;
 }
 
 /**
