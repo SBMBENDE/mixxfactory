@@ -8,7 +8,7 @@ import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Professional } from '@/types';
 import { useTranslations } from '@/hooks/useTranslations';
 
-// Skeleton Loader
+// Skeleton Loader with enhanced animation
 function SkeletonCard() {
   return (
     <div
@@ -20,6 +20,7 @@ function SkeletonCard() {
         height: '360px',
         display: 'flex',
         flexDirection: 'column',
+        animation: 'fadeInScale 0.5s ease-out both',
       }}
     >
       {/* Image skeleton */}
@@ -27,9 +28,24 @@ function SkeletonCard() {
         style={{
           height: '200px',
           backgroundColor: '#f3f4f6',
-          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          position: 'relative',
+          overflow: 'hidden',
         }}
-      />
+      >
+        {/* Shimmer effect */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '-100%',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+            animation: 'shimmer 2s infinite',
+          }}
+        />
+      </div>
 
       {/* Content skeleton */}
       <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -39,7 +55,7 @@ function SkeletonCard() {
             backgroundColor: '#e5e7eb',
             borderRadius: '0.25rem',
             width: '70%',
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }}
         />
         <div
@@ -48,7 +64,7 @@ function SkeletonCard() {
             backgroundColor: '#e5e7eb',
             borderRadius: '0.25rem',
             width: '50%',
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }}
         />
         <div style={{ flex: 1 }} />
@@ -57,7 +73,7 @@ function SkeletonCard() {
             height: '2.5rem',
             backgroundColor: '#e5e7eb',
             borderRadius: '0.25rem',
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animation: 'skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }}
         />
       </div>
@@ -173,13 +189,14 @@ export default function FeaturedProfessionals() {
               ))}
             </>
           ) : professionals.length > 0 ? (
-            professionals.map((pro) => (
+            professionals.map((pro, index) => (
               <Link
                 key={pro._id}
                 href={`/professionals/${pro.slug}`}
                 style={{
                   textDecoration: 'none',
                   color: 'inherit',
+                  animation: `fadeInScale 0.5s ease-out ${index * 0.05}s both`,
                 }}
               >
                 <div
@@ -391,8 +408,37 @@ export default function FeaturedProfessionals() {
         )}
       </div>
 
-      {/* Pulse animation */}
+      {/* Enhanced animations */}
       <style>{`
+        @keyframes skeleton-pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            left: -100%;
+          }
+          100% {
+            left: 100%;
+          }
+        }
+
+        @keyframes fadeInScale {
+          0% {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
         @keyframes pulse {
           0%, 100% {
             opacity: 1;
