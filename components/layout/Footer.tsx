@@ -132,19 +132,19 @@ export function Footer() {
             <h4 className="text-base font-semibold mb-4 text-white">{t.footer?.legal || 'Legal'}</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                <Link href="/privacy" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
                   {t.footer?.privacy || 'Privacy Policy'}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                <Link href="/terms" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
                   {t.footer?.terms || 'Terms of Service'}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                <Link href="/cookies" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
                   {t.footer?.cookies || 'Cookie Policy'}
-                </a>
+                </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
