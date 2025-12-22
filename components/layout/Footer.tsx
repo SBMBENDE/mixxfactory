@@ -11,10 +11,11 @@ export function Footer() {
     <footer className="bg-gray-900 text-gray-100 border-t border-gray-800">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
-        {/* Mobile First - Stack on mobile, grid on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
-          {/* About Section */}
-          <div className="col-span-1">
+        {/* Mobile: About full-width, Quick Links & Legal side-by-side, For Professionals full-width
+            Desktop: All 4 columns in grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
+          {/* About Section - Full width on mobile, 1 col on desktop */}
+          <div className="col-span-2 md:col-span-1">
             <h3 className="text-lg font-bold mb-4 text-white">MixxFactory</h3>
             <p className="text-sm text-gray-400 mb-6">
               {t.footer?.description || 'Connecting professionals and venues with event organizers worldwide.'}
@@ -72,7 +73,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links - 1 col on mobile, 1 col on desktop */}
           <div className="col-span-1">
             <h4 className="text-base font-semibold mb-4 text-white">{t.footer?.quickLinks || 'Quick Links'}</h4>
             <ul className="space-y-3">
@@ -99,7 +100,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal Links */}
+          {/* Legal Links - 1 col on mobile, 1 col on desktop */}
           <div className="col-span-1">
             <h4 className="text-base font-semibold mb-4 text-white">{t.footer?.legal || 'Legal'}</h4>
             <ul className="space-y-3">
@@ -126,8 +127,8 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* For Professionals */}
-          <div className="col-span-1">
+          {/* For Professionals - Full width on mobile, 1 col on desktop */}
+          <div className="col-span-2 md:col-span-1">
             <h4 className="text-base font-semibold mb-4 text-white">{t.footer?.forPros || 'For Professionals'}</h4>
             <ul className="space-y-3">
               <li>
