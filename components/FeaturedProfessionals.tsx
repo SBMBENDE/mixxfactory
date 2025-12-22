@@ -149,6 +149,7 @@ export default function FeaturedProfessionals() {
             marginBottom: '2rem',
             textAlign: 'center',
             color: '#1f2937',
+            whiteSpace: 'pre-line',
           }}
         >
           {t.home.topRatedProfessionals}

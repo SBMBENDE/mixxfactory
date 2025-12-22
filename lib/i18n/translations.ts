@@ -469,7 +469,7 @@ export const translations = {
       eventsBtn: 'Voir les événements',
       registerBtn: 'S\'inscrire en tant que professionnel',
       popularCategories: 'Catégories populaires',
-      topRatedProfessionals: 'Professionnels les mieux notés',
+      topRatedProfessionals: 'Top Professionnels & Lieux\nLes Mieux Notés',
       loadingCategories: 'Chargement des catégories...',
       brandName: 'MixxFactory',
       featuredTitle: 'À la une',
