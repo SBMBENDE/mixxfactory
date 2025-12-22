@@ -461,7 +461,7 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Connectez-vous avec\ndes professionnels\nvérifiés et de confiance',
+      title: 'Connectez-vous avec\ndes professionnels\nde confiance',
       tagline: 'Trouvez des experts de confiance et les événements à proximité.',
       subtitle: 'Découvrez des professionnels, lieux et événements de confiance—instantanément.',
       discoverBtn: 'Trouver un professionnel',
