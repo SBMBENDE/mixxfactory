@@ -28,7 +28,7 @@ export async function POST() {
       process.env.NODE_ENV === 'production' ? '; Secure' : ''
     }`;
     
-    response.headers.append('Set-Cookie', cookieHeader);
+    response.headers.set('Set-Cookie', cookieHeader);
 
     return response;
   } catch (error) {
@@ -48,7 +48,7 @@ export async function POST() {
       process.env.NODE_ENV === 'production' ? '; Secure' : ''
     }`;
     
-    response.headers.append('Set-Cookie', cookieHeader);
+    response.headers.set('Set-Cookie', cookieHeader);
 
     return response;
   }
