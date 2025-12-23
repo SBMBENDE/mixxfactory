@@ -10,6 +10,7 @@ import { hashPassword, generateEmailVerificationToken } from '@/lib/auth/passwor
 import { generateToken, setAuthCookieHeader } from '@/lib/auth/jwt';
 import { errorResponse, validationErrorResponse } from '@/utils/api-response';
 import { sendEmail, getVerificationEmailHTML } from '@/lib/email/sendgrid';
+import { createSession, getDeviceInfoFromRequest } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,11 +50,21 @@ export async function POST(request: NextRequest) {
       emailVerified: false, // Email not verified until token is confirmed
     });
 
-    // Generate token
+    // Create session for this device
+    const deviceInfo = getDeviceInfoFromRequest(request);
+    const sessionId = await createSession(
+      user._id.toString(),
+      deviceInfo.userAgent,
+      request.headers.get('accept-language') || undefined,
+      deviceInfo.ipAddress
+    );
+
+    // Generate token with session ID
     const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
       role: user.accountType,
+      sessionId,
     });
 
     // Send verification email (required before users can access professional registration)
