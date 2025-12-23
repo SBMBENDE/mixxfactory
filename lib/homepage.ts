@@ -35,20 +35,25 @@ export async function getHomepageData(): Promise<HomepageData> {
   try {
     console.log('[getHomepageData] Starting fetch...');
     
-    // Use relative URLs for internal API calls (works on Vercel)
+    // Build absolute URL for server-side fetching
+    // In development: http://localhost:3000
+    // In production: https://mixxfactory.vercel.app
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    console.log('[getHomepageData] Using baseUrl:', baseUrl);
+    
     // Don't cache these fetches - let the API handle caching instead
     // ISR will handle page-level caching via the revalidate export
     const [profRes, catRes, newsRes] = await Promise.all([
       // Featured professionals - no cache revalidate (API handles it)
-      fetch(`/api/professionals?sort=rating&limit=4&lean=true`, {
+      fetch(`${baseUrl}/api/professionals?sort=rating&limit=4&lean=true`, {
         // No caching at fetch level - causes "over 2MB" error
       }),
       // Categories for popular section
-      fetch(`/api/categories`, {
+      fetch(`${baseUrl}/api/categories`, {
         // No caching at fetch level - causes "over 2MB" error
       }),
       // News flashes for banner
-      fetch(`/api/news-flashes?published=true&limit=3`, {
+      fetch(`${baseUrl}/api/news-flashes?published=true&limit=3`, {
         // No caching at fetch level - causes "over 2MB" error
       }),
     ]);
