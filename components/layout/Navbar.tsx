@@ -21,6 +21,8 @@ export const Navbar: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const t = useTranslations();
 
+  console.log('🔧 Navbar rendered - Auth state:', { isAuthenticated, userEmail: user?.email, loading });
+
   const closeMenu = () => {
     setIsOpen(false);
   };
@@ -122,7 +124,10 @@ export const Navbar: React.FC = () => {
                       </span>
                     </div>
                     <button
-                      onClick={handleLogout}
+                      onClick={() => {
+                        console.log('🚪 Logout button clicked!');
+                        handleLogout();
+                      }}
                       className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                       title="Logout"
                     >
@@ -229,7 +234,10 @@ export const Navbar: React.FC = () => {
                         </span>
                       </div>
                       <button
-                        onClick={handleLogout}
+                        onClick={() => {
+                          console.log('🚪 Logout button clicked (mobile)!');
+                          handleLogout();
+                        }}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                       >
                         <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
