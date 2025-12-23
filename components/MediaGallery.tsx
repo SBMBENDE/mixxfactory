@@ -121,6 +121,7 @@ export default function MediaGallery({
                     <img
                       src={item.thumbnail}
                       alt={`Video ${index + 1}`}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   ) : (

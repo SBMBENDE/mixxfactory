@@ -278,6 +278,7 @@ export default function TestimonialCarousel() {
                       <img
                         src={current.image}
                         alt={current.name}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -304,6 +305,7 @@ export default function TestimonialCarousel() {
                     <img
                       src={current.image}
                       alt={current.name}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   </div>

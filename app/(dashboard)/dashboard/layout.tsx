@@ -12,7 +12,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { authStatus } = useAuth();
+  const { authStatus, user } = useAuth();
 
   useEffect(() => {
     // Redirect if not authenticated
@@ -20,10 +20,15 @@ export default function DashboardLayout({
       console.log('[Dashboard] User not authenticated, redirecting to login');
       window.location.href = '/auth/login';
     }
-  }, [authStatus]);
+    // Redirect if authenticated but not admin
+    else if (authStatus === 'authenticated' && user?.role !== 'admin') {
+      console.log('[Dashboard] User is not admin, redirecting to home');
+      window.location.href = '/';
+    }
+  }, [authStatus, user?.role]);
 
-  // Only show loading state if actually loading (not for authenticated)
-  // Authenticated state will render immediately with the dashboard
+  // Only show loading state if actually loading (not for authenticated admin)
+  // Authenticated admin state will render immediately with the dashboard
   if (authStatus === 'loading') {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
@@ -34,8 +39,8 @@ export default function DashboardLayout({
     );
   }
 
-  // If not loading and not redirecting (meaning authenticated), render dashboard
-  if (authStatus !== 'authenticated') {
+  // If not loading and not admin, redirect (handled in useEffect)
+  if (authStatus !== 'authenticated' || user?.role !== 'admin') {
     // This shouldn't happen, but just in case
     return null;
   }

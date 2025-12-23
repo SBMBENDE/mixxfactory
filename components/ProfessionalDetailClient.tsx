@@ -513,6 +513,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                     <img
                       src={image}
                       alt={`Portfolio ${index + 1}`}
+                      loading="lazy"
                       style={{
                         width: '100%',
                         height: '100%',
