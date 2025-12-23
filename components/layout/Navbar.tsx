@@ -26,19 +26,24 @@ export const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    console.log('[Navbar] Logout button clicked');
     try {
       // Call logout API to clear session and delete cookie
+      console.log('[Navbar] Calling logout function...');
       await logout();
+      console.log('[Navbar] Logout function completed');
       closeMenu();
       
       // Minimal delay to allow browser to process the request
       // State is cleared synchronously in logout() so we don't need long delay
+      console.log('[Navbar] Waiting 100ms before redirect...');
       await new Promise(resolve => setTimeout(resolve, 100));
       
       // Redirect to home
+      console.log('[Navbar] Redirecting to home...');
       window.location.href = '/';
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('[Navbar] Logout error:', error);
       // Navigate anyway even if logout fails
       window.location.href = '/';
     }
