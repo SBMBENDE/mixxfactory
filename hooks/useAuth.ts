@@ -32,22 +32,26 @@ export function useAuth(): UseAuthReturn {
   // Check if user is authenticated
   const checkAuth = useCallback(async () => {
     setAuthStatus('loading');
+    console.log('[useAuth] Checking authentication status...');
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
+      console.log('[useAuth] Auth check response status:', res.status);
       
       if (res.ok) {
         const data = await res.json();
         if (data.data) {
+          console.log('[useAuth] User authenticated:', data.data.email);
           setUser(data.data);
           setAuthStatus('authenticated');
           return;
         }
       }
       
+      console.log('[useAuth] User not authenticated');
       setAuthStatus('unauthenticated');
       setUser(null);
     } catch (error) {
-      console.error('Auth check error:', error);
+      console.error('[useAuth] Auth check error:', error);
       setAuthStatus('unauthenticated');
       setUser(null);
     }
@@ -60,17 +64,21 @@ export function useAuth(): UseAuthReturn {
 
   // Logout - Clear state FIRST, then call API
   const logout = useCallback(async () => {
+    console.log('[useAuth] Logout initiated');
+    
     // Immediately clear local state before API call
     setAuthStatus('loading');
     setUser(null);
     
     // Clear any stored auth data
     if (typeof window !== 'undefined') {
+      console.log('[useAuth] Clearing localStorage and sessionStorage');
       localStorage.removeItem('auth_token');
       sessionStorage.removeItem('auth_token');
     }
     
     setAuthStatus('unauthenticated');
+    console.log('[useAuth] Local auth state cleared');
     
     // Then call logout API
     try {
@@ -79,11 +87,13 @@ export function useAuth(): UseAuthReturn {
         credentials: 'include',
       });
       
+      console.log('[useAuth] Logout API response:', response.status);
+      
       if (!response.ok) {
-        console.warn('Logout API error:', response.status);
+        console.warn('[useAuth] Logout API error:', response.status);
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('[useAuth] Logout error:', error);
     }
   }, []);
 
