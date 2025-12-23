@@ -14,9 +14,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { StickySearchBar } from '@/components/StickySearchBar';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
-import TestimonialCarousel from '@/components/TestimonialCarousel';
-import { PopularCategories } from '@/components/PopularCategories';
-import { FeaturedProfessionals } from '@/components/FeaturedProfessionals';
+import { TestimonialCarousel } from '@/components/TestimonialCarousel';
+import PopularCategories from '@/components/PopularCategories';
+import FeaturedProfessionals from '@/components/FeaturedProfessionals';
 
 /**
  * Page-level skeleton loader
