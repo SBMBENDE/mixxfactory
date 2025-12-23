@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import AccountSettings from '@/components/auth/account-settings';
 import ProfileCompletionTracker from '@/components/auth/profile-completion-tracker';
 
