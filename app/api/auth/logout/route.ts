@@ -11,6 +11,12 @@ import { blacklistToken } from '@/lib/auth/logout-blacklist';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  // Log immediately to ensure this executes
+  const logStart = new Date().toISOString();
+  console.error(`\n${'='.repeat(60)}`);
+  console.error(`[LOGOUT API] Started at ${logStart}`);
+  console.error(`${'='.repeat(60)}\n`);
+  
   try {
     console.log('[API /api/auth/logout] /api/auth/logout called');
     
