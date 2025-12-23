@@ -31,12 +31,17 @@ export const Navbar: React.FC = () => {
       await logout();
       closeMenu();
       
-      // Navigate to home page
-      window.location.replace('/?_logout=1');
+      // Critical: Wait for Set-Cookie header to be fully processed by browser
+      // Without this delay, the page reloads before cookie deletion is complete
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Full page reload with no cache query parameter
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
       // Navigate anyway even if logout fails
-      window.location.replace('/?_logout=1');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      window.location.href = '/';
     }
   };
 
