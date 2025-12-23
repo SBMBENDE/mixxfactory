@@ -37,6 +37,8 @@ export async function createSession(
   console.log(`[createSession] Device fingerprint: ${deviceFingerprint}`);
   
   try {
+    // Create session record in database
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const session = await UserSessionModel.create({
       userId,
       sessionId,
