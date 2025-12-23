@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface PromotionTier {
   id: string;
@@ -207,16 +208,15 @@ export default function MyEventsPage() {
                           overflow: 'hidden',
                           backgroundColor: '#e5e7eb',
                           flexShrink: 0,
+                          position: 'relative',
                         }}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
+                          <Image
                             src={event.posterImage}
                             alt={event.title}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                            }}
+                            fill
+                            sizes="120px"
+                            className="w-full h-full object-cover"
+                            priority={false}
                           />
                         </div>
                       )}

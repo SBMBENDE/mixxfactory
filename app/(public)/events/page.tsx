@@ -7,6 +7,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
 
@@ -266,17 +267,16 @@ export default function EventsPage() {
                   backgroundColor: '#f3f4f6',
                   overflow: 'hidden',
                 }}>
-                  <img
+                  <Image
                     src={event.posterImage}
                     alt={event.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="w-full h-full"
                     style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
                       objectFit: 'cover',
                     }}
+                    priority={false}
                   />
                   {event.featured && (
                     <div style={{

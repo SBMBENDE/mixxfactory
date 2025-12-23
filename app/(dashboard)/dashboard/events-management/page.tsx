@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 const EventImageUpload = dynamic(() => import('@/components/EventImageUpload'), {
   loading: () => <div className="p-4 bg-gray-200 rounded animate-pulse">Loading upload...</div>,
@@ -639,10 +640,13 @@ export default function AdminEventsPage() {
             >
               <div className="flex-1">
                 {event.posterImage && (
-                  <img
+                  <Image
                     src={event.posterImage}
                     alt={event.title}
+                    width={64}
+                    height={80}
                     className="w-16 h-20 object-cover rounded mb-2"
+                    priority={false}
                   />
                 )}
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{event.title}</h3>

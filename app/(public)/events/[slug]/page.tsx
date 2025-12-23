@@ -7,6 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface EventData {
   _id: string;
@@ -159,29 +160,38 @@ export default function EventDetailPage() {
       }}>
         {gallery.length > 0 && (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={gallery[currentImageIndex].url}
-              alt={event.title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-              }}
-            />
             <div
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, 0.4)',
+                position: 'relative',
+                backgroundColor: '#1f2937',
+                minHeight: isMobile ? '300px' : '500px',
+                overflow: 'hidden',
               }}
-            />
+            >
+              <Image
+                src={gallery[currentImageIndex].url}
+                alt={event.title}
+                fill
+                sizes="100vw"
+                className="w-full h-full"
+                style={{
+                  objectFit: 'cover',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                }}
+                priority={true}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(0, 0, 0, 0.4)',
+                }}
+              />
 
             {/* Image Navigation */}
             {gallery.length > 1 && (
@@ -257,6 +267,7 @@ export default function EventDetailPage() {
                 </div>
               </>
             )}
+            </div>
           </>
         )}
 

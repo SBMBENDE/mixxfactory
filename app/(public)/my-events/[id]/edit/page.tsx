@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 import { validateVideoUrl } from '@/utils/videoValidation';
 
 interface LocationData {
@@ -672,15 +673,13 @@ export default function EditEventPage() {
                     backgroundColor: '#e5e7eb',
                     aspectRatio: '1',
                   }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={image.url}
                       alt={`Gallery ${index + 1}`}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
+                      fill
+                      sizes="200px"
+                      className="w-full h-full object-cover"
+                      priority={false}
                     />
                     <div style={{
                       position: 'absolute',
@@ -727,11 +726,14 @@ export default function EditEventPage() {
               style={{ marginBottom: '0.5rem' }}
             />
             {posterPreview && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={posterPreview}
                 alt="Poster preview"
-                style={{ width: '100%', maxWidth: '300px', borderRadius: '0.375rem' }}
+                width={300}
+                height={400}
+                className="w-full rounded"
+                style={{ maxWidth: '300px', borderRadius: '0.375rem' }}
+                priority={false}
               />
             )}
           </div>
@@ -747,11 +749,14 @@ export default function EditEventPage() {
               style={{ marginBottom: '0.5rem' }}
             />
             {bannerPreview && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={bannerPreview}
                 alt="Banner preview"
-                style={{ width: '100%', maxWidth: '100%', borderRadius: '0.375rem' }}
+                width={600}
+                height={200}
+                className="w-full rounded"
+                style={{ maxWidth: '100%', borderRadius: '0.375rem' }}
+                priority={false}
               />
             )}
           </div>

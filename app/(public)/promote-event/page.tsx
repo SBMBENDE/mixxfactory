@@ -5,6 +5,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { AuthModal } from '@/components/AuthModal';
 import { useAuth } from '@/hooks/useAuth';
 import { validateVideoUrl } from '@/utils/videoValidation';
@@ -748,15 +749,13 @@ export default function PromoteEventPage() {
                       backgroundColor: '#e5e7eb',
                       aspectRatio: '1',
                     }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <Image
                         src={image.url}
                         alt={`Gallery ${index + 1}`}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
+                        fill
+                        sizes="200px"
+                        className="w-full h-full object-cover"
+                        priority={false}
                       />
                       <div style={{
                         position: 'absolute',
@@ -1001,16 +1000,18 @@ export default function PromoteEventPage() {
                   }}
                 />
                 {formData.posterImage && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={formData.posterImage}
                     alt="Poster Preview"
+                    width={150}
+                    height={200}
                     style={{
                       marginTop: '0.5rem',
                       maxWidth: '100%',
                       maxHeight: '150px',
                       borderRadius: '0.375rem',
                     }}
+                    priority={false}
                   />
                 )}
               </div>
@@ -1041,15 +1042,18 @@ export default function PromoteEventPage() {
                   }}
                 />
                 {formData.bannerImage && (
-                  <img
+                  <Image
                     src={formData.bannerImage}
                     alt="Banner Preview"
+                    width={600}
+                    height={100}
                     style={{
                       marginTop: '0.5rem',
                       maxWidth: '100%',
                       maxHeight: '100px',
                       borderRadius: '0.375rem',
                     }}
+                    priority={false}
                   />
                 )}
               </div>

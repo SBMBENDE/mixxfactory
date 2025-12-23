@@ -6,6 +6,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { extractMediaFromUrl, MediaEmbed } from '@/lib/utils/mediaExtractor';
 
 interface MediaGalleryProps {
@@ -118,11 +119,13 @@ export default function MediaGallery({
                 {/* Thumbnail/Preview */}
                 <div className="relative bg-black aspect-video flex items-center justify-center">
                   {item.thumbnail ? (
-                    <img
+                    <Image
                       src={item.thumbnail}
                       alt={`Video ${index + 1}`}
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 400px"
                       className="w-full h-full object-cover"
+                      priority={false}
                     />
                   ) : (
                     <div className="flex items-center justify-center gap-2">

@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPhone, faGlobe, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faTwitter, faFacebook, faYoutube, faTiktok } from '@fortawesome/free-brands-svg-icons';
@@ -510,18 +511,19 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                       aspectRatio: '1',
                     }}
                   >
-                    <img
+                    <Image
                       src={image}
                       alt={`Portfolio ${index + 1}`}
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 300px"
+                      className="w-full h-full object-cover"
                       style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
                         transition: 'transform 0.2s',
                       }}
+                      priority={false}
                       onMouseEnter={(e) => {
-                        (e.target as HTMLImageElement).style.transform = 'scale(1.05)';
+                        const img = e.currentTarget as HTMLImageElement;
+                        img.style.transform = 'scale(1.05)';
                       }}
                       onMouseLeave={(e) => {
                         (e.target as HTMLImageElement).style.transform = 'scale(1)';

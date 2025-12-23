@@ -6,6 +6,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 
 interface ImageUploadProps {
   professionalId: string;
@@ -272,10 +273,13 @@ export default function ImageUpload({
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {previewUrls.map((item, index) => (
                     <div key={index} className="relative group rounded-lg overflow-hidden bg-gray-200">
-                      <img
+                      <Image
                         src={item.preview}
                         alt="Preview"
+                        width={96}
+                        height={96}
                         className="w-full h-24 object-cover"
+                        priority={false}
                       />
                       <button
                         onClick={() => handleRemovePreview(index)}

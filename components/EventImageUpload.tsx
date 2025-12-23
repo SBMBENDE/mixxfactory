@@ -5,6 +5,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 
 interface EventImageUploadProps {
   onImageUploaded: (url: string, type: 'poster' | 'banner') => void;
@@ -135,12 +136,15 @@ export default function EventImageUpload({
 
       {preview && (
         <div className={`relative w-full rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800`}>
-          <img
+          <Image
             src={preview}
             alt={`${label} preview`}
+            width={400}
+            height={imageType === 'poster' ? 533 : 225}
             className={`w-full ${
               imageType === 'poster' ? 'aspect-[3/4]' : 'aspect-video'
             } object-cover`}
+            priority={false}
           />
           <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded">
             ✓ Ready
