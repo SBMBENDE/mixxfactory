@@ -1,28 +1,25 @@
-/**
- * Home page - Server Component with ISR
- * Prerendered at build time, cached for 60 seconds
- * No 'use client' - enables true static generation
- */
-
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 import { getHomepageData } from '@/lib/homepage';
 import HomePage from '@/components/home/HomePage';
 
 export default async function Page() {
-  console.log('[PAGE] Starting getHomepageData...');
-  console.log('[PAGE] NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
-  console.log('[PAGE] NODE_ENV:', process.env.NODE_ENV);
-  
   try {
+    console.log('[PAGE] Fetching homepage data...');
     const data = await getHomepageData();
-    console.log('[PAGE] Data fetched successfully:', { 
-      profCount: data.professionals.length,
-      catCount: data.categories.length 
+    console.log('[PAGE] Data:', {
+      profCount: data.professionals?.length || 0,
+      catCount: data.categories?.length || 0,
     });
     return <HomePage data={data} />;
   } catch (error) {
-    console.error('[PAGE] Error fetching data:', error);
-    throw error;
+    console.error('[PAGE] Error:', error);
+    // Return minimal page if data fetch fails
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>MixxFactory</h1>
+        <p>Loading...</p>
+      </div>
+    );
   }
 }

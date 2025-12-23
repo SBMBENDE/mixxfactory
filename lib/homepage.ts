@@ -36,67 +36,89 @@ interface HomepageData {
 
 export async function getHomepageData(): Promise<HomepageData> {
   try {
-    console.log('[getHomepageData] Starting direct database fetch...');
+    console.log('[getHomepageData] Starting...');
     
-    // Connect to database directly instead of fetching through API
-    // This avoids external URL issues on Vercel
-    await connectDBWithTimeout();
-    console.log('[getHomepageData] Database connected');
+    // Return empty data immediately with timeout protection
+    const timeoutPromise = new Promise<HomepageData>((resolve) => {
+      setTimeout(() => {
+        console.log('[getHomepageData] Timeout reached, returning empty data');
+        resolve({
+          professionals: [],
+          categories: [],
+          newsFlashes: [],
+        });
+      }, 5000); // 5 second timeout
+    });
 
-    // Fetch professionals directly from DB
-    const professionals = await ProfessionalModel.find({ active: true })
-      .populate('category', 'name slug')
-      .sort({ featured: -1, rating: -1, reviewCount: -1 })
-      .limit(4)
-      .lean()
-      .exec();
+    const dataPromise = (async () => {
+      try {
+        // Connect to database
+        console.log('[getHomepageData] Connecting to DB...');
+        await connectDBWithTimeout();
+        console.log('[getHomepageData] DB connected');
 
-    console.log('[getHomepageData] Professionals fetched:', professionals.length);
+        // Fetch professionals
+        console.log('[getHomepageData] Fetching professionals...');
+        const professionals = await ProfessionalModel.find({ active: true })
+          .populate('category', 'name slug')
+          .sort({ featured: -1, rating: -1 })
+          .limit(4)
+          .lean()
+          .exec();
 
-    // Fetch categories directly from DB
-    const categories = await CategoryModel.find({})
-      .sort({ name: 1 })
-      .limit(7)
-      .lean()
-      .exec();
+        console.log('[getHomepageData] Got professionals:', professionals.length);
 
-    console.log('[getHomepageData] Categories fetched:', categories.length);
+        // Fetch categories
+        console.log('[getHomepageData] Fetching categories...');
+        const categories = await CategoryModel.find({})
+          .sort({ name: 1 })
+          .limit(7)
+          .lean()
+          .exec();
 
-    // For now, return empty news flashes (optional field)
-    const newsFlashes: any[] = [];
+        console.log('[getHomepageData] Got categories:', categories.length);
 
-    // Convert ObjectIds to strings for frontend compatibility
-    const processedProfessionals = professionals.map((prof: any) => ({
-      _id: prof._id?.toString(),
-      name: prof.name,
-      slug: prof.slug,
-      profilePicture: prof.profilePicture,
-      featured: prof.featured,
-      rating: prof.rating,
-      reviewCount: prof.reviewCount,
-      category: prof.category ? {
-        _id: prof.category._id?.toString(),
-        name: prof.category.name,
-        slug: prof.category.slug,
-      } : undefined,
-    }));
+        // Process data
+        const processedProfessionals = professionals.map((prof: any) => ({
+          _id: prof._id?.toString(),
+          name: prof.name,
+          slug: prof.slug,
+          profilePicture: prof.profilePicture,
+          featured: prof.featured,
+          rating: prof.rating,
+          reviewCount: prof.reviewCount,
+          category: prof.category ? {
+            _id: prof.category._id?.toString(),
+            name: prof.category.name,
+            slug: prof.category.slug,
+          } : undefined,
+        }));
 
-    const processedCategories = categories.map((cat: any) => ({
-      _id: cat._id?.toString(),
-      name: cat.name,
-      slug: cat.slug,
-    }));
+        const processedCategories = categories.map((cat: any) => ({
+          _id: cat._id?.toString(),
+          name: cat.name,
+          slug: cat.slug,
+        }));
 
-    console.log('[getHomepageData] Data processed successfully');
+        return {
+          professionals: processedProfessionals,
+          categories: processedCategories,
+          newsFlashes: [],
+        };
+      } catch (dbError) {
+        console.error('[getHomepageData] DB Error:', dbError);
+        return {
+          professionals: [],
+          categories: [],
+          newsFlashes: [],
+        };
+      }
+    })();
 
-    return {
-      professionals: processedProfessionals,
-      categories: processedCategories,
-      newsFlashes,
-    };
+    // Race between data fetch and timeout
+    return Promise.race([dataPromise, timeoutPromise]);
   } catch (error) {
-    console.error('[getHomepageData] Error fetching homepage data:', error);
-    // Return empty safe data on error
+    console.error('[getHomepageData] Fatal error:', error);
     return {
       professionals: [],
       categories: [],
