@@ -22,15 +22,22 @@ export default function DashboardLayout({
     }
   }, [authStatus]);
 
-  // Show loading state while auth is resolving
+  // Only show loading state if actually loading (not for authenticated)
+  // Authenticated state will render immediately with the dashboard
   if (authStatus === 'loading') {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#1f2937' }}>Loading dashboard...</div>
+          <div style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#1f2937' }}>Loading...</div>
         </div>
       </div>
     );
+  }
+
+  // If not loading and not redirecting (meaning authenticated), render dashboard
+  if (authStatus !== 'authenticated') {
+    // This shouldn't happen, but just in case
+    return null;
   }
 
   return (
