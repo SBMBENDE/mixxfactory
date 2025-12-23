@@ -1,64 +1,243 @@
 /**
- * Server-side wrapper for FeaturedProfessionals
- * Fetches data on the server and passes it as props
- * This enables ISR prerendering and shows content immediately
+ * FeaturedProfessionals Server Component
+ * Receives data from parent server component
+ * Pure rendering - no fetching, no hooks
  */
 
-import { FeaturedProfessionalsClient } from './FeaturedProfessionals';
+import Link from 'next/link';
+import { AppImage } from '@/components/AppImage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 interface Professional {
   _id: string;
   name: string;
   slug: string;
   profilePicture?: string;
-  description?: string;
   featured: boolean;
   rating: number;
   reviewCount: number;
   category?: {
-    _id: string;
     name: string;
     slug: string;
   };
 }
 
-interface ApiResponse {
-  success: boolean;
-  data?: {
-    data: Professional[];
-    total: number;
-  };
-  error?: string;
+interface Props {
+  professionals: Professional[];
 }
 
-export default async function FeaturedProfessionalsServer() {
-  try {
-    // Fetch on server with ISR caching
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/professionals?sort=rating&limit=8`, {
-      cache: 'force-cache',
-      next: { revalidate: 300 }, // 5 minutes
-    });
-
-    if (!response.ok) {
-      console.error('[FeaturedProfessionalsServer] API error:', response.status);
-      return <FeaturedProfessionalsClient initialProfessionals={[]} />;
-    }
-
-    const data: ApiResponse = await response.json();
-
-    if (!data.success || !data.data?.data) {
-      console.error('[FeaturedProfessionalsServer] Invalid response:', data);
-      return <FeaturedProfessionalsClient initialProfessionals={[]} />;
-    }
-
-    // Filter featured professionals or show all if none are featured
-    const featured = data.data.data.filter((p: Professional) => p.featured);
-    const toShow = featured.length > 0 ? featured : data.data.data;
-
-    return <FeaturedProfessionalsClient initialProfessionals={toShow.slice(0, 8)} />;
-  } catch (error) {
-    console.error('[FeaturedProfessionalsServer] Fetch error:', error);
-    return <FeaturedProfessionalsClient initialProfessionals={[]} />;
+export default function FeaturedProfessionalsServer({ professionals }: Props) {
+  if (!professionals || professionals.length === 0) {
+    return null;
   }
+
+  return (
+    <section style={{
+      padding: '4rem 1rem',
+      backgroundColor: 'white',
+    }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+          <h2 style={{
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            marginBottom: '0.5rem',
+            color: '#1f2937',
+          }}>
+            Featured Professionals
+          </h2>
+          <p style={{
+            color: '#6b7280',
+            fontSize: '1rem',
+          }}>
+            Discover top-rated professionals in your area
+          </p>
+        </div>
+
+        {/* Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          gap: '2rem',
+          marginBottom: '2rem',
+        }}>
+          {professionals.map((professional) => (
+            <Link
+              key={professional._id}
+              href={`/professionals/${professional.slug}`}
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+                borderRadius: '0.75rem',
+                overflow: 'hidden',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget;
+                el.style.transform = 'translateY(-4px)';
+                el.style.boxShadow = '0 10px 15px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget;
+                el.style.transform = 'translateY(0)';
+                el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+              }}
+            >
+              <div style={{
+                backgroundColor: 'white',
+                borderRadius: '0.75rem',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              }}>
+                {/* Image */}
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  aspectRatio: '1',
+                  backgroundColor: '#f3f4f6',
+                  overflow: 'hidden',
+                }}>
+                  {professional.profilePicture ? (
+                    <AppImage
+                      src={professional.profilePicture}
+                      alt={professional.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 300px"
+                      className="w-full h-full"
+                      objectFit="cover"
+                      priority={false}
+                    />
+                  ) : (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: '#e5e7eb',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '3rem',
+                    }}>
+                      👤
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div style={{
+                  padding: '1rem',
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}>
+                  {/* Featured Badge */}
+                  {professional.featured && (
+                    <span style={{
+                      display: 'inline-block',
+                      backgroundColor: '#fef3c7',
+                      color: '#92400e',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.75rem',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      width: 'fit-content',
+                    }}>
+                      ⭐ FEATURED
+                    </span>
+                  )}
+
+                  {/* Name */}
+                  <h3 style={{
+                    fontSize: '1.1rem',
+                    fontWeight: '600',
+                    marginBottom: '0.25rem',
+                    color: '#1f2937',
+                    lineHeight: '1.3',
+                  }}>
+                    {professional.name}
+                  </h3>
+
+                  {/* Category */}
+                  {professional.category && (
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#6b7280',
+                      marginBottom: '0.75rem',
+                    }}>
+                      {professional.category.name}
+                    </p>
+                  )}
+
+                  {/* Rating */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginTop: 'auto',
+                    fontSize: '0.875rem',
+                    color: '#f59e0b',
+                  }}>
+                    <FontAwesomeIcon icon={faStar} style={{ width: '1rem', height: '1rem' }} />
+                    <span>{professional.rating.toFixed(1)}</span>
+                    <span style={{ color: '#9ca3af' }}>
+                      ({professional.reviewCount})
+                    </span>
+                  </div>
+
+                  {/* CTA */}
+                  <div style={{
+                    marginTop: '1rem',
+                    padding: '0.75rem',
+                    backgroundColor: '#f3f4f6',
+                    borderRadius: '0.375rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    color: '#2563eb',
+                    fontWeight: '500',
+                    fontSize: '0.875rem',
+                  }}>
+                    View Profile
+                    <FontAwesomeIcon icon={faArrowRight} style={{ width: '0.75rem', height: '0.75rem' }} />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* CTA Button */}
+        <div style={{ textAlign: 'center' }}>
+          <Link
+            href="/directory"
+            style={{
+              display: 'inline-block',
+              padding: '0.875rem 2rem',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              borderRadius: '0.375rem',
+              textDecoration: 'none',
+              fontWeight: '600',
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#1d4ed8';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#2563eb';
+            }}
+          >
+            Browse All Professionals
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
 }
