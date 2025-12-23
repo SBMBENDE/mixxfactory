@@ -21,34 +21,25 @@ export const Navbar: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const t = useTranslations();
 
-  console.log('🔧 Navbar rendered - Auth state:', { isAuthenticated, userEmail: user?.email, loading });
-
   const closeMenu = () => {
     setIsOpen(false);
   };
 
   const handleLogout = async () => {
     try {
-      console.log('🚪 Navbar: handleLogout called');
-      console.log('🚪 Current auth state before logout:', { isAuthenticated, user: user?.email });
-      
-      // Perform logout API call
+      // Call logout API to clear session and delete cookie
       await logout();
-      console.log('🚪 Navbar: logout() completed');
       closeMenu();
       
-      // Wait 3 seconds so you can see the logs
-      console.log('🚪 Navbar: Waiting 3 seconds before redirect (so you can see logs)...');
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Brief delay to ensure state update is processed
+      await new Promise(resolve => setTimeout(resolve, 200));
       
-      console.log('🚪 Navbar: About to redirect to / with window.location.replace');
-      // Do a hard refresh to ensure everything is clean
+      // Hard redirect to home page
       window.location.replace('/');
     } catch (error) {
-      console.error('🚪 Navbar: Logout failed:', error);
-      console.log('🚪 Navbar: Waiting 3 seconds before redirect due to error...');
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      console.log('🚪 Navbar: Redirecting after error');
+      console.error('Logout error:', error);
+      // Redirect anyway even if logout fails
+      await new Promise(resolve => setTimeout(resolve, 200));
       window.location.replace('/');
     }
   };
@@ -123,10 +114,7 @@ export const Navbar: React.FC = () => {
                       </span>
                     </div>
                     <button
-                      onClick={() => {
-                        console.log('🚪 Logout button clicked!');
-                        handleLogout();
-                      }}
+                      onClick={handleLogout}
                       className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                       title="Logout"
                     >
@@ -233,10 +221,7 @@ export const Navbar: React.FC = () => {
                         </span>
                       </div>
                       <button
-                        onClick={() => {
-                          console.log('🚪 Logout button clicked (mobile)!');
-                          handleLogout();
-                        }}
+                        onClick={handleLogout}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
                       >
                         <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
