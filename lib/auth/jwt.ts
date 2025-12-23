@@ -73,8 +73,8 @@ export async function getTokenFromRequest(request: Request | any): Promise<strin
   if (cookieHeader) {
     console.log('[getTokenFromRequest] Raw cookie header:', cookieHeader);
     // Parse manually
-    const cookies = cookieHeader.split(';').map(c => c.trim());
-    const authTokenCookie = cookies.find(c => c.startsWith('auth_token='));
+    const cookieArray = cookieHeader.split(';').map((c: string) => c.trim());
+    const authTokenCookie = cookieArray.find((c: string) => c.startsWith('auth_token='));
     if (authTokenCookie) {
       const token = authTokenCookie.substring('auth_token='.length);
       console.log('[getTokenFromRequest] Found token in raw Cookie header:', token.substring(0, 20) + '...');
