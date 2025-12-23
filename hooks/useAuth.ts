@@ -28,11 +28,14 @@ export function useAuth(): UseAuthReturn {
 
   // Check if user is authenticated
   const checkAuth = useCallback(async () => {
+    console.log('🔍 useAuth: checkAuth() called');
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
+      console.log('🔍 useAuth: /api/auth/me response status:', res.status);
       
       if (res.ok) {
         const data = await res.json();
+        console.log('🔍 useAuth: Found authenticated user:', data.data?.email);
         if (data.data) {
           setUser(data.data);
           setIsAuthenticated(true);
@@ -40,10 +43,11 @@ export function useAuth(): UseAuthReturn {
         }
       }
       
+      console.log('🔍 useAuth: No authenticated user found');
       setIsAuthenticated(false);
       setUser(null);
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error('🔍 useAuth: Auth check failed:', error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -60,28 +64,31 @@ export function useAuth(): UseAuthReturn {
   // Logout
   const logout = useCallback(async () => {
     try {
-      console.log('Logout: Calling /api/auth/logout');
+      console.log('🚪 useAuth: Calling /api/auth/logout');
       const response = await fetch('/api/auth/logout', { 
         method: 'POST',
         credentials: 'include',
       });
-      console.log('Logout: API response status:', response.status);
+      console.log('🚪 useAuth: API response status:', response.status);
+      console.log('🚪 useAuth: Response headers:', {
+        'set-cookie': response.headers.get('set-cookie'),
+        'content-type': response.headers.get('content-type'),
+      });
+      
+      const data = await response.json();
+      console.log('🚪 useAuth: Response body:', data);
       
       if (!response.ok) {
-        console.warn('Logout: API returned non-ok status:', response.status);
+        console.warn('🚪 useAuth: API returned non-ok status:', response.status);
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('🚪 useAuth: Logout error:', error);
     } finally {
       // Immediately clear local state
-      console.log('Logout: Clearing local auth state');
+      console.log('🚪 useAuth: Clearing local auth state');
       setIsAuthenticated(false);
       setUser(null);
       setLoading(false);
-      
-      // Also try to delete the cookie from the client side as a fallback
-      console.log('Logout: Attempting client-side cookie deletion');
-      document.cookie = 'auth_token=; Path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
     }
   }, []);
 
