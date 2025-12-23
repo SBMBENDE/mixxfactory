@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { AppImage } from '@/components/AppImage';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
@@ -749,7 +749,7 @@ export default function ProfessionalRegistrationPage() {
               {formData.profilePicPreview && (
                 <div style={{ marginBottom: '1.5rem' }}>
                   <div style={{ position: 'relative', width: '150px', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
-                    <Image
+                    <AppImage
                       src={formData.profilePicPreview}
                       alt="Profile Picture"
                       fill
@@ -824,7 +824,7 @@ export default function ProfessionalRegistrationPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                     {formData.imagePreviews.map((preview, index) => (
                       <div key={index} style={{ position: 'relative', aspectRatio: '1', borderRadius: '0.5rem', border: '2px solid #d1d5db', overflow: 'hidden', backgroundColor: '#f9fafb' }}>
-                        <Image
+                        <AppImage
                           src={preview}
                           alt={`Preview ${index + 1}`}
                           fill

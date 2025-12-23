@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+import { AppImage } from '@/components/AppImage';
 
 interface UserProfile {
   id: string;
@@ -261,7 +261,7 @@ export default function ProfilePage() {
               {/* Picture Preview */}
               {formData.profilePicture && (
                 <div className="mt-4 flex justify-center">
-                  <Image
+                  <AppImage
                     src={formData.profilePicture}
                     alt="Profile preview"
                     width={96}

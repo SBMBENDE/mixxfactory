@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { AppImage } from './AppImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useTranslations } from '@/hooks/useTranslations';
@@ -276,12 +276,14 @@ export default function TestimonialCarousel() {
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <div className="w-16 h-16 rounded-full overflow-hidden ring-4 ring-blue-100 dark:ring-blue-900">
-                      <Image
+                      <AppImage
                         src={current.image}
                         alt={current.name}
-                        fill
-                        sizes="64px"
+                        width={64}
+                        height={64}
                         className="w-full h-full object-cover"
+                        objectFit="cover"
+                        objectPosition="center"
                         priority={false}
                       />
                     </div>
@@ -305,12 +307,14 @@ export default function TestimonialCarousel() {
 
                   {/* Main image */}
                   <div className="testimonial-image absolute inset-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full overflow-hidden shadow-lg">
-                    <Image
+                    <AppImage
                       src={current.image}
                       alt={current.name}
-                      fill
-                      sizes="224px"
+                      width={224}
+                      height={224}
                       className="w-full h-full object-cover"
+                      objectFit="cover"
+                      objectPosition="center"
                       priority={false}
                     />
                   </div>

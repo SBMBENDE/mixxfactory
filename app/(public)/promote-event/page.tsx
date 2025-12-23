@@ -5,7 +5,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { AppImage } from '@/components/AppImage';
 import { AuthModal } from '@/components/AuthModal';
 import { useAuth } from '@/hooks/useAuth';
 import { validateVideoUrl } from '@/utils/videoValidation';
@@ -749,12 +749,13 @@ export default function PromoteEventPage() {
                       backgroundColor: '#e5e7eb',
                       aspectRatio: '1',
                     }}>
-                      <Image
+                      <AppImage
                         src={image.url}
                         alt={`Gallery ${index + 1}`}
                         fill
                         sizes="200px"
                         className="w-full h-full object-cover"
+                        objectFit="cover"
                         priority={false}
                       />
                       <div style={{
@@ -1000,7 +1001,7 @@ export default function PromoteEventPage() {
                   }}
                 />
                 {formData.posterImage && (
-                  <Image
+                  <AppImage
                     src={formData.posterImage}
                     alt="Poster Preview"
                     width={150}
@@ -1011,6 +1012,7 @@ export default function PromoteEventPage() {
                       maxHeight: '150px',
                       borderRadius: '0.375rem',
                     }}
+                    objectFit="cover"
                     priority={false}
                   />
                 )}
@@ -1042,7 +1044,7 @@ export default function PromoteEventPage() {
                   }}
                 />
                 {formData.bannerImage && (
-                  <Image
+                  <AppImage
                     src={formData.bannerImage}
                     alt="Banner Preview"
                     width={600}
@@ -1053,6 +1055,7 @@ export default function PromoteEventPage() {
                       maxHeight: '100px',
                       borderRadius: '0.375rem',
                     }}
+                    objectFit="cover"
                     priority={false}
                   />
                 )}

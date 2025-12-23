@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+import { AppImage } from '@/components/AppImage';
 
 interface EventData {
   _id: string;
@@ -168,18 +168,13 @@ export default function EventDetailPage() {
                 overflow: 'hidden',
               }}
             >
-              <Image
+              <AppImage
                 src={gallery[currentImageIndex].url}
                 alt={event.title}
                 fill
                 sizes="100vw"
                 className="w-full h-full"
-                style={{
-                  objectFit: 'cover',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                }}
+                objectFit="cover"
                 priority={true}
               />
               <div

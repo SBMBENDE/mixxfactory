@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { AppImage } from '@/components/AppImage';
 
 interface PromotionTier {
   id: string;
@@ -210,12 +210,13 @@ export default function MyEventsPage() {
                           flexShrink: 0,
                           position: 'relative',
                         }}>
-                          <Image
+                          <AppImage
                             src={event.posterImage}
                             alt={event.title}
-                            fill
-                            sizes="120px"
+                            width={120}
+                            height={120}
                             className="w-full h-full object-cover"
+                            objectFit="cover"
                             priority={false}
                           />
                         </div>
