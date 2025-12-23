@@ -37,18 +37,17 @@ export const Navbar: React.FC = () => {
       console.log('🚪 Navbar: logout() completed');
       closeMenu();
       
-      // Wait longer for logout to complete and cookie to be deleted
-      console.log('🚪 Navbar: Waiting 1000ms before redirect...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait 3 seconds so you can see the logs
+      console.log('🚪 Navbar: Waiting 3 seconds before redirect (so you can see logs)...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       console.log('🚪 Navbar: About to redirect to / with window.location.replace');
       // Do a hard refresh to ensure everything is clean
       window.location.replace('/');
     } catch (error) {
       console.error('🚪 Navbar: Logout failed:', error);
-      // Still redirect even if logout fails, to clear the UI
-      console.log('🚪 Navbar: Waiting 1000ms before redirect due to error...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('🚪 Navbar: Waiting 3 seconds before redirect due to error...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
       console.log('🚪 Navbar: Redirecting after error');
       window.location.replace('/');
     }
