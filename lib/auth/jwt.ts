@@ -38,13 +38,39 @@ export function verifyToken(token: string): JWTPayload | null {
  * Get token from request headers or cookies
  */
 export async function getTokenFromRequest(request: Request): Promise<string | null> {
+  console.log('[getTokenFromRequest] Starting token extraction...');
+  
   const authHeader = request.headers.get('authorization');
+  console.log('[getTokenFromRequest] Authorization header:', authHeader ? 'PRESENT' : 'NOT PRESENT');
   if (authHeader?.startsWith('Bearer ')) {
+    console.log('[getTokenFromRequest] Found token in Authorization header');
     return authHeader.slice(7);
   }
 
   const cookieStore = await cookies();
-  return cookieStore.get('auth_token')?.value || null;
+  const authToken = cookieStore.get('auth_token');
+  
+  console.log('[getTokenFromRequest] Cookie store auth_token:', authToken ? 'PRESENT' : 'NOT PRESENT');
+  if (authToken) {
+    console.log('[getTokenFromRequest] Token from cookie:', authToken.value.substring(0, 20) + '...');
+  }
+  
+  // Also try to get from request.headers Cookie
+  const cookieHeader = request.headers.get('cookie');
+  console.log('[getTokenFromRequest] Cookie header raw:', cookieHeader ? 'PRESENT' : 'NOT PRESENT');
+  if (cookieHeader) {
+    console.log('[getTokenFromRequest] Raw cookie header:', cookieHeader);
+    // Parse manually
+    const cookies = cookieHeader.split(';').map(c => c.trim());
+    const authTokenCookie = cookies.find(c => c.startsWith('auth_token='));
+    if (authTokenCookie) {
+      const token = authTokenCookie.substring('auth_token='.length);
+      console.log('[getTokenFromRequest] Found token in raw Cookie header:', token.substring(0, 20) + '...');
+      return token;
+    }
+  }
+  
+  return authToken?.value || null;
 }
 
 /**
