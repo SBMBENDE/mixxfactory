@@ -211,10 +211,10 @@ export default function HomePage() {
       </section>
 
       {/* Popular Categories - Horizontal Scroll */}
-      {authStatus !== 'loading' && <PopularCategories />}
+      <PopularCategories />
 
       {/* Featured Professionals - Grid */}
-      {authStatus !== 'loading' && <FeaturedProfessionals />}
+      <FeaturedProfessionals />
 
       {/* CTA Section */}
       <section style={{
