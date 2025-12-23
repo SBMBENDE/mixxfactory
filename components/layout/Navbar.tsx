@@ -34,19 +34,15 @@ export const Navbar: React.FC = () => {
       console.log('[Logout] logout() API call completed');
       closeMenu();
       
-      // Delay to ensure client state update and cookie deletion are processed
-      console.log('[Logout] Waiting 500ms for state updates...');
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Navigate to home page with cache busting
-      console.log('[Logout] Navigating to home page');
-      window.location.href = '/?_logout=1';
+      // Clear any pending state before navigating
+      console.log('[Logout] Navigating to home page immediately');
+      // Use replace to prevent adding to history
+      window.location.replace('/?_logout=1');
     } catch (error) {
       console.error('[Logout] Error occurred:', error);
       console.log('[Logout] Navigating anyway after error');
       // Navigate anyway even if logout fails
-      await new Promise(resolve => setTimeout(resolve, 500));
-      window.location.href = '/?_logout=1';
+      window.location.replace('/?_logout=1');
     }
   };
 

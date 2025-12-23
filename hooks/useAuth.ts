@@ -72,10 +72,15 @@ export function useAuth(): UseAuthReturn {
         console.warn('[useAuth] Logout API returned error status:', response.status);
       }
       
-      console.log('[useAuth] Response parsed successfully');
+      try {
+        const data = await response.json();
+        console.log('[useAuth] Response body:', data);
+      } catch (e) {
+        console.log('[useAuth] Could not parse response body');
+      }
     } catch (error) {
       console.error('[useAuth] Logout fetch error:', error);
-      throw error;
+      // Don't throw - we want to clear state even if API fails
     } finally {
       // Clear local state immediately
       console.log('[useAuth] Clearing local auth state');
