@@ -14,9 +14,9 @@ export async function POST() {
     
     // Clear the auth cookie
     await clearAuthCookie();
-    console.log('[API] Auth cookie cleared');
+    console.log('[API] clearAuthCookie() completed');
 
-    // Create response
+    // Create response with cache prevention
     const response = NextResponse.json(
       {
         success: true,

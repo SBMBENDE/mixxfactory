@@ -75,7 +75,9 @@ export async function setAuthCookie(token: string) {
  */
 export async function clearAuthCookie() {
   const cookieStore = await cookies();
+  console.log('[clearAuthCookie] Before delete - cookie exists:', !!cookieStore.get('auth_token'));
   cookieStore.delete('auth_token');
+  console.log('[clearAuthCookie] After delete - cookie exists:', !!cookieStore.get('auth_token'));
 }
 
 /**
