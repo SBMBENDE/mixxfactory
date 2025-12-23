@@ -31,16 +31,15 @@ export const Navbar: React.FC = () => {
       await logout();
       closeMenu();
       
-      // Critical: Wait for Set-Cookie header to be fully processed by browser
-      // Without this delay, the page reloads before cookie deletion is complete
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Minimal delay to allow browser to process the request
+      // State is cleared synchronously in logout() so we don't need long delay
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Full page reload with no cache query parameter
+      // Redirect to home
       window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
       // Navigate anyway even if logout fails
-      await new Promise(resolve => setTimeout(resolve, 1000));
       window.location.href = '/';
     }
   };

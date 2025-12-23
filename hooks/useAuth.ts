@@ -1,11 +1,14 @@
 /**
  * Hook for managing authentication state
+ * Implements 3-state auth system: loading -> authenticated/unauthenticated
  * Checks actual session validity via /api/auth/me endpoint
  */
 
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+
+type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
 interface AuthUser {
   userId: string;
@@ -14,20 +17,21 @@ interface AuthUser {
 }
 
 interface UseAuthReturn {
-  isAuthenticated: boolean;
+  authStatus: AuthStatus;
+  isAuthenticated: boolean; // Backward compatibility
   user: AuthUser | null;
-  loading: boolean;
+  loading: boolean; // Backward compatibility
   logout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
 }
 
 export function useAuth(): UseAuthReturn {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
 
   // Check if user is authenticated
   const checkAuth = useCallback(async () => {
+    setAuthStatus('loading');
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
       
@@ -35,30 +39,40 @@ export function useAuth(): UseAuthReturn {
         const data = await res.json();
         if (data.data) {
           setUser(data.data);
-          setIsAuthenticated(true);
+          setAuthStatus('authenticated');
           return;
         }
       }
       
-      setIsAuthenticated(false);
+      setAuthStatus('unauthenticated');
       setUser(null);
     } catch (error) {
       console.error('Auth check error:', error);
-      setIsAuthenticated(false);
+      setAuthStatus('unauthenticated');
       setUser(null);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
   // Refresh auth state
   const refreshAuth = useCallback(async () => {
-    setLoading(true);
     await checkAuth();
   }, [checkAuth]);
 
-  // Logout
+  // Logout - Clear state FIRST, then call API
   const logout = useCallback(async () => {
+    // Immediately clear local state before API call
+    setAuthStatus('loading');
+    setUser(null);
+    
+    // Clear any stored auth data
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+      sessionStorage.removeItem('auth_token');
+    }
+    
+    setAuthStatus('unauthenticated');
+    
+    // Then call logout API
     try {
       const response = await fetch('/api/auth/logout', { 
         method: 'POST',
@@ -70,12 +84,6 @@ export function useAuth(): UseAuthReturn {
       }
     } catch (error) {
       console.error('Logout error:', error);
-      // Don't throw - we want to clear state even if API fails
-    } finally {
-      // Clear local state immediately
-      setIsAuthenticated(false);
-      setUser(null);
-      setLoading(false);
     }
   }, []);
 
@@ -95,9 +103,10 @@ export function useAuth(): UseAuthReturn {
   }, [checkAuth]);
 
   return {
-    isAuthenticated,
+    authStatus,
+    isAuthenticated: authStatus === 'authenticated', // Backward compatibility
     user,
-    loading,
+    loading: authStatus === 'loading', // Backward compatibility
     logout,
     refreshAuth,
   };

@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useAuth } from '@/hooks/useAuth';
 import { StickySearchBar } from '@/components/StickySearchBar';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
@@ -21,18 +22,7 @@ export default function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const t = useTranslations();
-
-  // Check if user is authenticated
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await fetch('/api/auth/me', { credentials: 'include' });
-      } catch {
-        // Not authenticated
-      }
-    };
-    checkAuth();
-  }, []);
+  const { authStatus } = useAuth(); // Use auth hook to track auth state
 
   // Detect mobile window size
   useEffect(() => {
@@ -172,10 +162,10 @@ export default function HomePage() {
       </section>
 
       {/* Popular Categories - Horizontal Scroll */}
-      <PopularCategories />
+      {authStatus !== 'loading' && <PopularCategories />}
 
       {/* Featured Professionals - Grid */}
-      <FeaturedProfessionals />
+      {authStatus !== 'loading' && <FeaturedProfessionals />}
 
       {/* CTA Section */}
       <section style={{

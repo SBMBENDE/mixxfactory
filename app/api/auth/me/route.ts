@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
     }
     
     // Check if token is blacklisted (user logged out)
-    if (isTokenBlacklisted(token)) {
+    const isBlacklisted = await isTokenBlacklisted(token);
+    if (isBlacklisted) {
       console.log('[API] Token is blacklisted (user logged out)');
       return unauthorizedResponse();
     }

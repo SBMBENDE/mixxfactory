@@ -1,37 +1,72 @@
 /**
  * Logout token blacklist
- * Stores tokens that have been logged out
+ * Stores tokens that have been logged out in MongoDB
  * This ensures users can't reuse old tokens even if cookies persist
  */
 
-// In-memory set of blacklisted tokens
-// In production, this should be stored in Redis or a database
-const logoutTokenBlacklist = new Set<string>();
+import { LogoutTokenModel } from '@/lib/db/models';
+import { connectDBWithTimeout } from '@/lib/db/connection';
 
 /**
  * Add a token to the blacklist (called on logout)
  */
-export function blacklistToken(token: string): void {
-  logoutTokenBlacklist.add(token);
+export async function blacklistToken(token: string): Promise<void> {
+  try {
+    await connectDBWithTimeout();
+    
+    // Get token expiration from JWT (typically 7 days)
+    // Add token to database with expiration
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+    
+    await LogoutTokenModel.create({
+      token,
+      expiresAt,
+    });
+    
+    console.log('[blacklistToken] Token added to blacklist');
+  } catch (error) {
+    console.error('[blacklistToken] Error adding token to blacklist:', error);
+    // Don't throw - we still want logout to succeed even if blacklist fails
+  }
 }
 
 /**
  * Check if a token is blacklisted
  */
-export function isTokenBlacklisted(token: string): boolean {
-  return logoutTokenBlacklist.has(token);
+export async function isTokenBlacklisted(token: string): Promise<boolean> {
+  try {
+    await connectDBWithTimeout();
+    
+    const result = await LogoutTokenModel.findOne({ token });
+    const isBlacklisted = !!result;
+    
+    if (isBlacklisted) {
+      console.log('[isTokenBlacklisted] Token is blacklisted');
+    }
+    
+    return isBlacklisted;
+  } catch (error) {
+    console.error('[isTokenBlacklisted] Error checking blacklist:', error);
+    // On error, allow the request (fail open)
+    return false;
+  }
 }
 
 /**
- * Clear the entire blacklist (for testing)
+ * Clean up expired tokens from blacklist (run periodically)
  */
-export function clearBlacklist(): void {
-  logoutTokenBlacklist.clear();
+export async function cleanupExpiredTokens(): Promise<void> {
+  try {
+    await connectDBWithTimeout();
+    
+    const result = await LogoutTokenModel.deleteMany({
+      expiresAt: { $lt: new Date() },
+    });
+    
+    console.log('[cleanupExpiredTokens] Deleted', result.deletedCount, 'expired tokens');
+  } catch (error) {
+    console.error('[cleanupExpiredTokens] Error cleaning up tokens:', error);
+  }
 }
 
-/**
- * Get the size of the blacklist
- */
-export function getBlacklistSize(): number {
-  return logoutTokenBlacklist.size;
-}

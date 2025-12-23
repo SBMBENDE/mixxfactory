@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const token = await getTokenFromRequest(request);
     if (token) {
       // Add token to blacklist so it's invalid even if cookie persists
-      blacklistToken(token);
+      await blacklistToken(token);
       console.log('[API] Token added to blacklist');
     }
     

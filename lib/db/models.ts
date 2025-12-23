@@ -794,3 +794,34 @@ eventSchema.index({ userId: 1, promotionTier: 1 });
 export const EventModel =
   (mongoose.models.Event as Model<IEventDocument>) ||
   mongoose.model<IEventDocument>('Event', eventSchema);
+
+// ============ LOGOUT TOKEN MODEL ============
+// Stores tokens that have been logged out (blacklist)
+interface ILogoutTokenDocument extends Document {
+  token: string;
+  expiresAt: Date;
+  createdAt: Date;
+}
+
+const logoutTokenSchema = new Schema<ILogoutTokenDocument>(
+  {
+    token: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+      index: true,
+      // Auto-delete after expiration (TTL index)
+      expires: 0,
+    },
+  },
+  { timestamps: true }
+);
+
+export const LogoutTokenModel =
+  (mongoose.models.LogoutToken as Model<ILogoutTokenDocument>) ||
+  mongoose.model<ILogoutTokenDocument>('LogoutToken', logoutTokenSchema);
