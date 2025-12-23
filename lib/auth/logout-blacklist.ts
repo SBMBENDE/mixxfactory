@@ -13,7 +13,7 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 export async function blacklistToken(token: string): Promise<void> {
   console.error('[blacklistToken] ===== BLACKLIST SAVE STARTED =====');
   console.error('[blacklistToken] Token to save (first 30):', token.substring(0, 30));
-  console.error('[blacklistToken] Token is a', typeof token);
+  console.error('[blacklistToken] Token length:', token.length);
   
   try {
     console.error('[blacklistToken] Connecting to database...');
@@ -22,34 +22,32 @@ export async function blacklistToken(token: string): Promise<void> {
     
     // Verify LogoutTokenModel
     console.error('[blacklistToken] LogoutTokenModel exists?', !!LogoutTokenModel);
-    console.error('[blacklistToken] LogoutTokenModel.create exists?', typeof LogoutTokenModel.create);
     
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
     
     console.error('[blacklistToken] Creating record with expiresAt:', expiresAt.toISOString());
-    const dataToSave = {
-      token,
-      expiresAt,
-    };
-    console.error('[blacklistToken] Data to save:', JSON.stringify({
-      token: token.substring(0, 30) + '...',
-      expiresAt: expiresAt.toISOString()
-    }));
     
-    const result = await LogoutTokenModel.create(dataToSave);
+    // Use findOneAndUpdate with upsert to avoid unique index conflicts
+    const result = await LogoutTokenModel.findOneAndUpdate(
+      { token },
+      { token, expiresAt },
+      { upsert: true, new: true }
+    );
     
-    console.error('[blacklistToken] Record created, checking result...');
+    console.error('[blacklistToken] Record created/updated');
     console.error('[blacklistToken] Result ID:', result._id);
-    console.error('[blacklistToken] Result token exists?', !!result.token);
-    console.error('[blacklistToken] Result token (first 30):', result.token?.substring(0, 30));
-    console.error('[blacklistToken] Tokens match?', result.token === token);
+    console.error('[blacklistToken] Result token (first 30):', result.token.substring(0, 30));
     
-    // Verify it was actually saved
-    const verify = await LogoutTokenModel.findById(result._id);
-    console.error('[blacklistToken] Verification - token exists in DB?', !!verify);
+    // Double-check it was saved by querying immediately
+    const verify = await LogoutTokenModel.findOne({ token }).lean();
+    console.error('[blacklistToken] Verification query - token found in DB?', !!verify);
+    
     if (verify) {
-      console.error('[blacklistToken] Verified token (first 30):', verify.token.substring(0, 30));
+      console.error('[blacklistToken] ✓ Token confirmed in database');
+    } else {
+      console.error('[blacklistToken] ⚠ Token NOT found in database after save!');
+      throw new Error('Token was not actually saved to database');
     }
     
     console.error('[blacklistToken] ===== BLACKLIST SAVE COMPLETE =====');
