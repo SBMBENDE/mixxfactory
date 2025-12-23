@@ -21,22 +21,6 @@ export default function DashboardLayout({
       window.location.href = '/auth/login';
     }
   }, [authStatus]);
-        console.error('[Dashboard] Auth check error:', error);
-        setIsLoading(false);
-        // Redirect to login on any error
-        setTimeout(() => {
-          window.location.href = '/auth/login';
-        }, 300);
-      }
-    };
-
-    // Only check auth once
-    if (checkAttempts === 0) {
-      console.log('[Dashboard] Initial auth check starting...');
-      setCheckAttempts(1);
-      checkAuth();
-    }
-  }, [authStatus]);
 
   // Show loading state while auth is resolving
   if (authStatus === 'loading') {
@@ -48,8 +32,6 @@ export default function DashboardLayout({
       </div>
     );
   }
-
-  // Show redirect state while unauthenticated
 
   return (
     <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
