@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { AuthModal } from '@/components/AuthModal';
+import { useAuth } from '@/hooks/useAuth';
 import { validateVideoUrl } from '@/utils/videoValidation';
 
 interface EventFormData {
@@ -109,7 +110,6 @@ const PRICING_TIERS = [
 ];
 
 export default function PromoteEventPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<'free' | 'featured' | 'boost'>('free');
   const [formData, setFormData] = useState<EventFormData>({
@@ -148,19 +148,7 @@ export default function PromoteEventPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  // Check authentication
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
-        setIsAuthenticated(res.ok);
-      } catch {
-        setIsAuthenticated(false);
-      }
-    };
-    checkAuth();
-  }, []);
+  const { authStatus, isAuthenticated } = useAuth();
 
   // Event categories (hardcoded to match admin dashboard)
   const eventCategories = [

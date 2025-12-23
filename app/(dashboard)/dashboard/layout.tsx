@@ -4,50 +4,23 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isAuthed, setIsAuthed] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [checkAttempts, setCheckAttempts] = useState(0);
+  const { authStatus } = useAuth();
 
   useEffect(() => {
-    // Check authentication via API with timeout
-    const checkAuth = async () => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-
-      try {
-        console.log('[Dashboard] Checking auth...');
-        const response = await fetch('/api/auth/me', {
-          credentials: 'include', // Include cookies
-          signal: controller.signal,
-        });
-
-        clearTimeout(timeout);
-        console.log('[Dashboard] Auth check status:', response.status);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('[Dashboard] Auth success:', data);
-          setIsAuthed(true);
-          setIsLoading(false);
-          console.log('[Dashboard] Dashboard should now be visible');
-        } else {
-          console.log('[Dashboard] Auth failed (status:', response.status, '), redirecting to login');
-          const errorData = await response.json().catch(() => ({}));
-          console.log('[Dashboard] Error details:', errorData);
-          setIsLoading(false);
-          setTimeout(() => {
-            window.location.href = '/auth/login';
-          }, 300);
-        }
-      } catch (error) {
-        clearTimeout(timeout);
+    // Redirect if not authenticated
+    if (authStatus === 'unauthenticated') {
+      console.log('[Dashboard] User not authenticated, redirecting to login');
+      window.location.href = '/auth/login';
+    }
+  }, [authStatus]);
         console.error('[Dashboard] Auth check error:', error);
         setIsLoading(false);
         // Redirect to login on any error
@@ -63,9 +36,10 @@ export default function DashboardLayout({
       setCheckAttempts(1);
       checkAuth();
     }
-  }, [checkAttempts]);
+  }, [authStatus]);
 
-  if (isLoading) {
+  // Show loading state while auth is resolving
+  if (authStatus === 'loading') {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
         <div style={{ textAlign: 'center' }}>
@@ -75,15 +49,7 @@ export default function DashboardLayout({
     );
   }
 
-  if (!isAuthed) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
-        <div style={{ textAlign: 'center', color: '#6b7280' }}>
-          <p>Redirecting to login...</p>
-        </div>
-      </div>
-    );
-  }
+  // Show redirect state while unauthenticated
 
   return (
     <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
