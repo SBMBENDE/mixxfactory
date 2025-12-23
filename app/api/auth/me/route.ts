@@ -7,6 +7,7 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth/jwt';
 import { successResponse, unauthorizedResponse } from '@/utils/api-response';
+import { isTokenBlacklisted } from '@/lib/auth/logout-blacklist';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +22,12 @@ export async function GET(request: NextRequest) {
     // Get token from request
     const token = await getTokenFromRequest(request);
     if (!token) {
+      return unauthorizedResponse();
+    }
+    
+    // Check if token is blacklisted (user logged out)
+    if (isTokenBlacklisted(token)) {
+      console.log('[API] Token is blacklisted (user logged out)');
       return unauthorizedResponse();
     }
 
