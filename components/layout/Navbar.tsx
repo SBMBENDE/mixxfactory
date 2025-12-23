@@ -26,15 +26,22 @@ export const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    // Perform logout API call
-    await logout();
-    closeMenu();
-    
-    // Force a full page refresh to clear all React state and reload auth
-    // This ensures a clean slate for the next user login
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 100);
+    try {
+      // Perform logout API call
+      await logout();
+      closeMenu();
+      
+      // Wait a bit for logout to complete, then do a clean page reload
+      // This ensures the cookie is deleted and React state is fresh
+      setTimeout(() => {
+        // Do a hard refresh to ensure everything is clean
+        window.location.replace('/');
+      }, 200);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Still redirect even if logout fails, to clear the UI
+      window.location.replace('/');
+    }
   };
 
   return (

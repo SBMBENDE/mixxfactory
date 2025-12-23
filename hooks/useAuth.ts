@@ -70,10 +70,9 @@ export function useAuth(): UseAuthReturn {
       // Immediately clear local state
       setIsAuthenticated(false);
       setUser(null);
-      // Verify logout by checking auth endpoint
-      await checkAuth();
+      setLoading(false);
     }
-  }, [checkAuth]);
+  }, []);
 
   // Check auth on mount and when component focuses
   useEffect(() => {
