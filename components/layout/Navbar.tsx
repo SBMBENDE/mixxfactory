@@ -31,16 +31,17 @@ export const Navbar: React.FC = () => {
       await logout();
       closeMenu();
       
-      // Brief delay to ensure state update is processed
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Delay to ensure client state update and cookie deletion are processed
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Hard redirect to home page
-      window.location.replace('/');
+      // Navigate to home page with cache busting
+      // User will be shown appropriate content based on auth state
+      window.location.href = '/?_logout=1';
     } catch (error) {
       console.error('Logout error:', error);
-      // Redirect anyway even if logout fails
-      await new Promise(resolve => setTimeout(resolve, 200));
-      window.location.replace('/');
+      // Navigate anyway even if logout fails
+      await new Promise(resolve => setTimeout(resolve, 500));
+      window.location.href = '/?_logout=1';
     }
   };
 
