@@ -33,23 +33,27 @@ interface HomepageData {
 
 export async function getHomepageData(): Promise<HomepageData> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    console.log('[getHomepageData] Starting fetch...');
     
-    // Fetch all data in parallel
+    // Use relative URLs for internal API calls (works on Vercel)
+    // Don't cache these fetches - let the API handle caching instead
+    // ISR will handle page-level caching via the revalidate export
     const [profRes, catRes, newsRes] = await Promise.all([
-      // Featured professionals - sort by rating, limit to 4 to reduce payload
-      fetch(`${baseUrl}/api/professionals?sort=rating&limit=4&lean=true`, {
-        next: { revalidate: 300 }, // 5 minutes
+      // Featured professionals - no cache revalidate (API handles it)
+      fetch(`/api/professionals?sort=rating&limit=4&lean=true`, {
+        // No caching at fetch level - causes "over 2MB" error
       }),
       // Categories for popular section
-      fetch(`${baseUrl}/api/categories`, {
-        next: { revalidate: 3600 }, // 1 hour
+      fetch(`/api/categories`, {
+        // No caching at fetch level - causes "over 2MB" error
       }),
       // News flashes for banner
-      fetch(`${baseUrl}/api/news-flashes?published=true&limit=3`, {
-        next: { revalidate: 300 }, // 5 minutes
+      fetch(`/api/news-flashes?published=true&limit=3`, {
+        // No caching at fetch level - causes "over 2MB" error
       }),
     ]);
+
+    console.log('[getHomepageData] Fetches completed, parsing responses...');
 
     // Parse responses
     const [profData, catData, newsData] = await Promise.all([
@@ -57,6 +61,8 @@ export async function getHomepageData(): Promise<HomepageData> {
       catRes.json(),
       newsRes.json().catch(() => ({ data: [] })), // News flashes are optional
     ]);
+
+    console.log('[getHomepageData] Responses parsed successfully');
 
     // Extract and process professionals - prefer featured
     let professionals: Professional[] = [];
@@ -71,6 +77,12 @@ export async function getHomepageData(): Promise<HomepageData> {
 
     // Extract news flashes
     const newsFlashes = (newsData.data || []).slice(0, 3);
+
+    console.log('[getHomepageData] Data processed:', { 
+      professionals: professionals.length,
+      categories: categories.length,
+      newsFlashes: newsFlashes.length
+    });
 
     return {
       professionals,
