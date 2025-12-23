@@ -4,6 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { getTokenFromRequest } from '@/lib/auth/jwt';
 import { blacklistToken } from '@/lib/auth/logout-blacklist';
 
@@ -21,6 +22,12 @@ export async function POST(request: Request) {
       console.log('[API /api/auth/logout] Token added to blacklist');
     }
 
+    // Delete the cookie using Next.js cookies API
+    const cookieStore = await cookies();
+    console.log('[API /api/auth/logout] Before delete - cookie exists:', !!cookieStore.get('auth_token'));
+    cookieStore.delete('auth_token');
+    console.log('[API /api/auth/logout] After delete - cookie should be cleared');
+
     // Create response
     const response = NextResponse.json(
       {
@@ -31,19 +38,14 @@ export async function POST(request: Request) {
       { status: 200 }
     );
 
-    // CRITICAL: Set the Set-Cookie header to delete the cookie in the browser
-    // Using Max-Age=0 and Expires in the past to ensure browser deletes it
+    // ALSO set explicit Set-Cookie header for maximum compatibility
+    // Some clients/proxies may not respect the cookies() API
     const deleteCookie = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT${
       process.env.NODE_ENV === 'production' ? '; Secure' : ''
     }`;
     
-    console.log('[API /api/auth/logout] Setting Set-Cookie header to delete auth_token');
-    console.log('[API /api/auth/logout] Delete cookie string:', deleteCookie);
-    
-    // Use append instead of set to ensure header is sent
+    console.log('[API /api/auth/logout] Setting Set-Cookie header for browser');
     response.headers.append('Set-Cookie', deleteCookie);
-    
-    console.log('[API /api/auth/logout] After appending, response headers Set-Cookie:', response.headers.get('Set-Cookie'));
     
     // Force no caching
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
@@ -54,6 +56,15 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error('[API /api/auth/logout] Logout error:', error);
+    
+    // Even on error, try to delete the cookie
+    try {
+      const cookieStore = await cookies();
+      cookieStore.delete('auth_token');
+      console.log('[API /api/auth/logout] Deleted auth_token cookie in error handler');
+    } catch (cookieError) {
+      console.error('[API /api/auth/logout] Error deleting cookie:', cookieError);
+    }
     
     const response = NextResponse.json(
       {
@@ -68,7 +79,6 @@ export async function POST(request: Request) {
       process.env.NODE_ENV === 'production' ? '; Secure' : ''
     }`;
     
-    console.log('[API /api/auth/logout] Error case: Setting Set-Cookie header (error case)');
     response.headers.append('Set-Cookie', deleteCookie);
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     response.headers.set('Pragma', 'no-cache');
