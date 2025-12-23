@@ -122,8 +122,19 @@ export default function DashboardLayout({
 
         <div style={{ position: 'absolute', bottom: '0', left: '0', right: '0', padding: '0.5rem', borderTop: '1px solid #e5e7eb', backgroundColor: 'white' }}>
           <button
-            onClick={() => {
-              document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+            onClick={async () => {
+              console.log('[Dashboard Logout] Initiating logout...');
+              try {
+                const response = await fetch('/api/auth/logout', {
+                  method: 'POST',
+                  credentials: 'include',
+                });
+                console.log('[Dashboard Logout] Response status:', response.status);
+              } catch (error) {
+                console.error('[Dashboard Logout] Error:', error);
+              }
+              // Redirect regardless of API response
+              await new Promise(resolve => setTimeout(resolve, 100));
               window.location.href = '/auth/login';
             }}
             style={{
