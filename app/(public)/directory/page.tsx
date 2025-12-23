@@ -7,7 +7,6 @@
 'use client';
 
 // ISR: Revalidate every 5 minutes (300 seconds)
-// This prebuilds the page as static HTML, served instantly from CDN cache
 export const revalidate = 300;
 
 import { useState, useEffect } from 'react';
@@ -114,10 +113,17 @@ export default function DirectoryPage() {
         if (searchTerm) params.append('q', searchTerm);
         if (selectedCategory) params.append('category', selectedCategory);
 
+        // Use AbortController for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
         const response = await fetch(`/api/professionals?${params}`, {
-          cache: 'force-cache', // Cache aggressively - users can always refresh
-          next: { revalidate: 300 }, // Revalidate every 5 minutes
+          signal: controller.signal,
+          cache: 'force-cache',
+          next: { revalidate: 300 },
         });
+        clearTimeout(timeoutId);
+
         const data = await response.json();
 
         if (data.success && data.data.data) {
