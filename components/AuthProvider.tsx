@@ -30,6 +30,7 @@ function useProvideAuth(): UseAuthReturn {
       const response = await fetch('/api/auth/me', {
         method: 'GET',
         credentials: 'include',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -74,6 +75,7 @@ function useProvideAuth(): UseAuthReturn {
       const response = await fetch('/api/auth/me', {
         method: 'GET',
         credentials: 'include',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
         },

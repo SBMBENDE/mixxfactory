@@ -47,6 +47,7 @@ export default function SettingsPage() {
       try {
         const response = await fetch('/api/auth/me', {
           credentials: 'include',
+          cache: 'no-store',
         });
 
         if (!response.ok) {

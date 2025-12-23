@@ -72,7 +72,10 @@ export default function EditProfessionalPage() {
     const loadData = async () => {
       try {
         // Check authentication first
-        const authRes = await fetch('/api/auth/me', { credentials: 'include' });
+        const authRes = await fetch('/api/auth/me', { 
+          credentials: 'include',
+          cache: 'no-store',
+        });
         if (!authRes.ok) {
           router.push('/auth/login');
           return;

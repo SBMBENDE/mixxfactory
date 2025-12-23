@@ -1,8 +1,4 @@
-/**
- * Get current user endpoint
- */
-
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth/jwt';
@@ -77,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     console.log('[API /api/auth/me] User found, returning:', user.email);
     
-    return successResponse(
+    const response = successResponse(
       {
         userId: user._id.toString(),
         email: user.email,
@@ -86,6 +82,13 @@ export async function GET(request: NextRequest) {
       },
       'User data retrieved'
     );
+
+    // Set cache-control headers to prevent caching
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+
+    return response;
   } catch (error) {
     console.error('Get user error:', error);
     return unauthorizedResponse();
