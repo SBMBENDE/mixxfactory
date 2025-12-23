@@ -8,6 +8,7 @@ import { UserModel } from '@/lib/db/models';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth/jwt';
 import { successResponse, unauthorizedResponse } from '@/utils/api-response';
 import { isTokenBlacklisted } from '@/lib/auth/logout-blacklist';
+import { verifySession, getDeviceInfoFromRequest } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +51,22 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('[API /api/auth/me] Token verified, fetching user:', payload.userId);
+    
+    // Verify session matches device (prevents token sharing across devices)
+    if (payload.sessionId) {
+      const deviceInfo = getDeviceInfoFromRequest(request);
+      const isValidSession = await verifySession(
+        payload.sessionId,
+        payload.userId,
+        deviceInfo.userAgent,
+        request.headers.get('accept-language') || undefined
+      );
+
+      if (!isValidSession) {
+        console.log('[API /api/auth/me] Session verification failed - device mismatch or expired');
+        return unauthorizedResponse();
+      }
+    }
     
     // Get user from database
     const user = await UserModel.findById(payload.userId).select('-password');

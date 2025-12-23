@@ -92,6 +92,7 @@ export interface JWTPayload {
   userId: string;
   email: string;
   role: 'admin' | 'user' | 'professional';
+  sessionId: string; // Unique session identifier for device isolation
   iat?: number;
   exp?: number;
 }

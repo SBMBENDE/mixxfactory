@@ -10,6 +10,7 @@ import { loginSchema } from '@/lib/validations';
 import { comparePassword } from '@/lib/auth/password';
 import { generateToken, setAuthCookieHeader } from '@/lib/auth/jwt';
 import { errorResponse, validationErrorResponse } from '@/utils/api-response';
+import { createSession, getDeviceInfoFromRequest } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,11 +47,21 @@ export async function POST(request: NextRequest) {
 
     console.log('[API /api/auth/login] Credentials valid for user:', email);
 
-    // Generate token
+    // Create session for this device
+    const deviceInfo = getDeviceInfoFromRequest(request);
+    const sessionId = await createSession(
+      user._id.toString(),
+      deviceInfo.userAgent,
+      request.headers.get('accept-language') || undefined,
+      deviceInfo.ipAddress
+    );
+
+    // Generate token with session ID
     const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
       role: user.accountType,
+      sessionId,
     });
 
     console.log('[API /api/auth/login] Generated new token for user:', email);

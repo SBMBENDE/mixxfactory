@@ -5,8 +5,9 @@
 
 import { NextResponse, NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
-import { getTokenFromRequest } from '@/lib/auth/jwt';
+import { getTokenFromRequest, verifyToken } from '@/lib/auth/jwt';
 import { blacklistToken } from '@/lib/auth/logout-blacklist';
+import { invalidateSession } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,13 @@ export async function POST(request: NextRequest) {
       console.error('[LOGOUT] Token to blacklist:', token.substring(0, 20) + '...');
       console.error('[LOGOUT] Token length:', token.length);
       console.error('[LOGOUT] Token type:', typeof token);
+      
+      // Parse token to get sessionId
+      const payload = verifyToken(token);
+      if (payload?.sessionId) {
+        console.error('[LOGOUT] Invalidating session:', payload.sessionId.substring(0, 8) + '...');
+        await invalidateSession(payload.sessionId);
+      }
       
       // Add token to blacklist so it's invalid even if cookie persists
       try {

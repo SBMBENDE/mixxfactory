@@ -795,6 +795,60 @@ export const EventModel =
   (mongoose.models.Event as Model<IEventDocument>) ||
   mongoose.model<IEventDocument>('Event', eventSchema);
 
+// ============ USER SESSION MODEL ============
+// Tracks active sessions per user/device for session isolation
+interface IUserSessionDocument extends Document {
+  userId: mongoose.Types.ObjectId;
+  sessionId: string; // Unique per login
+  deviceFingerprint: string; // Device identifier (User-Agent + Accept-Language hash)
+  ipAddress?: string;
+  userAgent?: string;
+  isActive: boolean;
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+const userSessionSchema = new Schema<IUserSessionDocument>(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
+    sessionId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    deviceFingerprint: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    ipAddress: String,
+    userAgent: String,
+    isActive: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+      index: true,
+      // Auto-delete after expiration (TTL index)
+      expires: 0,
+    },
+  },
+  { timestamps: true }
+);
+
+export const UserSessionModel =
+  (mongoose.models.UserSession as Model<IUserSessionDocument>) ||
+  mongoose.model<IUserSessionDocument>('UserSession', userSessionSchema);
+
 // ============ LOGOUT TOKEN MODEL ============
 // Stores tokens that have been logged out (blacklist)
 interface ILogoutTokenDocument extends Document {
