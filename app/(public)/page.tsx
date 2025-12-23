@@ -15,8 +15,52 @@ import { StickySearchBar } from '@/components/StickySearchBar';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
-import PopularCategories from '@/components/PopularCategories';
-import FeaturedProfessionals from '@/components/FeaturedProfessionals';
+import { PopularCategories } from '@/components/PopularCategories';
+import { FeaturedProfessionals } from '@/components/FeaturedProfessionals';
+
+/**
+ * Page-level skeleton loader
+ * Shows while auth is resolving
+ * Prevents components from rendering before auth is settled
+ */
+function PageSkeleton() {
+  return (
+    <div className="space-y-6 p-6">
+      {/* Hero skeleton */}
+      <div className="space-y-4">
+        <div className="h-12 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="h-6 w-2/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+      </div>
+
+      {/* Categories skeleton */}
+      <div className="space-y-2">
+        <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="flex gap-4 overflow-x-auto">
+          {[...Array(7)].map((_, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 w-24 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Featured professionals skeleton */}
+      <div className="space-y-2">
+        <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -228,50 +272,6 @@ export default function HomePage() {
         onClose={() => setIsAuthModalOpen(false)}
       />
     </>
-  );
-}
-
-/**
- * Page-level skeleton loader
- * Shows while auth is resolving
- * Prevents components from rendering before auth is settled
- */
-function PageSkeleton() {
-  return (
-    <div className="space-y-6 p-6">
-      {/* Hero skeleton */}
-      <div className="space-y-4">
-        <div className="h-12 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-        <div className="h-6 w-2/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-        <div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-      </div>
-
-      {/* Categories skeleton */}
-      <div className="space-y-2">
-        <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-        <div className="flex gap-4 overflow-x-auto">
-          {[...Array(7)].map((_, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 w-24 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Featured professionals skeleton */}
-      <div className="space-y-2">
-        <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
-            />
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
 
