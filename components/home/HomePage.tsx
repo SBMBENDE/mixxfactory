@@ -12,7 +12,6 @@ import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
 import { StickySearchBar } from '@/components/StickySearchBar';
-import { AuthModal } from '@/components/AuthModal';
 
 interface HomePageProps {
   data: {
