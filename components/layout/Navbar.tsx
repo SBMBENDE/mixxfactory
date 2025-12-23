@@ -27,20 +27,25 @@ export const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      console.log('Navbar: handleLogout called');
       // Perform logout API call
       await logout();
+      console.log('Navbar: logout() completed');
       closeMenu();
       
-      // Wait a bit for logout to complete, then do a clean page reload
-      // This ensures the cookie is deleted and React state is fresh
+      // Wait longer for logout to complete and cookie to be deleted
+      // This ensures the Set-Cookie header is processed by the browser
       setTimeout(() => {
+        console.log('Navbar: Redirecting to / with window.location.replace');
         // Do a hard refresh to ensure everything is clean
         window.location.replace('/');
-      }, 200);
+      }, 500);
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error('Navbar: Logout failed:', error);
       // Still redirect even if logout fails, to clear the UI
-      window.location.replace('/');
+      setTimeout(() => {
+        window.location.replace('/');
+      }, 500);
     }
   };
 

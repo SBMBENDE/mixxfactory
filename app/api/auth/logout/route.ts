@@ -12,7 +12,7 @@ export async function POST() {
     const cookieStore = await cookies();
     cookieStore.delete('auth_token');
 
-    // Create response with Set-Cookie header to explicitly clear the cookie in the browser
+    // Create response
     const response = NextResponse.json(
       {
         success: true,
@@ -22,13 +22,13 @@ export async function POST() {
       { status: 200 }
     );
 
-    // Set cookie with Max-Age=0 and Expires in the past to clear it in the browser
-    response.headers.set(
-      'Set-Cookie',
-      `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT${
-        process.env.NODE_ENV === 'production' ? '; Secure' : ''
-      }`
-    );
+    // Explicitly clear the cookie in the browser response
+    // Use empty value with Max-Age=0 to ensure deletion across all browsers
+    const cookieHeader = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC${
+      process.env.NODE_ENV === 'production' ? '; Secure' : ''
+    }`;
+    
+    response.headers.append('Set-Cookie', cookieHeader);
 
     return response;
   } catch (error) {
@@ -44,12 +44,11 @@ export async function POST() {
       { status: 200 }
     );
 
-    response.headers.set(
-      'Set-Cookie',
-      `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT${
-        process.env.NODE_ENV === 'production' ? '; Secure' : ''
-      }`
-    );
+    const cookieHeader = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC${
+      process.env.NODE_ENV === 'production' ? '; Secure' : ''
+    }`;
+    
+    response.headers.append('Set-Cookie', cookieHeader);
 
     return response;
   }

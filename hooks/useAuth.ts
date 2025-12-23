@@ -60,14 +60,21 @@ export function useAuth(): UseAuthReturn {
   // Logout
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', { 
+      console.log('Logout: Calling /api/auth/logout');
+      const response = await fetch('/api/auth/logout', { 
         method: 'POST',
         credentials: 'include',
       });
+      console.log('Logout: API response status:', response.status);
+      
+      if (!response.ok) {
+        console.warn('Logout: API returned non-ok status:', response.status);
+      }
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
       // Immediately clear local state
+      console.log('Logout: Clearing local auth state');
       setIsAuthenticated(false);
       setUser(null);
       setLoading(false);
