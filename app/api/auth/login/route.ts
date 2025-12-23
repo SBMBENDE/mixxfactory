@@ -3,6 +3,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { loginSchema } from '@/lib/validations';
@@ -69,10 +70,22 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
 
-    // Set cookie header
+    // Set cookie using BOTH methods for maximum compatibility
+    // Method 1: Using Next.js cookies() API
+    const cookieStore = await cookies();
+    cookieStore.set('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+    });
+    console.log('[API /api/auth/login] Cookie set via cookies() API');
+    
+    // Method 2: Also set via response header for extra compatibility
     const cookieHeader = setAuthCookieHeader(token);
-    console.log('[API /api/auth/login] Setting cookie header');
-    response.headers.set('Set-Cookie', cookieHeader);
+    console.log('[API /api/auth/login] Setting cookie header via response');
+    response.headers.append('Set-Cookie', cookieHeader);
     
     console.log('[API /api/auth/login] Login successful for:', email);
     return response;
