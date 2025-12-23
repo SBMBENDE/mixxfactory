@@ -24,6 +24,11 @@ export default function HomePage() {
   const t = useTranslations();
   const { authStatus } = useAuth(); // Use auth hook to track auth state
 
+  // Auth Gate: Wait for auth to resolve before rendering page
+  if (authStatus === 'loading') {
+    return <PageSkeleton />;
+  }
+
   // Detect mobile window size
   useEffect(() => {
     const handleResize = () => {
@@ -225,3 +230,48 @@ export default function HomePage() {
     </>
   );
 }
+
+/**
+ * Page-level skeleton loader
+ * Shows while auth is resolving
+ * Prevents components from rendering before auth is settled
+ */
+function PageSkeleton() {
+  return (
+    <div className="space-y-6 p-6">
+      {/* Hero skeleton */}
+      <div className="space-y-4">
+        <div className="h-12 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="h-6 w-2/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+      </div>
+
+      {/* Categories skeleton */}
+      <div className="space-y-2">
+        <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="flex gap-4 overflow-x-auto">
+          {[...Array(7)].map((_, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 w-24 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Featured professionals skeleton */}
+      <div className="space-y-2">
+        <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+

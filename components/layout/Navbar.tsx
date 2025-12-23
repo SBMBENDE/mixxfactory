@@ -17,7 +17,7 @@ import { faSearch, faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, user, loading, logout } = useAuth();
+  const { authStatus, isAuthenticated, user, logout } = useAuth();
   const { language, setLanguage } = useLanguage();
   const t = useTranslations();
 
@@ -111,33 +111,31 @@ export const Navbar: React.FC = () => {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-4">
-            {!loading && (
+            {authStatus === 'authenticated' && user && (
               <>
-                {isAuthenticated && user ? (
-                  <>
-                    <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                      <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {user.email}
-                      </span>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
-                      title="Logout"
-                    >
-                      <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
-                      {t.nav.logout}
-                    </button>
-                  </>
-                ) : (
-                  <Link href="/auth/login">
-                    <Button variant="outline" size="sm">
-                      {t.nav.login}
-                    </Button>
-                  </Link>
-                )}
+                <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                  <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {user.email}
+                  </span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
+                  title="Logout"
+                >
+                  <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
+                  {t.nav.logout}
+                </button>
               </>
+            )}
+
+            {authStatus === 'unauthenticated' && (
+              <Link href="/auth/login">
+                <Button variant="outline" size="sm">
+                  {t.nav.login}
+                </Button>
+              </Link>
             )}
           </div>
 
@@ -218,32 +216,30 @@ export const Navbar: React.FC = () => {
               </Link>
             )}
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-3">
-              {!loading && (
+              {authStatus === 'authenticated' && user && (
                 <>
-                  {isAuthenticated && user ? (
-                    <>
-                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          {user.email}
-                        </span>
-                      </div>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
-                      >
-                        <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
-                        {t.nav.logout}
-                      </button>
-                    </>
-                  ) : (
-                    <Link href="/auth/login" className="block" onClick={closeMenu}>
-                      <Button variant="primary" size="sm" className="w-full">
-                        {t.nav.login}
-                      </Button>
-                    </Link>
-                  )}
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                    <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {user.email}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"
+                  >
+                    <FontAwesomeIcon icon={faSignOut} className="w-4 h-4" />
+                    {t.nav.logout}
+                  </button>
                 </>
+              )}
+
+              {authStatus === 'unauthenticated' && (
+                <Link href="/auth/login" className="block" onClick={closeMenu}>
+                  <Button variant="primary" size="sm" className="w-full">
+                    {t.nav.login}
+                  </Button>
+                </Link>
               )}
             </div>
           </div>

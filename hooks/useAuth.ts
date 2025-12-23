@@ -18,9 +18,8 @@ interface AuthUser {
 
 interface UseAuthReturn {
   authStatus: AuthStatus;
-  isAuthenticated: boolean; // Backward compatibility
+  isAuthenticated: boolean;
   user: AuthUser | null;
-  loading: boolean; // Backward compatibility
   logout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
 }
@@ -131,10 +130,9 @@ export function useAuth(): UseAuthReturn {
 
   return {
     authStatus,
-    isAuthenticated: authStatus === 'authenticated', // Backward compatibility
+    isAuthenticated: authStatus === 'authenticated',
     user,
-    loading: authStatus === 'loading', // Backward compatibility
     logout,
-    refreshAuth,
+    refreshAuth: checkAuth,
   };
 }
