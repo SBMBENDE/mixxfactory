@@ -148,7 +148,7 @@ export default function PromoteEventPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const { authStatus, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Event categories (hardcoded to match admin dashboard)
   const eventCategories = [

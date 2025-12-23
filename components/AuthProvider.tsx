@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 export interface UseAuthReturn {
   authStatus: 'loading' | 'authenticated' | 'unauthenticated';
@@ -22,7 +22,7 @@ function useProvideAuth(): UseAuthReturn {
   const [user, setUser] = useState<any>(null);
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     if (hasCheckedAuth) return;
     
     setAuthStatus('loading');
@@ -50,9 +50,9 @@ function useProvideAuth(): UseAuthReturn {
     } finally {
       setHasCheckedAuth(true);
     }
-  };
+  }, [hasCheckedAuth]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       // Immediately set to unauthenticated to prevent any race conditions
       setAuthStatus('unauthenticated');
@@ -89,7 +89,7 @@ function useProvideAuth(): UseAuthReturn {
       setAuthStatus('unauthenticated');
       setUser(null);
     }
-  };
+  }, []);
 
   // Check auth on mount only
   useEffect(() => {
