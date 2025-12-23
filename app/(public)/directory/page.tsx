@@ -414,7 +414,10 @@ export default function DirectoryPage() {
       <AuthModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={() => setIsAuthenticated(true)}
+        onSuccess={() => {
+          setIsAuthModalOpen(false);
+          // Auth state will be updated via useAuth hook's polling
+        }}
       />
     </div>
   );
