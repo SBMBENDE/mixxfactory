@@ -12,6 +12,8 @@ import {
 import { generateToken } from '@/lib/auth/jwt';
 import { validateOAuthConfig } from '@/lib/auth/oauth';
 import { connectDB } from '@/lib/db/connection';
+import { createSession } from '@/lib/auth/session';
+import { getDeviceInfoFromRequest } from '@/lib/auth/device';
 
 export async function GET(request: NextRequest) {
   try {
@@ -115,11 +117,21 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Generate JWT token
+    // Create session for this device
+    const deviceInfo = getDeviceInfoFromRequest(request);
+    const sessionId = await createSession(
+      user._id.toString(),
+      deviceInfo.userAgent,
+      request.headers.get('accept-language') || undefined,
+      deviceInfo.ipAddress
+    );
+
+    // Generate JWT token with session ID
     const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
       role: user.accountType,
+      sessionId,
     });
 
     // Create response with redirect
