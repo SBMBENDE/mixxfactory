@@ -38,12 +38,14 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
   try {
     await connectDBWithTimeout();
     
+    console.log('[isTokenBlacklisted] Checking if token is blacklisted...');
+    console.log('[isTokenBlacklisted] Token to check:', token.substring(0, 20) + '...');
+    
     const result = await LogoutTokenModel.findOne({ token });
     const isBlacklisted = !!result;
     
-    if (isBlacklisted) {
-      console.log('[isTokenBlacklisted] Token is blacklisted');
-    }
+    console.log('[isTokenBlacklisted] Query result:', result ? 'FOUND (blacklisted)' : 'NOT FOUND');
+    console.log('[isTokenBlacklisted] Token is blacklisted:', isBlacklisted);
     
     return isBlacklisted;
   } catch (error) {
