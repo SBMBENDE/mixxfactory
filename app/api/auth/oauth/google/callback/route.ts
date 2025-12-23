@@ -13,8 +13,7 @@ import {
 import { generateToken } from '@/lib/auth/jwt';
 import { validateOAuthConfig } from '@/lib/auth/oauth';
 import { connectDB } from '@/lib/db/connection';
-import { createSession } from '@/lib/auth/session';
-import { getDeviceInfoFromRequest } from '@/lib/auth/device';
+import { createSession, getDeviceInfoFromRequest } from '@/lib/auth/session';
 
 export async function GET(request: NextRequest) {
   try {
