@@ -13,32 +13,55 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 export async function blacklistToken(token: string): Promise<void> {
   console.error('[blacklistToken] ===== BLACKLIST SAVE STARTED =====');
   console.error('[blacklistToken] Token to save (first 30):', token.substring(0, 30));
+  console.error('[blacklistToken] Token is a', typeof token);
   
   try {
     console.error('[blacklistToken] Connecting to database...');
     await connectDBWithTimeout();
     console.error('[blacklistToken] Database connected');
     
+    // Verify LogoutTokenModel
+    console.error('[blacklistToken] LogoutTokenModel exists?', !!LogoutTokenModel);
+    console.error('[blacklistToken] LogoutTokenModel.create exists?', typeof LogoutTokenModel.create);
+    
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
     
     console.error('[blacklistToken] Creating record with expiresAt:', expiresAt.toISOString());
-    const result = await LogoutTokenModel.create({
+    const dataToSave = {
       token,
       expiresAt,
-    });
+    };
+    console.error('[blacklistToken] Data to save:', JSON.stringify({
+      token: token.substring(0, 30) + '...',
+      expiresAt: expiresAt.toISOString()
+    }));
     
-    console.error('[blacklistToken] Record created with ID:', result._id);
-    console.error('[blacklistToken] Saved token (first 30):', result.token.substring(0, 30));
+    const result = await LogoutTokenModel.create(dataToSave);
+    
+    console.error('[blacklistToken] Record created, checking result...');
+    console.error('[blacklistToken] Result ID:', result._id);
+    console.error('[blacklistToken] Result token exists?', !!result.token);
+    console.error('[blacklistToken] Result token (first 30):', result.token?.substring(0, 30));
     console.error('[blacklistToken] Tokens match?', result.token === token);
+    
+    // Verify it was actually saved
+    const verify = await LogoutTokenModel.findById(result._id);
+    console.error('[blacklistToken] Verification - token exists in DB?', !!verify);
+    if (verify) {
+      console.error('[blacklistToken] Verified token (first 30):', verify.token.substring(0, 30));
+    }
+    
     console.error('[blacklistToken] ===== BLACKLIST SAVE COMPLETE =====');
   } catch (error) {
     console.error('[blacklistToken] ===== EXCEPTION DURING SAVE =====');
-    console.error('[blacklistToken] Error:', error);
+    console.error('[blacklistToken] Error object:', error);
     console.error('[blacklistToken] Error type:', error instanceof Error ? error.constructor.name : typeof error);
     if (error instanceof Error) {
+      console.error('[blacklistToken] Error message:', error.message);
       console.error('[blacklistToken] Stack:', error.stack);
     }
+    throw error;
   }
 }
 
