@@ -57,7 +57,7 @@ export default function Hero() {
               maxWidth: isMobile ? '100%' : '700px',
             }}
           >
-            Discover and connect with amazing professionals in your area
+            Discover Verified & Trusted Professionals
           </h1>
 
           <p
@@ -70,7 +70,7 @@ export default function Hero() {
               fontWeight: '500',
             }}
           >
-            Find DJs, event halls, stylists, and more. Everything you need for your perfect event.
+            Access trusted professionals, venues, and events near you — instantly.
           </p>
 
           <div
@@ -106,7 +106,7 @@ export default function Hero() {
                 e.currentTarget.style.borderColor = 'rgb(249, 115, 22)';
               }}
             >
-              Discover Professionals
+              Find a professional
             </a>
 
             <a
@@ -132,7 +132,7 @@ export default function Hero() {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              View Events
+              Explore events
             </a>
           </div>
         </div>
