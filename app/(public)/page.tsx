@@ -19,7 +19,7 @@ import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
 import PopularCategories from '@/components/PopularCategories';
-import FeaturedProfessionals from '@/components/FeaturedProfessionals';
+import FeaturedProfessionalsServer from '@/components/FeaturedProfessionalsServer';
 
 /**
  * Page-level skeleton loader
@@ -217,7 +217,7 @@ export default function HomePage() {
       <PopularCategories />
 
       {/* Featured Professionals - Grid */}
-      <FeaturedProfessionals />
+      <FeaturedProfessionalsServer />
 
       {/* CTA Section */}
       <section style={{

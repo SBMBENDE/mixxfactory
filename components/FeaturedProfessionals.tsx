@@ -81,9 +81,9 @@ function SkeletonCard() {
   );
 }
 
-export default function FeaturedProfessionals() {
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
-  const [loading, setLoading] = useState(true);
+export function FeaturedProfessionalsClient({ initialProfessionals = [] }: { initialProfessionals?: any[] }) {
+  const [professionals, setProfessionals] = useState<Professional[]>(initialProfessionals);
+  const [loading, setLoading] = useState(initialProfessionals.length === 0);
   const [isMobile, setIsMobile] = useState(false);
   const t = useTranslations();
 
