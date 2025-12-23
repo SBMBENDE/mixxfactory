@@ -32,13 +32,17 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/blog/posts/${params.slug}`);
+        const response = await fetch(`/api/blog/posts/${params.slug}`, {
+          cache: 'force-cache', // Individual blog posts are stable
+        });
         const data = await response.json();
 
         if (data.success && data.data?.post) {
           setPost(data.data.post);
           // Fetch related posts based on category
-          const relatedResponse = await fetch(`/api/blog/posts?category=${data.data.post.category}&limit=3`);
+          const relatedResponse = await fetch(`/api/blog/posts?category=${data.data.post.category}&limit=3`, {
+            cache: 'force-cache',
+          });
           const relatedData = await relatedResponse.json();
           setRelatedPosts(relatedData.data?.posts?.filter((p: BlogPost) => p.slug !== params.slug).slice(0, 3) || []);
         } else {

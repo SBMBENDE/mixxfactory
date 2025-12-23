@@ -47,7 +47,9 @@ export default function BlogPage() {
           ...(selectedTag && { tag: selectedTag }),
         });
 
-        const response = await fetch(`/api/blog/posts?${params}`);
+        const response = await fetch(`/api/blog/posts?${params}`, {
+          cache: 'force-cache', // Blog posts are stable, can be cached
+        });
         const data = await response.json();
 
         if (data.success && data.data) {

@@ -84,7 +84,9 @@ export default function DirectoryPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch('/api/categories');
+        const res = await fetch('/api/categories', {
+          cache: 'force-cache', // Categories are stable, cache aggressively
+        });
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           setCategories(data.data);
