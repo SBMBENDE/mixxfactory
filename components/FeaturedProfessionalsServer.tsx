@@ -63,28 +63,26 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
           gap: '2rem',
           marginBottom: '2rem',
         }}>
-          {professionals.map((professional) => (
+          <style>{`
+            .professional-card {
+              text-decoration: none;
+              color: inherit;
+              border-radius: 0.75rem;
+              overflow: hidden;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+              transition: transform 0.2s, box-shadow 0.2s;
+              display: block;
+            }
+            .professional-card:hover {
+              transform: translateY(-4px);
+              box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+            }
+          `}</style>
+          {professionals.slice(0, 4).map((professional) => (
             <Link
               key={professional._id}
               href={`/professionals/${professional.slug}`}
-              style={{
-                textDecoration: 'none',
-                color: 'inherit',
-                borderRadius: '0.75rem',
-                overflow: 'hidden',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget;
-                el.style.transform = 'translateY(-4px)';
-                el.style.boxShadow = '0 10px 15px rgba(0,0,0,0.15)';
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget;
-                el.style.transform = 'translateY(0)';
-                el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-              }}
+              className="professional-card"
             >
               <div style={{
                 backgroundColor: 'white',
@@ -227,17 +225,17 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
               fontWeight: '600',
               transition: 'background-color 0.2s',
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#1d4ed8';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#2563eb';
-            }}
+            className="browse-btn"
           >
             Browse All Professionals
           </Link>
         </div>
       </div>
+      <style>{`
+        .browse-btn:hover {
+          background-color: #1d4ed8;
+        }
+      `}</style>
     </section>
   );
 }

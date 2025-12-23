@@ -101,9 +101,6 @@ export default function HomePage({ data }: HomePageProps) {
 
       {/* Newsletter - Interactive Client Component */}
       <Newsletter />
-
-      {/* Auth Modal - Interactive Client Component */}
-      <AuthModal isOpen={false} onClose={() => {}} />
     </>
   );
 }

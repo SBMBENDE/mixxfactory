@@ -37,8 +37,8 @@ export async function getHomepageData(): Promise<HomepageData> {
     
     // Fetch all data in parallel
     const [profRes, catRes, newsRes] = await Promise.all([
-      // Featured professionals - sort by rating
-      fetch(`${baseUrl}/api/professionals?sort=rating&limit=8`, {
+      // Featured professionals - sort by rating, limit to 4 to reduce payload
+      fetch(`${baseUrl}/api/professionals?sort=rating&limit=4&lean=true`, {
         next: { revalidate: 300 }, // 5 minutes
       }),
       // Categories for popular section

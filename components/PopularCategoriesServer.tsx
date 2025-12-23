@@ -69,34 +69,32 @@ export default function PopularCategoriesServer({ categories }: Props) {
           paddingBottom: '1rem',
           WebkitOverflowScrolling: 'touch',
         }}>
+          <style>{`
+            .category-link {
+              flex: 0 0 auto;
+              min-width: 140px;
+              padding: 1.5rem 1rem;
+              background-color: #f3f4f6;
+              border-radius: 0.75rem;
+              text-decoration: none;
+              color: #1f2937;
+              text-align: center;
+              border: 2px solid transparent;
+              transition: all 0.2s;
+              display: inline-block;
+            }
+            .category-link:hover {
+              background-color: #dbeafe;
+              border-color: #2563eb;
+            }
+          `}</style>
           {categories.map((category) => {
             const emoji = categoryEmojis[category.slug] || '⭐';
             return (
               <Link
                 key={category._id}
                 href={`/directory?category=${category.slug}`}
-                style={{
-                  flex: '0 0 auto',
-                  minWidth: '140px',
-                  padding: '1.5rem 1rem',
-                  backgroundColor: '#f3f4f6',
-                  borderRadius: '0.75rem',
-                  textDecoration: 'none',
-                  color: '#1f2937',
-                  textAlign: 'center',
-                  border: '2px solid transparent',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget;
-                  el.style.backgroundColor = '#dbeafe';
-                  el.style.borderColor = '#2563eb';
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget;
-                  el.style.backgroundColor = '#f3f4f6';
-                  el.style.borderColor = 'transparent';
-                }}
+                className="category-link"
               >
                 <div style={{
                   fontSize: '2rem',
