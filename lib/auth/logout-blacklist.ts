@@ -36,8 +36,20 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
   try {
     await connectDBWithTimeout();
     
+    console.log('[isTokenBlacklisted] Checking if token is blacklisted...');
+    console.log('[isTokenBlacklisted] Token:', token.substring(0, 20) + '...');
+    console.log('[isTokenBlacklisted] Token length:', token.length);
+    
     const result = await LogoutTokenModel.findOne({ token });
-    return !!result;
+    console.log('[isTokenBlacklisted] Query result:', result ? 'FOUND' : 'NOT FOUND');
+    
+    if (result) {
+      console.log('[isTokenBlacklisted] Token is BLACKLISTED - user logged out');
+      return true;
+    }
+    
+    console.log('[isTokenBlacklisted] Token NOT in blacklist - user still authenticated');
+    return false;
   } catch (error) {
     console.error('[isTokenBlacklisted] Error checking blacklist:', error);
     // On error, allow the request (fail open)
