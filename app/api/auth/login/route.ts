@@ -14,13 +14,16 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[API /api/auth/login] Login attempt started');
     await connectDBWithTimeout();
 
     const body = await request.json();
+    console.log('[API /api/auth/login] Request body email:', body.email);
 
     // Validate input
     const validationResult = loginSchema.safeParse(body);
     if (!validationResult.success) {
+      console.log('[API /api/auth/login] Validation failed');
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
@@ -29,14 +32,18 @@ export async function POST(request: NextRequest) {
     // Find user
     const user = await UserModel.findOne({ email }).select('+password');
     if (!user || !user.password) {
+      console.log('[API /api/auth/login] User not found:', email);
       return errorResponse('Invalid email or password', 401);
     }
 
     // Compare password
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
+      console.log('[API /api/auth/login] Password invalid for user:', email);
       return errorResponse('Invalid email or password', 401);
     }
+
+    console.log('[API /api/auth/login] Credentials valid for user:', email);
 
     // Generate token
     const token = generateToken({
@@ -44,6 +51,8 @@ export async function POST(request: NextRequest) {
       email: user.email,
       role: user.accountType,
     });
+
+    console.log('[API /api/auth/login] Generated new token for user:', email);
 
     // Create response with auth cookie
     const response = NextResponse.json(
@@ -61,7 +70,11 @@ export async function POST(request: NextRequest) {
     );
 
     // Set cookie header
-    response.headers.set('Set-Cookie', setAuthCookieHeader(token));
+    const cookieHeader = setAuthCookieHeader(token);
+    console.log('[API /api/auth/login] Setting cookie header');
+    response.headers.set('Set-Cookie', cookieHeader);
+    
+    console.log('[API /api/auth/login] Login successful for:', email);
     return response;
   } catch (error) {
     console.error('Login error:', error);

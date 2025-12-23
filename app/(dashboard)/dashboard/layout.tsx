@@ -133,8 +133,10 @@ export default function DashboardLayout({
               } catch (error) {
                 console.error('[Dashboard Logout] Error:', error);
               }
-              // Redirect regardless of API response
-              await new Promise(resolve => setTimeout(resolve, 100));
+              // Wait longer for browser to process Set-Cookie deletion
+              console.log('[Dashboard Logout] Waiting for browser to process cookie deletion...');
+              await new Promise(resolve => setTimeout(resolve, 500));
+              console.log('[Dashboard Logout] Redirecting to login...');
               window.location.href = '/auth/login';
             }}
             style={{
