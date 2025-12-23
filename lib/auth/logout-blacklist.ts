@@ -12,21 +12,31 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
  */
 export async function blacklistToken(token: string): Promise<void> {
   try {
+    console.log('[blacklistToken] Starting blacklist process...');
+    console.log('[blacklistToken] Token to blacklist:', token.substring(0, 20) + '...');
+    
     await connectDBWithTimeout();
+    console.log('[blacklistToken] Connected to database');
     
     // Get token expiration from JWT (typically 7 days)
     // Add token to database with expiration
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
     
-    await LogoutTokenModel.create({
+    console.log('[blacklistToken] Creating logout token record with expiresAt:', expiresAt);
+    
+    const result = await LogoutTokenModel.create({
       token,
       expiresAt,
     });
     
-    console.log('[blacklistToken] Token added to blacklist');
+    console.log('[blacklistToken] Token successfully added to blacklist, record ID:', result._id);
   } catch (error) {
     console.error('[blacklistToken] Error adding token to blacklist:', error);
+    if (error instanceof Error) {
+      console.error('[blacklistToken] Error message:', error.message);
+      console.error('[blacklistToken] Error stack:', error.stack);
+    }
     // Don't throw - we still want logout to succeed even if blacklist fails
   }
 }

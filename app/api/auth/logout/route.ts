@@ -16,10 +16,21 @@ export async function POST(request: Request) {
     
     // Get the token from the request before clearing it
     const token = await getTokenFromRequest(request);
+    console.log('[API /api/auth/logout] Token found:', token ? 'YES' : 'NO');
+    
     if (token) {
+      console.log('[API /api/auth/logout] Token to blacklist:', token.substring(0, 20) + '...');
+      console.log('[API /api/auth/logout] Token length:', token.length);
+      
       // Add token to blacklist so it's invalid even if cookie persists
-      await blacklistToken(token);
-      console.log('[API /api/auth/logout] Token added to blacklist');
+      try {
+        await blacklistToken(token);
+        console.log('[API /api/auth/logout] Token successfully added to blacklist');
+      } catch (blacklistError) {
+        console.error('[API /api/auth/logout] Error adding token to blacklist:', blacklistError);
+      }
+    } else {
+      console.log('[API /api/auth/logout] NO TOKEN FOUND - user might already be logged out');
     }
 
     // Delete the cookie using Next.js cookies API
