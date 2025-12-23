@@ -27,20 +27,14 @@ export const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      console.log('[Logout] Starting logout process');
-      
       // Call logout API to clear session and delete cookie
       await logout();
-      console.log('[Logout] logout() API call completed');
       closeMenu();
       
-      // Clear any pending state before navigating
-      console.log('[Logout] Navigating to home page immediately');
-      // Use replace to prevent adding to history
+      // Navigate to home page
       window.location.replace('/?_logout=1');
     } catch (error) {
-      console.error('[Logout] Error occurred:', error);
-      console.log('[Logout] Navigating anyway after error');
+      console.error('Logout error:', error);
       // Navigate anyway even if logout fails
       window.location.replace('/?_logout=1');
     }

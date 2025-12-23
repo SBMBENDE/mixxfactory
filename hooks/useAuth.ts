@@ -60,30 +60,19 @@ export function useAuth(): UseAuthReturn {
   // Logout
   const logout = useCallback(async () => {
     try {
-      console.log('[useAuth] Calling /api/auth/logout');
       const response = await fetch('/api/auth/logout', { 
         method: 'POST',
         credentials: 'include',
       });
       
-      console.log('[useAuth] Logout API response status:', response.status);
-      
       if (!response.ok) {
-        console.warn('[useAuth] Logout API returned error status:', response.status);
-      }
-      
-      try {
-        const data = await response.json();
-        console.log('[useAuth] Response body:', data);
-      } catch (e) {
-        console.log('[useAuth] Could not parse response body');
+        console.warn('Logout API error:', response.status);
       }
     } catch (error) {
-      console.error('[useAuth] Logout fetch error:', error);
+      console.error('Logout error:', error);
       // Don't throw - we want to clear state even if API fails
     } finally {
       // Clear local state immediately
-      console.log('[useAuth] Clearing local auth state');
       setIsAuthenticated(false);
       setUser(null);
       setLoading(false);

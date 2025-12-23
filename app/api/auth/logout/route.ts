@@ -3,21 +3,18 @@
  * Clears the auth_token cookie and session
  */
 
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { clearAuthCookie } from '@/lib/auth/jwt';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
   try {
     console.log('[API] /api/auth/logout called');
-    const cookieStore = await cookies();
-    const currentToken = cookieStore.get('auth_token');
-    console.log('[API] Current token exists:', !!currentToken);
     
-    // Delete the cookie on the server
-    cookieStore.delete('auth_token');
-    console.log('[API] Cookie deleted from server');
+    // Clear the auth cookie
+    await clearAuthCookie();
+    console.log('[API] Auth cookie cleared');
 
     // Create response
     const response = NextResponse.json(
@@ -29,15 +26,7 @@ export async function POST() {
       { status: 200 }
     );
 
-    // Set cookie to empty value with Max-Age=0 to delete from browser
-    const emptyTokenCookie = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC${
-      process.env.NODE_ENV === 'production' ? '; Secure' : ''
-    }`;
-    
-    console.log('[API] Setting Set-Cookie header to delete token');
-    response.headers.set('Set-Cookie', emptyTokenCookie);
-    
-    // Prevent caching to ensure Set-Cookie header is processed
+    // Prevent caching to ensure fresh response
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
@@ -48,6 +37,12 @@ export async function POST() {
     console.error('[API] Logout error:', error);
     
     // Still try to clear the cookie even on error
+    try {
+      await clearAuthCookie();
+    } catch (e) {
+      console.error('[API] Failed to clear cookie on error:', e);
+    }
+    
     const response = NextResponse.json(
       {
         success: true,
@@ -57,11 +52,6 @@ export async function POST() {
       { status: 200 }
     );
 
-    const emptyTokenCookie = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC${
-      process.env.NODE_ENV === 'production' ? '; Secure' : ''
-    }`;
-    
-    response.headers.set('Set-Cookie', emptyTokenCookie);
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
