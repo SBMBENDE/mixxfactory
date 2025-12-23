@@ -12,11 +12,11 @@ export async function POST() {
   try {
     console.log('[API] /api/auth/logout called');
     
-    // Clear the auth cookie
+    // Clear the auth cookie on the server
     await clearAuthCookie();
     console.log('[API] clearAuthCookie() completed');
 
-    // Create response with cache prevention
+    // Create response
     const response = NextResponse.json(
       {
         success: true,
@@ -26,12 +26,21 @@ export async function POST() {
       { status: 200 }
     );
 
-    // Prevent caching to ensure fresh response
+    // CRITICAL: Set the Set-Cookie header to delete the cookie in the browser
+    // We must explicitly set this header with Max-Age=0 to delete the cookie
+    const deleteCookie = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC${
+      process.env.NODE_ENV === 'production' ? '; Secure' : ''
+    }`;
+    
+    console.log('[API] Setting Set-Cookie header to delete auth_token');
+    response.headers.set('Set-Cookie', deleteCookie);
+    
+    // Prevent caching
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
     
-    console.log('[API] Logout successful, returning 200');
+    console.log('[API] Logout response prepared with delete cookie header');
     return response;
   } catch (error) {
     console.error('[API] Logout error:', error);
@@ -39,10 +48,12 @@ export async function POST() {
     // Still try to clear the cookie even on error
     try {
       await clearAuthCookie();
+      console.log('[API] clearAuthCookie() completed in error handler');
     } catch (e) {
       console.error('[API] Failed to clear cookie on error:', e);
     }
     
+    // Return response with delete cookie header
     const response = NextResponse.json(
       {
         success: true,
@@ -52,11 +63,16 @@ export async function POST() {
       { status: 200 }
     );
 
+    const deleteCookie = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC${
+      process.env.NODE_ENV === 'production' ? '; Secure' : ''
+    }`;
+    
+    response.headers.set('Set-Cookie', deleteCookie);
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
     
-    console.log('[API] Returning 200 despite error');
+    console.log('[API] Returning error response with delete cookie header');
     return response;
   }
 }
