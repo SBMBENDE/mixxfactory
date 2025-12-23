@@ -27,6 +27,7 @@ interface UseAuthReturn {
 export function useAuth(): UseAuthReturn {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
   // Check if user is authenticated
   const checkAuth = useCallback(async () => {
@@ -42,6 +43,7 @@ export function useAuth(): UseAuthReturn {
           console.log('[useAuth] User authenticated:', data.data.email);
           setUser(data.data);
           setAuthStatus('authenticated');
+          setHasCheckedAuth(true);
           return;
         }
       }
@@ -49,10 +51,12 @@ export function useAuth(): UseAuthReturn {
       console.log('[useAuth] User not authenticated');
       setAuthStatus('unauthenticated');
       setUser(null);
+      setHasCheckedAuth(true);
     } catch (error) {
       console.error('[useAuth] Auth check error:', error);
       setAuthStatus('unauthenticated');
       setUser(null);
+      setHasCheckedAuth(true);
     }
   }, []);
 
@@ -60,9 +64,11 @@ export function useAuth(): UseAuthReturn {
   const logout = useCallback(async () => {
     console.log('[useAuth] Logout initiated');
     
-    // Immediately clear local state before API call
-    setAuthStatus('loading');
+    // Immediately clear local state and mark as unauthenticated (not loading)
+    // This prevents the visibility listener from re-triggering checkAuth
+    setAuthStatus('unauthenticated');
     setUser(null);
+    setHasCheckedAuth(true);
     
     // Clear any stored auth data
     if (typeof window !== 'undefined') {
@@ -86,9 +92,9 @@ export function useAuth(): UseAuthReturn {
         console.warn('[useAuth] Logout API error:', response.status);
       }
       
-      // Wait a bit for cookie to be deleted
+      // Wait longer for cookie to be deleted and ensure server processed request
       console.log('[useAuth] Waiting for cookie deletion...');
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Do a fresh auth check to verify token is really invalid
       console.log('[useAuth] Doing fresh auth check to verify logout...');
@@ -97,20 +103,21 @@ export function useAuth(): UseAuthReturn {
       
       if (verifyResponse.status === 401) {
         console.log('[useAuth] ✓ Token confirmed invalid - logout successful');
-        setAuthStatus('unauthenticated');
-      } else {
-        console.warn('[useAuth] ⚠ Auth check returned 200 - token might not be blacklisted');
-        setAuthStatus('unauthenticated');
+      } else if (verifyResponse.status === 200) {
+        console.warn('[useAuth] ⚠ Auth check returned 200 - token might not be blacklisted, forcing logout state');
+        // Force logout state even if token still valid
       }
     } catch (error) {
       console.error('[useAuth] Logout error:', error);
-      setAuthStatus('unauthenticated');
     }
   }, []);
 
   // Check auth on mount and when component focuses
   useEffect(() => {
-    checkAuth();
+    // Only run once on mount
+    if (!hasCheckedAuth) {
+      checkAuth();
+    }
 
     // Also check auth when page becomes visible (tab focus)
     const handleVisibilityChange = () => {
@@ -121,7 +128,7 @@ export function useAuth(): UseAuthReturn {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [checkAuth]);
+  }, [hasCheckedAuth, checkAuth]);
 
   return {
     authStatus,
