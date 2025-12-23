@@ -4,6 +4,9 @@
  * No authentication required - public data only
  */
 
+import { connectDBWithTimeout } from '@/lib/db/connection';
+import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
+
 interface Professional {
   _id: string;
   name: string;
@@ -33,65 +36,62 @@ interface HomepageData {
 
 export async function getHomepageData(): Promise<HomepageData> {
   try {
-    console.log('[getHomepageData] Starting fetch...');
+    console.log('[getHomepageData] Starting direct database fetch...');
     
-    // Build absolute URL for server-side fetching
-    // In development: http://localhost:3000
-    // In production: https://mixxfactory.vercel.app
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    console.log('[getHomepageData] Using baseUrl:', baseUrl);
-    
-    // Don't cache these fetches - let the API handle caching instead
-    // ISR will handle page-level caching via the revalidate export
-    const [profRes, catRes, newsRes] = await Promise.all([
-      // Featured professionals - no cache revalidate (API handles it)
-      fetch(`${baseUrl}/api/professionals?sort=rating&limit=4&lean=true`, {
-        // No caching at fetch level - causes "over 2MB" error
-      }),
-      // Categories for popular section
-      fetch(`${baseUrl}/api/categories`, {
-        // No caching at fetch level - causes "over 2MB" error
-      }),
-      // News flashes for banner
-      fetch(`${baseUrl}/api/news-flashes?published=true&limit=3`, {
-        // No caching at fetch level - causes "over 2MB" error
-      }),
-    ]);
+    // Connect to database directly instead of fetching through API
+    // This avoids external URL issues on Vercel
+    await connectDBWithTimeout();
+    console.log('[getHomepageData] Database connected');
 
-    console.log('[getHomepageData] Fetches completed, parsing responses...');
+    // Fetch professionals directly from DB
+    const professionals = await ProfessionalModel.find({ active: true })
+      .populate('category', 'name slug')
+      .sort({ featured: -1, rating: -1, reviewCount: -1 })
+      .limit(4)
+      .lean()
+      .exec();
 
-    // Parse responses
-    const [profData, catData, newsData] = await Promise.all([
-      profRes.json(),
-      catRes.json(),
-      newsRes.json().catch(() => ({ data: [] })), // News flashes are optional
-    ]);
+    console.log('[getHomepageData] Professionals fetched:', professionals.length);
 
-    console.log('[getHomepageData] Responses parsed successfully');
+    // Fetch categories directly from DB
+    const categories = await CategoryModel.find({})
+      .sort({ name: 1 })
+      .limit(7)
+      .lean()
+      .exec();
 
-    // Extract and process professionals - prefer featured
-    let professionals: Professional[] = [];
-    if (profData.success && profData.data?.data) {
-      const allProfs = profData.data.data;
-      const featured = allProfs.filter((p: Professional) => p.featured);
-      professionals = (featured.length > 0 ? featured : allProfs).slice(0, 8);
-    }
+    console.log('[getHomepageData] Categories fetched:', categories.length);
 
-    // Extract categories
-    const categories: Category[] = (catData.success ? catData.data : catData.data || []).slice(0, 7);
+    // For now, return empty news flashes (optional field)
+    const newsFlashes: any[] = [];
 
-    // Extract news flashes
-    const newsFlashes = (newsData.data || []).slice(0, 3);
+    // Convert ObjectIds to strings for frontend compatibility
+    const processedProfessionals = professionals.map((prof: any) => ({
+      _id: prof._id?.toString(),
+      name: prof.name,
+      slug: prof.slug,
+      profilePicture: prof.profilePicture,
+      featured: prof.featured,
+      rating: prof.rating,
+      reviewCount: prof.reviewCount,
+      category: prof.category ? {
+        _id: prof.category._id?.toString(),
+        name: prof.category.name,
+        slug: prof.category.slug,
+      } : undefined,
+    }));
 
-    console.log('[getHomepageData] Data processed:', { 
-      professionals: professionals.length,
-      categories: categories.length,
-      newsFlashes: newsFlashes.length
-    });
+    const processedCategories = categories.map((cat: any) => ({
+      _id: cat._id?.toString(),
+      name: cat.name,
+      slug: cat.slug,
+    }));
+
+    console.log('[getHomepageData] Data processed successfully');
 
     return {
-      professionals,
-      categories,
+      professionals: processedProfessionals,
+      categories: processedCategories,
       newsFlashes,
     };
   } catch (error) {

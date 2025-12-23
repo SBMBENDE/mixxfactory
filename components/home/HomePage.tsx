@@ -4,7 +4,6 @@
  * No client-side rendering needed for initial content
  */
 
-import { Suspense } from 'react';
 import FeaturedProfessionalsServer from '@/components/FeaturedProfessionalsServer';
 import PopularCategoriesServer from '@/components/PopularCategoriesServer';
 import Hero from '@/components/Hero';
@@ -21,33 +20,6 @@ interface HomePageProps {
   };
 }
 
-// Skeleton for suspense boundaries
-function CategorySkeleton() {
-  return (
-    <div className="flex gap-4 overflow-x-auto">
-      {[...Array(7)].map((_, i) => (
-        <div
-          key={i}
-          className="flex-shrink-0 w-24 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
-        />
-      ))}
-    </div>
-  );
-}
-
-function ProfessionalsSkeleton() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-      {[...Array(8)].map((_, i) => (
-        <div
-          key={i}
-          className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"
-        />
-      ))}
-    </div>
-  );
-}
-
 export default function HomePage({ data }: HomePageProps) {
   return (
     <>
@@ -60,15 +32,15 @@ export default function HomePage({ data }: HomePageProps) {
       {/* News Flash Banner - Client Component */}
       <NewsFlashBanner />
 
-      {/* Popular Categories - Server Component with Suspense */}
-      <Suspense fallback={<CategorySkeleton />}>
+      {/* Popular Categories - Server Component */}
+      {data.categories && data.categories.length > 0 && (
         <PopularCategoriesServer categories={data.categories} />
-      </Suspense>
+      )}
 
-      {/* Featured Professionals - Server Component with Suspense */}
-      <Suspense fallback={<ProfessionalsSkeleton />}>
+      {/* Featured Professionals - Server Component */}
+      {data.professionals && data.professionals.length > 0 && (
         <FeaturedProfessionalsServer professionals={data.professionals} />
-      </Suspense>
+      )}
 
       {/* CTA Section - Static Server Component */}
       <section style={{
