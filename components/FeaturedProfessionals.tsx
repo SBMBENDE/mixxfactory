@@ -106,7 +106,10 @@ export default function FeaturedProfessionals() {
         // The API automatically sorts featured first in the sortMap
         const url = '/api/professionals?sort=rating&limit=8';
         console.log('[FeaturedProfessionals] Fetching from:', url);
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          cache: 'force-cache', // Cache aggressively
+          next: { revalidate: 300 }, // Revalidate every 5 minutes
+        });
         const data = await res.json();
         console.log('[FeaturedProfessionals] API Response:', {
           success: data.success,

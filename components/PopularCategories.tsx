@@ -110,7 +110,10 @@ export default function PopularCategories() {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/categories');
+        const res = await fetch('/api/categories', {
+          cache: 'force-cache', // Categories are stable
+          next: { revalidate: 3600 }, // Revalidate every hour
+        });
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           // Limit to 7 popular categories for horizontal scroll

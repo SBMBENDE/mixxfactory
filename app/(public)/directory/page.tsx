@@ -1,11 +1,14 @@
 /**
  * Directory page - browse professionals
+ * Uses ISR (Incremental Static Regeneration) for optimal mobile performance
+ * Page is prerendered at build time and cached for 5 minutes
  */
 
 'use client';
 
-// Force dynamic rendering to always fetch fresh data
-export const dynamic = 'force-dynamic';
+// ISR: Revalidate every 5 minutes (300 seconds)
+// This prebuilds the page as static HTML, served instantly from CDN cache
+export const revalidate = 300;
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -111,7 +114,10 @@ export default function DirectoryPage() {
         if (searchTerm) params.append('q', searchTerm);
         if (selectedCategory) params.append('category', selectedCategory);
 
-        const response = await fetch(`/api/professionals?${params}`);
+        const response = await fetch(`/api/professionals?${params}`, {
+          cache: 'force-cache', // Cache aggressively - users can always refresh
+          next: { revalidate: 300 }, // Revalidate every 5 minutes
+        });
         const data = await response.json();
 
         if (data.success && data.data.data) {
