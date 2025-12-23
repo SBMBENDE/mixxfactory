@@ -6,7 +6,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
