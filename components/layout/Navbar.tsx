@@ -27,7 +27,7 @@ export const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     console.log('[Navbar] Logout button clicked');
-    console.log('[Navbar] Current auth state:', { isAuthenticated, user: user?.email, loading });
+    console.log('[Navbar] Current auth state:', { isAuthenticated, user: user?.email, authStatus });
     try {
       closeMenu();
       
