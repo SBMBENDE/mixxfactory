@@ -11,24 +11,6 @@ import { blacklistToken } from '@/lib/auth/logout-blacklist';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
-  // Log immediately to ensure this executes
-  const logStart = new Date().toISOString();
-  console.error(`\n${'='.repeat(60)}`);
-  console.error(`[LOGOUT API] Started at ${logStart}`);
-  console.error(`${'='.repeat(60)}\n`);
-  
-  // Log ALL request headers to debug
-  console.error('[LOGOUT API] Request method:', request.method);
-  console.error('[LOGOUT API] Request URL:', request.url);
-  console.error('[LOGOUT API] All headers:');
-  request.headers.forEach((value, key) => {
-    if (key === 'cookie') {
-      console.error(`  ${key}: ${value}`);
-    } else {
-      console.error(`  ${key}: [${value.substring(0, 50)}...]`);
-    }
-  });
-  
   try {
     console.log('[API /api/auth/logout] /api/auth/logout called');
     
