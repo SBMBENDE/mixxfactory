@@ -37,8 +37,18 @@ export function verifyToken(token: string): JWTPayload | null {
 /**
  * Get token from request headers or cookies
  */
-export async function getTokenFromRequest(request: Request): Promise<string | null> {
+export async function getTokenFromRequest(request: Request | any): Promise<string | null> {
   console.log('[getTokenFromRequest] Starting token extraction...');
+  
+  // For NextRequest objects, try to use the built-in cookies method
+  if (request.cookies) {
+    const token = request.cookies.get('auth_token')?.value;
+    if (token) {
+      console.log('[getTokenFromRequest] Found token in request.cookies (NextRequest):', token.substring(0, 20) + '...');
+      return token;
+    }
+    console.log('[getTokenFromRequest] request.cookies exists but auth_token not found');
+  }
   
   const authHeader = request.headers.get('authorization');
   console.log('[getTokenFromRequest] Authorization header:', authHeader ? 'PRESENT' : 'NOT PRESENT');
@@ -47,12 +57,14 @@ export async function getTokenFromRequest(request: Request): Promise<string | nu
     return authHeader.slice(7);
   }
 
+  // Try Next.js cookies() API
   const cookieStore = await cookies();
   const authToken = cookieStore.get('auth_token');
   
   console.log('[getTokenFromRequest] Cookie store auth_token:', authToken ? 'PRESENT' : 'NOT PRESENT');
   if (authToken) {
     console.log('[getTokenFromRequest] Token from cookie:', authToken.value.substring(0, 20) + '...');
+    return authToken.value;
   }
   
   // Also try to get from request.headers Cookie
@@ -70,7 +82,8 @@ export async function getTokenFromRequest(request: Request): Promise<string | nu
     }
   }
   
-  return authToken?.value || null;
+  console.log('[getTokenFromRequest] No token found in any location');
+  return null;
 }
 
 /**

@@ -3,14 +3,14 @@
  * Clears the auth_token cookie and session
  */
 
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { getTokenFromRequest } from '@/lib/auth/jwt';
 import { blacklistToken } from '@/lib/auth/logout-blacklist';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   // Log immediately to ensure this executes
   const logStart = new Date().toISOString();
   console.error(`\n${'='.repeat(60)}`);
