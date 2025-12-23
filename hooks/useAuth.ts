@@ -56,11 +56,6 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
-  // Refresh auth state
-  const refreshAuth = useCallback(async () => {
-    await checkAuth();
-  }, [checkAuth]);
-
   // Logout - Clear state FIRST, then call API, then verify with fresh check
   const logout = useCallback(async () => {
     console.log('[useAuth] Logout initiated');
