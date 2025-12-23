@@ -62,7 +62,7 @@ export function useAuth(): UseAuthReturn {
     await checkAuth();
   }, [checkAuth]);
 
-  // Logout - Clear state FIRST, then call API
+  // Logout - Clear state FIRST, then call API, then verify with fresh check
   const logout = useCallback(async () => {
     console.log('[useAuth] Logout initiated');
     
@@ -77,7 +77,6 @@ export function useAuth(): UseAuthReturn {
       sessionStorage.removeItem('auth_token');
     }
     
-    setAuthStatus('unauthenticated');
     console.log('[useAuth] Local auth state cleared');
     
     // Then call logout API
@@ -92,8 +91,26 @@ export function useAuth(): UseAuthReturn {
       if (!response.ok) {
         console.warn('[useAuth] Logout API error:', response.status);
       }
+      
+      // Wait a bit for cookie to be deleted
+      console.log('[useAuth] Waiting for cookie deletion...');
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Do a fresh auth check to verify token is really invalid
+      console.log('[useAuth] Doing fresh auth check to verify logout...');
+      const verifyResponse = await fetch('/api/auth/me', { credentials: 'include' });
+      console.log('[useAuth] Fresh auth check response:', verifyResponse.status);
+      
+      if (verifyResponse.status === 401) {
+        console.log('[useAuth] ✓ Token confirmed invalid - logout successful');
+        setAuthStatus('unauthenticated');
+      } else {
+        console.warn('[useAuth] ⚠ Auth check returned 200 - token might not be blacklisted');
+        setAuthStatus('unauthenticated');
+      }
     } catch (error) {
       console.error('[useAuth] Logout error:', error);
+      setAuthStatus('unauthenticated');
     }
   }, []);
 

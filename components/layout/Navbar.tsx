@@ -29,21 +29,19 @@ export const Navbar: React.FC = () => {
     console.log('[Navbar] Logout button clicked');
     console.log('[Navbar] Current auth state:', { isAuthenticated, user: user?.email, loading });
     try {
-      // Call logout API to clear session and delete cookie
-      console.log('[Navbar] Calling logout function...');
-      const logoutPromise = logout();
-      console.log('[Navbar] Logout promise created, awaiting...');
-      await logoutPromise;
-      console.log('[Navbar] Logout function completed');
       closeMenu();
       
-      // Minimal delay to allow browser to process the request
-      // State is cleared synchronously in logout() so we don't need long delay
-      console.log('[Navbar] Waiting 500ms before redirect...');
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Call logout function
+      console.log('[Navbar] Calling logout function...');
+      await logout();
+      console.log('[Navbar] Logout function completed');
       
-      // Redirect to home
-      console.log('[Navbar] Redirecting to home...');
+      // Wait for auth state to reflect in UI
+      console.log('[Navbar] Waiting 300ms for auth state to update...');
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Force full page reload to ensure fresh session check
+      console.log('[Navbar] Forcing page reload...');
       window.location.href = '/';
     } catch (error) {
       console.error('[Navbar] Logout error caught:', error);
