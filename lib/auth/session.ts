@@ -38,8 +38,7 @@ export async function createSession(
   
   try {
     // Create session record in database
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const session = await UserSessionModel.create({
+    await UserSessionModel.create({
       userId,
       sessionId,
       deviceFingerprint,
