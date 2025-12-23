@@ -12,32 +12,41 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('[API /api/auth/logout] /api/auth/logout called');
+    console.error('[LOGOUT] ===== LOGOUT POST STARTED =====');
+    console.error('[LOGOUT] Request headers:', Object.fromEntries(request.headers.entries()));
+    console.error('[LOGOUT] Request cookies:', request.cookies.getAll());
     
     // Get the token from the request before clearing it
     const token = await getTokenFromRequest(request);
-    console.log('[API /api/auth/logout] Token found:', token ? 'YES' : 'NO');
+    console.error('[LOGOUT] Token extracted:', token ? 'YES' : 'NO');
     
     if (token) {
-      console.log('[API /api/auth/logout] Token to blacklist:', token.substring(0, 20) + '...');
-      console.log('[API /api/auth/logout] Token length:', token.length);
+      console.error('[LOGOUT] Token to blacklist:', token.substring(0, 20) + '...');
+      console.error('[LOGOUT] Token length:', token.length);
+      console.error('[LOGOUT] Token type:', typeof token);
       
       // Add token to blacklist so it's invalid even if cookie persists
       try {
+        console.error('[LOGOUT] Calling blacklistToken...');
         await blacklistToken(token);
-        console.log('[API /api/auth/logout] Token successfully added to blacklist');
+        console.error('[LOGOUT] Token successfully added to blacklist');
       } catch (blacklistError) {
-        console.error('[API /api/auth/logout] Error adding token to blacklist:', blacklistError);
+        console.error('[LOGOUT] EXCEPTION in blacklistToken:');
+        console.error('[LOGOUT] Error:', blacklistError);
+        console.error('[LOGOUT] Error type:', blacklistError instanceof Error ? blacklistError.constructor.name : typeof blacklistError);
+        if (blacklistError instanceof Error) {
+          console.error('[LOGOUT] Error message:', blacklistError.message);
+        }
       }
     } else {
-      console.log('[API /api/auth/logout] NO TOKEN FOUND - user might already be logged out');
+      console.error('[LOGOUT] NO TOKEN FOUND - user might already be logged out');
     }
 
     // Delete the cookie using Next.js cookies API
     const cookieStore = await cookies();
-    console.log('[API /api/auth/logout] Before delete - cookie exists:', !!cookieStore.get('auth_token'));
+    console.error('[LOGOUT] Before delete - cookie exists:', !!cookieStore.get('auth_token'));
     cookieStore.delete('auth_token');
-    console.log('[API /api/auth/logout] After delete - cookie should be cleared');
+    console.error('[LOGOUT] After delete - cookie should be cleared');
 
     // Create response
     const response = NextResponse.json(
@@ -50,12 +59,11 @@ export async function POST(request: NextRequest) {
     );
 
     // ALSO set explicit Set-Cookie header for maximum compatibility
-    // Some clients/proxies may not respect the cookies() API
     const deleteCookie = `auth_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT${
       process.env.NODE_ENV === 'production' ? '; Secure' : ''
     }`;
     
-    console.log('[API /api/auth/logout] Setting Set-Cookie header for browser');
+    console.error('[LOGOUT] Setting Set-Cookie header');
     response.headers.append('Set-Cookie', deleteCookie);
     
     // Force no caching
@@ -63,18 +71,24 @@ export async function POST(request: NextRequest) {
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
     
-    console.log('[API /api/auth/logout] Logout successful, returning 200');
+    console.error('[LOGOUT] ===== LOGOUT POST COMPLETE - RETURNING 200 =====');
     return response;
   } catch (error) {
-    console.error('[API /api/auth/logout] Logout error:', error);
+    console.error('[LOGOUT] ===== LOGOUT ERROR =====');
+    console.error('[LOGOUT] Error:', error);
+    console.error('[LOGOUT] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+    if (error instanceof Error) {
+      console.error('[LOGOUT] Error message:', error.message);
+      console.error('[LOGOUT] Stack:', error.stack);
+    }
     
     // Even on error, try to delete the cookie
     try {
       const cookieStore = await cookies();
       cookieStore.delete('auth_token');
-      console.log('[API /api/auth/logout] Deleted auth_token cookie in error handler');
+      console.error('[LOGOUT] Deleted auth_token cookie in error handler');
     } catch (cookieError) {
-      console.error('[API /api/auth/logout] Error deleting cookie:', cookieError);
+      console.error('[LOGOUT] Error deleting cookie:', cookieError);
     }
     
     const response = NextResponse.json(
@@ -95,7 +109,7 @@ export async function POST(request: NextRequest) {
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
     
-    console.log('[API /api/auth/logout] Returning error response with delete cookie header');
+    console.error('[LOGOUT] ===== LOGOUT ERROR HANDLER RETURNING 200 =====');
     return response;
   }
 }
