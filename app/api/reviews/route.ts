@@ -10,7 +10,8 @@ import { ReviewModel, ProfessionalModel } from '@/lib/db/models';
 import { createReviewSchema } from '@/lib/validations';
 import { successResponse, errorResponse, validationErrorResponse } from '@/utils/api-response';
 
-export const dynamic = 'force-dynamic';
+// Cache for 5 minutes - reviews update periodically
+export const revalidate = 300;
 
 export async function GET(request: NextRequest) {
   try {

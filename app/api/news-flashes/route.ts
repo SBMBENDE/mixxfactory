@@ -8,7 +8,8 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 import { NewsFlashModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
 
-export const dynamic = 'force-dynamic';
+// Cache for 10 minutes - news flashes update periodically
+export const revalidate = 600;
 
 export async function GET(_request: NextRequest) {
   try {

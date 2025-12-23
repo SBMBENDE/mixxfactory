@@ -7,6 +7,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { EventModel } from '@/lib/db/models';
 
+// Cache for 5 minutes - events update frequently
+export const revalidate = 300;
+
 export async function GET(req: NextRequest) {
   try {
     await connectDB();

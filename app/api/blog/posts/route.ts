@@ -8,7 +8,8 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 import { BlogPostModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
 
-export const dynamic = 'force-dynamic';
+// Cache for 10 minutes - blog posts don't change frequently
+export const revalidate = 600;
 
 export async function GET(request: NextRequest) {
   try {

@@ -12,6 +12,9 @@ import { verifyAdminAuth } from '@/lib/auth/middleware';
 import mongoose from 'mongoose';
 import { validateVideoUrl } from '@/utils/videoValidation';
 
+// Cache for 5 minutes - event details don't change that often
+export const revalidate = 300;
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: { id: string } }
