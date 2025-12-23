@@ -67,10 +67,13 @@ export function useAuth(): UseAuthReturn {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Immediately clear local state
       setIsAuthenticated(false);
       setUser(null);
+      // Verify logout by checking auth endpoint
+      await checkAuth();
     }
-  }, []);
+  }, [checkAuth]);
 
   // Check auth on mount and when component focuses
   useEffect(() => {

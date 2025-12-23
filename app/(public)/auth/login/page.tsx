@@ -44,6 +44,9 @@ export default function LoginPage() {
       console.log('Login successful:', data);
       setLoading(false);
       
+      // Wait a brief moment for cookie to be properly set
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // Redirect based on user role
       const userRole = data.data?.role;
       console.log('User role:', userRole);

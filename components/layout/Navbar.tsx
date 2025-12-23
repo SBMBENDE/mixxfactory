@@ -7,7 +7,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,7 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 export const Navbar: React.FC = () => {
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated, user, loading, logout } = useAuth();
   const { language, setLanguage } = useLanguage();
@@ -28,10 +26,15 @@ export const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    // Perform logout API call
     await logout();
     closeMenu();
-    router.push('/');
-    router.refresh();
+    
+    // Force a full page refresh to clear all React state and reload auth
+    // This ensures a clean slate for the next user login
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100);
   };
 
   return (
