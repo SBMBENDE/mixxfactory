@@ -93,12 +93,12 @@ function useProvideAuth(): UseAuthReturn {
     }
   }, []);
 
-  // Check auth on mount only
+  // Check auth on mount only - run exactly once
   useEffect(() => {
     if (!hasCheckedAuth) {
       checkAuth();
     }
-  }, [hasCheckedAuth, checkAuth]);
+  }, []); // Empty dependency - run only on mount
 
   return {
     authStatus,
