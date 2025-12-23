@@ -14,7 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { StickySearchBar } from '@/components/StickySearchBar';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
-import { TestimonialCarousel } from '@/components/TestimonialCarousel';
+import TestimonialCarousel from '@/components/TestimonialCarousel';
 import PopularCategories from '@/components/PopularCategories';
 import FeaturedProfessionals from '@/components/FeaturedProfessionals';
 
@@ -68,12 +68,7 @@ export default function HomePage() {
   const t = useTranslations();
   const { authStatus } = useAuth(); // Use auth hook to track auth state
 
-  // Auth Gate: Wait for auth to resolve before rendering page
-  if (authStatus === 'loading') {
-    return <PageSkeleton />;
-  }
-
-  // Detect mobile window size
+  // Detect mobile window size (MUST be before auth gate)
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -82,6 +77,11 @@ export default function HomePage() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Auth Gate: Wait for auth to resolve before rendering page
+  if (authStatus === 'loading') {
+    return <PageSkeleton />;
+  }
 
   return (
     <>
