@@ -93,8 +93,10 @@ function useProvideAuth(): UseAuthReturn {
 
   // Check auth on mount only
   useEffect(() => {
-    checkAuth();
-  }, []);
+    if (!hasCheckedAuth) {
+      checkAuth();
+    }
+  }, [hasCheckedAuth, checkAuth]);
 
   return {
     authStatus,
