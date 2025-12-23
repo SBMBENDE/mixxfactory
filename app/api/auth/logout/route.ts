@@ -9,8 +9,13 @@ export const dynamic = 'force-dynamic';
 
 export async function POST() {
   try {
+    console.log('🚪 [Logout API] POST /api/auth/logout called');
     const cookieStore = await cookies();
+    const currentToken = cookieStore.get('auth_token');
+    console.log('🚪 [Logout API] Current token exists:', !!currentToken);
+    
     cookieStore.delete('auth_token');
+    console.log('🚪 [Logout API] Cookie deleted from server-side store');
 
     // Create response
     const response = NextResponse.json(
@@ -28,11 +33,13 @@ export async function POST() {
       process.env.NODE_ENV === 'production' ? '; Secure' : ''
     }`;
     
+    console.log('🚪 [Logout API] Setting Set-Cookie header:', cookieHeader.substring(0, 50) + '...');
     response.headers.set('Set-Cookie', cookieHeader);
-
+    
+    console.log('🚪 [Logout API] Returning 200 response');
     return response;
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error('🚪 [Logout API] Error:', error);
     
     // Still try to clear the cookie even on error
     const response = NextResponse.json(
@@ -49,7 +56,7 @@ export async function POST() {
     }`;
     
     response.headers.set('Set-Cookie', cookieHeader);
-
+    console.log('🚪 [Logout API] Returning 200 response (error case)');
     return response;
   }
 }
