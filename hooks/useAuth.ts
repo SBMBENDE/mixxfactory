@@ -78,6 +78,10 @@ export function useAuth(): UseAuthReturn {
       setIsAuthenticated(false);
       setUser(null);
       setLoading(false);
+      
+      // Also try to delete the cookie from the client side as a fallback
+      console.log('Logout: Attempting client-side cookie deletion');
+      document.cookie = 'auth_token=; Path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
     }
   }, []);
 
