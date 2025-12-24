@@ -54,12 +54,12 @@ export default function LoginPage() {
       if (userRole === 'admin') {
         console.log('Redirecting admin to dashboard...');
         window.location.href = '/dashboard';
-      } else if (userRole === 'professional' || userRole === 'user') {
-        console.log('Redirecting professional/user to directory...');
-        window.location.href = '/directory';
+      } else if (userRole === 'professional') {
+        console.log('Redirecting professional to dashboard...');
+        window.location.href = '/professional';
       } else {
-        console.log('Unknown role, redirecting to home...');
-        window.location.href = '/';
+        console.log('Redirecting user to directory...');
+        window.location.href = '/directory';
       }
       
     } catch (err) {

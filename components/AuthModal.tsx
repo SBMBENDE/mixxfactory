@@ -77,9 +77,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         onSuccess(data.data.userId);
       }
 
-      // Redirect based on mode
+      // Redirect based on mode and user role
       if (mode === 'login') {
-        window.location.href = '/directory';
+        const userRole = data.data.role;
+        if (userRole === 'admin') {
+          window.location.href = '/dashboard';
+        } else if (userRole === 'professional') {
+          window.location.href = '/professional';
+        } else {
+          window.location.href = '/directory';
+        }
       } else {
         window.location.href = '/register/professional';
       }
