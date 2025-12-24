@@ -98,6 +98,7 @@ function useProvideAuth(): UseAuthReturn {
     if (!hasCheckedAuth) {
       checkAuth();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency - run only on mount
 
   return {

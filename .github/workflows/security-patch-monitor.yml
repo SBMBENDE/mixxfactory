@@ -1,9 +1,9 @@
 name: Security Patch Monitor
 
 on:
-  # Run daily at 2 AM UTC
-  schedule:
-    - cron: '0 2 * * *'
+  # Run daily at 2 AM UTC (disabled for now)
+  # schedule:
+  #   - cron: '0 2 * * *'
 
   # Also allow manual trigger
   workflow_dispatch:

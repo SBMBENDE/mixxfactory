@@ -9,8 +9,8 @@ export const translations = {
     // Navigation
     nav: {
       home: 'Home',
-      directory: 'Find Professionals',
-      events: 'Upcoming Events',
+      directory: 'Professionals',
+      events: 'Events',
       blog: 'Blog',
       about: 'About',
       contact: 'Contact',
@@ -453,8 +453,8 @@ export const translations = {
     // Navigation
     nav: {
       home: 'Accueil',
-      directory: 'Trouver des Professionnels',
-      events: 'Événements à Venir',
+      directory: 'Professionnels',
+      events: 'Événements',
       blog: 'Blog',
       about: 'À propos',
       contact: 'Nous contacter',

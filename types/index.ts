@@ -54,6 +54,51 @@ export interface Professional {
     min?: number;
     max?: number;
   };
+  // Dashboard features
+  subscriptionTier?: 'free' | 'pro' | 'premium';
+  subscriptionExpiry?: Date;
+  analytics?: {
+    views: {
+      total: number;
+      thisMonth: number;
+      lastMonth: number;
+    };
+    contactClicks: number;
+    searchImpressions: number;
+  };
+  verificationDocuments?: string[];
+  verificationStatus?: 'pending' | 'verified' | 'rejected';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Inquiry {
+  _id: string;
+  professionalId: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone?: string;
+  subject: string;
+  message: string;
+  status: 'new' | 'read' | 'replied' | 'closed';
+  replies: Array<{
+    text: string;
+    timestamp: Date;
+    from: 'professional' | 'client';
+  }>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Analytics {
+  _id: string;
+  professionalId: string;
+  date: Date;
+  views: number;
+  contactClicks: number;
+  searchImpressions: number;
+  searchTerms: string[];
+  referrers: string[];
   createdAt: Date;
   updatedAt: Date;
 }

@@ -122,6 +122,29 @@ const professionalSchema = new Schema<IProfessionalDocument>(
       index: true,
     },
     bio: String, // Longer biographical/about section
+    // Dashboard features
+    subscriptionTier: {
+      type: String,
+      enum: ['free', 'pro', 'premium'],
+      default: 'free',
+      index: true,
+    },
+    subscriptionExpiry: Date,
+    analytics: {
+      views: {
+        total: { type: Number, default: 0 },
+        thisMonth: { type: Number, default: 0 },
+        lastMonth: { type: Number, default: 0 },
+      },
+      contactClicks: { type: Number, default: 0 },
+      searchImpressions: { type: Number, default: 0 },
+    },
+    verificationDocuments: [String], // Cloudinary URLs for verification docs
+    verificationStatus: {
+      type: String,
+      enum: ['pending', 'verified', 'rejected'],
+      default: 'pending',
+    },
   },
   { timestamps: true }
 );
@@ -129,6 +152,7 @@ const professionalSchema = new Schema<IProfessionalDocument>(
 // Compound index for efficient filtering
 professionalSchema.index({ category: 1, active: 1, featured: -1 });
 professionalSchema.index({ name: 'text', description: 'text' });
+professionalSchema.index({ userId: 1 });
 
 export const ProfessionalModel =
   (mongoose.models.Professional as Model<IProfessionalDocument>) ||
@@ -246,6 +270,124 @@ reviewSchema.index({ professionalId: 1, rating: 1 });
 export const ReviewModel =
   (mongoose.models.Review as Model<IReviewDocument>) ||
   mongoose.model<IReviewDocument>('Review', reviewSchema);
+
+// ============ INQUIRY MODEL ============
+interface IInquiryDocument extends Document {
+  professionalId: mongoose.Types.ObjectId;
+  clientName: string;
+  clientEmail: string;
+  clientPhone?: string;
+  subject: string;
+  message: string;
+  status: 'new' | 'read' | 'replied' | 'closed';
+  replies: Array<{
+    text: string;
+    timestamp: Date;
+    from: 'professional' | 'client';
+  }>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const inquirySchema = new Schema<IInquiryDocument>(
+  {
+    professionalId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Professional',
+      required: true,
+      index: true,
+    },
+    clientName: {
+      type: String,
+      required: true,
+    },
+    clientEmail: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    clientPhone: String,
+    subject: {
+      type: String,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['new', 'read', 'replied', 'closed'],
+      default: 'new',
+      index: true,
+    },
+    replies: [{
+      text: String,
+      timestamp: Date,
+      from: {
+        type: String,
+        enum: ['professional', 'client'],
+      },
+    }],
+  },
+  { timestamps: true }
+);
+
+inquirySchema.index({ professionalId: 1, status: 1 });
+inquirySchema.index({ professionalId: 1, createdAt: -1 });
+
+export const InquiryModel =
+  (mongoose.models.Inquiry as Model<IInquiryDocument>) ||
+  mongoose.model<IInquiryDocument>('Inquiry', inquirySchema);
+
+// ============ ANALYTICS MODEL ============
+interface IAnalyticsDocument extends Document {
+  professionalId: mongoose.Types.ObjectId;
+  date: Date;
+  views: number;
+  contactClicks: number;
+  searchImpressions: number;
+  searchTerms: string[];
+  referrers: string[];
+}
+
+const analyticsSchema = new Schema<IAnalyticsDocument>(
+  {
+    professionalId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Professional',
+      required: true,
+      index: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+      index: true,
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
+    contactClicks: {
+      type: Number,
+      default: 0,
+    },
+    searchImpressions: {
+      type: Number,
+      default: 0,
+    },
+    searchTerms: [String],
+    referrers: [String],
+  },
+  { timestamps: true }
+);
+
+analyticsSchema.index({ professionalId: 1, date: -1 });
+analyticsSchema.index({ date: -1 });
+
+export const AnalyticsModel =
+  (mongoose.models.Analytics as Model<IAnalyticsDocument>) ||
+  mongoose.model<IAnalyticsDocument>('Analytics', analyticsSchema);
 
 // ============ BLOG POST MODEL ============
 interface IBlogPostDocument extends Document {
