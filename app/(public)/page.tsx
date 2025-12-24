@@ -1,65 +1,76 @@
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 import Hero from '@/components/Hero';
-import { connectDBWithTimeout } from '@/lib/db/connection';
-import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 
 export default async function Page() {
   try {
-    console.log('[PAGE] Starting data fetch...');
+    console.log('[PAGE] Starting page render...');
 
-    // Direct DB query with explicit timeout
-    const dataPromise = (async () => {
-      await connectDBWithTimeout();
-      console.log('[PAGE] DB connected');
+    // Try to fetch data with very short timeout
+    let data = { professionals: [], categories: [] };
 
-      const [professionals, categories] = await Promise.all([
-        ProfessionalModel.find({ active: true })
-          .populate('category', 'name slug')
-          .sort({ featured: -1, createdAt: -1 })
-          .limit(4)
-          .lean(),
-        CategoryModel.find({})
-          .sort({ name: 1 })
-          .limit(7)
-          .lean(),
-      ]);
+    try {
+      const dataPromise = (async () => {
+        const { connectDBWithTimeout } = await import('@/lib/db/connection');
+        const { ProfessionalModel, CategoryModel } = await import('@/lib/db/models');
+        
+        console.log('[PAGE] Connecting to DB...');
+        await connectDBWithTimeout(5000); // 5 second timeout
+        console.log('[PAGE] DB connected');
 
-      console.log('[PAGE] Data fetched:', { profCount: professionals?.length, catCount: categories?.length });
+        const [professionals, categories] = await Promise.all([
+          ProfessionalModel.find({ active: true })
+            .populate('category', 'name slug')
+            .sort({ featured: -1, createdAt: -1 })
+            .limit(4)
+            .lean(),
+          CategoryModel.find({})
+            .sort({ name: 1 })
+            .limit(7)
+            .lean(),
+        ]);
 
-      return {
-        professionals: professionals.map((p: any) => ({
-          ...p,
-          _id: p._id?.toString(),
-          category: { ...p.category, _id: p.category?._id?.toString() },
-        })),
-        categories: categories.map((c: any) => ({
-          ...c,
-          _id: c._id?.toString(),
-        })),
-      };
-    })();
+        console.log('[PAGE] Data fetched');
+        return {
+          professionals: professionals?.map((p: any) => ({
+            ...p,
+            _id: p._id?.toString(),
+            category: { ...p.category, _id: p.category?._id?.toString() },
+          })) || [],
+          categories: categories?.map((c: any) => ({
+            ...c,
+            _id: c._id?.toString(),
+          })) || [],
+        };
+      })();
 
-    // 10-second timeout
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Data fetch timeout after 10 seconds')), 10000)
-    );
+      // 5 second timeout total
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Data fetch timeout')), 5000)
+      );
 
-    const data = await Promise.race([dataPromise, timeoutPromise as any]);
-    console.log('[PAGE] Data ready');
+      data = await Promise.race([dataPromise, timeoutPromise as any]);
+      console.log('[PAGE] Data ready:', { profCount: data.professionals?.length, catCount: data.categories?.length });
+    } catch (dbError) {
+      console.error('[PAGE] DB error (using fallback):', dbError);
+      // Continue with empty data - homepage still renders
+    }
 
     return (
-      <main>
+      <main style={{ padding: '2rem' }}>
         <Hero />
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        <div style={{ marginTop: '2rem' }}>
+          <h2>Data Status</h2>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
       </main>
     );
   } catch (error) {
-    console.error('[PAGE] Error:', error);
+    console.error('[PAGE] Fatal error:', error);
     return (
-      <main>
+      <main style={{ padding: '2rem' }}>
         <Hero />
-        <pre>Error: {String(error)}</pre>
+        <p>Error: {String(error)}</p>
       </main>
     );
   }
