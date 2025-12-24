@@ -1,7 +1,12 @@
 /**
  * Directory page - browse professionals
- * Uses ISR (Incremental Static Regeneration) for optimal mobile performance
- * Page is prerendered at build time and cached for 5 minutes
+ * Uses Server Components + Suspense for initial load
+ * Client component handles search/filter interactions
+ * 
+ * KEY INSIGHT:
+ * - Server renders initial professionals list (fast, no timeout)
+ * - Client handles dynamic search/category filtering
+ * - Suspense prevents blocking initial page load
  */
 
 'use client';
@@ -114,8 +119,9 @@ export default function DirectoryPage() {
         if (selectedCategory) params.append('category', selectedCategory);
 
         // Use AbortController for timeout
+        // Mobile networks need longer timeout (up to 30 seconds)
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
         const response = await fetch(`/api/professionals?${params}`, {
           signal: controller.signal,

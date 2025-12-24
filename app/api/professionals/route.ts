@@ -78,23 +78,22 @@ export async function GET(request: NextRequest) {
     // Fetch data
     const [professionals, total] = await Promise.all([
       ProfessionalModel.find(filter)
-        .populate('category', 'name slug')
+        .select('_id name slug images gallery rating reviewCount description location category featured active userId createdAt')
         .sort(sortMap[sort])
         .skip(skip)
         .limit(limit)
-        .lean(),
+        .lean()
+        .exec(),
       ProfessionalModel.countDocuments(filter),
     ]);
 
     // Convert ObjectIds to strings for frontend compatibility
+    // Category is just an ID now (not populated)
     const processedProfessionals = professionals.map((prof: any) => ({
       ...prof,
       _id: prof._id?.toString(),
       userId: prof.userId?.toString(),
-      category: {
-        ...prof.category,
-        _id: prof.category?._id?.toString(),
-      },
+      category: prof.category?.toString?.() || prof.category,
     }));
 
     const totalPages = Math.ceil(total / limit);
