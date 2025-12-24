@@ -6,18 +6,13 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const path = require('path')
 
-// Load environment variables from .env.local
-const envPath = path.join(
-  '/Users/sampsonmbende/Documents/mixxfactory',
-  '.env.local'
-)
+// Read .env.local manually
+const envPath = path.join(process.cwd(), '.env.local')
 const envContent = fs.readFileSync(envPath, 'utf-8')
-const lines = envContent.split('\n')
-
 let mongoUri = ''
-for (const line of lines) {
+for (const line of envContent.split('\n')) {
   if (line.startsWith('MONGODB_URI=')) {
-    mongoUri = line.substring('MONGODB_URI='.length).replaceAll('"', '')
+    mongoUri = line.substring('MONGODB_URI='.length).replaceAll('"', '').trim()
     break
   }
 }

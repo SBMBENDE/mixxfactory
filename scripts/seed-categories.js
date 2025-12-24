@@ -3,8 +3,22 @@
  */
 
 const mongoose = require('mongoose')
+const fs = require('fs')
+const path = require('path')
 
-const MONGODB_URI = process.env.MONGODB_URI
+// Read .env.local manually
+const envPath = path.join(process.cwd(), '.env.local')
+const envContent = fs.readFileSync(envPath, 'utf-8')
+let MONGODB_URI = ''
+for (const line of envContent.split('\n')) {
+  if (line.startsWith('MONGODB_URI=')) {
+    MONGODB_URI = line
+      .substring('MONGODB_URI='.length)
+      .replaceAll('"', '')
+      .trim()
+    break
+  }
+}
 
 if (!MONGODB_URI) {
   console.error('MONGODB_URI environment variable is not set')
