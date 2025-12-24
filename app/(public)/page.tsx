@@ -1,9 +1,11 @@
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
+import Hero from '@/components/Hero';
+
 export default function Page() {
   return (
     <main>
-      <h1>Home</h1>
+      <Hero />
     </main>
   );
 }
