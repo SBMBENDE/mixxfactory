@@ -33,67 +33,13 @@ export default function HomePage({ data }: HomePageProps) {
       <NewsFlashBanner />
 
       {/* Popular Categories - Server Component */}
-      {data.categories && data.categories.length > 0 ? (
+      {data.categories && data.categories.length > 0 && (
         <PopularCategoriesServer categories={data.categories} />
-      ) : (
-        <section style={{
-          padding: '4rem 1rem',
-          backgroundColor: '#f9fafb',
-          textAlign: 'center',
-        }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem', color: '#1f2937' }}>
-              Popular Categories
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-              gap: '1rem',
-            }}>
-              {[...Array(7)].map((_, i) => (
-                <div key={i} style={{
-                  padding: '1.5rem 1rem',
-                  backgroundColor: '#e5e7eb',
-                  borderRadius: '0.5rem',
-                  height: '100px',
-                  animation: 'pulse 2s infinite',
-                }} />
-              ))}
-            </div>
-          </div>
-        </section>
       )}
 
       {/* Featured Professionals - Server Component */}
-      {data.professionals && data.professionals.length > 0 ? (
+      {data.professionals && data.professionals.length > 0 && (
         <FeaturedProfessionalsServer professionals={data.professionals} />
-      ) : (
-        <section style={{
-          padding: '4rem 1rem',
-          backgroundColor: '#ffffff',
-          textAlign: 'center',
-        }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem', color: '#1f2937' }}>
-              Top Rated Professionals
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.5rem',
-            }}>
-              {[...Array(4)].map((_, i) => (
-                <div key={i} style={{
-                  padding: '1.5rem',
-                  backgroundColor: '#f3f4f6',
-                  borderRadius: '0.5rem',
-                  height: '250px',
-                  animation: 'pulse 2s infinite',
-                }} />
-              ))}
-            </div>
-          </div>
-        </section>
       )}
 
       {/* CTA Section - Static Server Component */}
