@@ -11,7 +11,6 @@ import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
 import { StickySearchBar } from '@/components/StickySearchBar';
-import { Footer } from '@/components/layout/Footer';
 
 interface HomePageProps {
   data: {
@@ -240,9 +239,6 @@ export default function HomePage({ data }: HomePageProps) {
 
       {/* Newsletter - Interactive Client Component */}
       <Newsletter />
-
-      {/* Footer */}
-      <Footer />
     </>
   );
 }
