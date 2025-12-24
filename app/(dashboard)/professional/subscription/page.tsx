@@ -244,7 +244,7 @@ export default function SubscriptionPage() {
             </h4>
             <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: '1.6' }}>
               Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately,
-              and we'll prorate any charges.
+              and we&apos;ll prorate any charges.
             </p>
           </div>
           <div>
