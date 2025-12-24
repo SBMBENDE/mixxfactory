@@ -1,4 +1,4 @@
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const revalidate = 1; // Force fresh data on every request during debugging
 
 import HomePage from '@/components/home/HomePage';
 import Hero from '@/components/Hero';
