@@ -20,41 +20,51 @@ import mongoose from 'mongoose';
  */
 export const getFeaturedProfessionals = cache(async () => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      await connectDB();
-    }
+    // Timeout wrapper: if query takes >8 seconds, return empty array
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Query timeout after 8s')), 8000)
+    );
 
-    // First try: featured + active professionals (strict)
-    let professionals = await ProfessionalModel.find({ featured: true, active: true })
-      .select('name slug images gallery rating reviewCount category createdAt featured active')
-      .sort({ createdAt: -1 })
-      .limit(4)
-      .lean()
-      .exec();
+    const queryPromise = (async () => {
+      if (mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
 
-    // Fallback: if no featured found, get top active professionals
-    if (!professionals || professionals.length === 0) {
-      console.log('[PROFESSIONALS] No featured found, falling back to active');
-      professionals = await ProfessionalModel.find({ active: true })
-        .select('name slug images gallery rating reviewCount category createdAt featured active')
-        .sort({ rating: -1, reviewCount: -1, createdAt: -1 })
-        .limit(4)
-        .lean()
-        .exec();
-    }
-
-    // Final fallback: get any professionals
-    if (!professionals || professionals.length === 0) {
-      console.log('[PROFESSIONALS] No active found, getting any professionals');
-      professionals = await ProfessionalModel.find({})
+      // First try: featured + active professionals (strict)
+      let professionals = await ProfessionalModel.find({ featured: true, active: true })
         .select('name slug images gallery rating reviewCount category createdAt featured active')
         .sort({ createdAt: -1 })
         .limit(4)
         .lean()
         .exec();
-    }
 
-    console.log(`[PROFESSIONALS] Fetched ${professionals?.length || 0} professionals`);
+      // Fallback: if no featured found, get top active professionals
+      if (!professionals || professionals.length === 0) {
+        console.log('[PROFESSIONALS] No featured found, falling back to active');
+        professionals = await ProfessionalModel.find({ active: true })
+          .select('name slug images gallery rating reviewCount category createdAt featured active')
+          .sort({ rating: -1, reviewCount: -1, createdAt: -1 })
+          .limit(4)
+          .lean()
+          .exec();
+      }
+
+      // Final fallback: get any professionals
+      if (!professionals || professionals.length === 0) {
+        console.log('[PROFESSIONALS] No active found, getting any professionals');
+        professionals = await ProfessionalModel.find({})
+          .select('name slug images gallery rating reviewCount category createdAt featured active')
+          .sort({ createdAt: -1 })
+          .limit(4)
+          .lean()
+          .exec();
+      }
+
+      console.log(`[PROFESSIONALS] Fetched ${professionals?.length || 0} professionals`);
+      return professionals || [];
+    })();
+
+    const professionals = await Promise.race([queryPromise, timeoutPromise]) as any[];
 
     // Transform: convert ObjectId to string, keep category as ID only
     return professionals.map((p: any) => ({
@@ -63,7 +73,7 @@ export const getFeaturedProfessionals = cache(async () => {
       category: p.category?.toString?.() || p.category,
     })) || [];
   } catch (error) {
-    console.error('[PROFESSIONALS] Error:', error);
+    console.error('[PROFESSIONALS] Error:', error instanceof Error ? error.message : error);
     return [];
   }
 });
@@ -77,21 +87,30 @@ export const getFeaturedProfessionals = cache(async () => {
  */
 export const getPopularCategories = cache(async () => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      await connectDB();
-    }
+    // Timeout wrapper: if query takes >5 seconds, return empty array
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Query timeout after 5s')), 5000)
+    );
 
-    const categories = await CategoryModel.find({})
-      .select('name slug icon description')
-      .sort({ name: 1 }) // Alphabetical - deterministic
-      .limit(7)
-      .lean();
+    const queryPromise = (async () => {
+      if (mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
 
-    console.log(`[CACHE] Fetched ${categories?.length || 0} categories`);
+      const categories = await CategoryModel.find({})
+        .select('name slug icon description')
+        .sort({ name: 1 })
+        .limit(7)
+        .lean()
+        .exec();
 
-    return categories || [];
+      console.log(`[CATEGORIES] Fetched ${categories?.length || 0} categories`);
+      return categories || [];
+    })();
+
+    return await Promise.race([queryPromise, timeoutPromise]) as any[];
   } catch (error) {
-    console.error('[CACHE] Error fetching categories:', error);
+    console.error('[CATEGORIES] Error:', error instanceof Error ? error.message : error);
     return [];
   }
 });
