@@ -1,10 +1,9 @@
 export const revalidate = 1;
 
 import HomePage from '@/components/home/HomePage';
-import Hero from '@/components/Hero';
 
 export default async function Page() {
-  let data = { professionals: [], categories: [], newsFlashes: [] };
+  let data: any = { professionals: [], categories: [], newsFlashes: [] };
 
   try {
     const { connectDBWithTimeout } = await import('@/lib/db/connection');
