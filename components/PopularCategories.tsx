@@ -4,7 +4,7 @@
  * Properly implements ISR with revalidate
  */
 
-export const revalidate = 60;
+export const revalidate = 3600; // Revalidate every 1 hour
 
 import PopularCategoriesServer from '@/components/PopularCategoriesServer';
 import { getPopularCategories } from '@/lib/homepage-data';

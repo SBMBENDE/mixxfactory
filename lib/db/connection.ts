@@ -39,9 +39,9 @@ export async function connectDB() {
       bufferCommands: false,
       maxPoolSize: 10,
       minPoolSize: 2,
-      socketTimeoutMS: 5000,
-      connectTimeoutMS: 8000,
-      serverSelectionTimeoutMS: 8000,
+      socketTimeoutMS: 45000, // Increased to 45 seconds for slow queries
+      connectTimeoutMS: 10000, // Initial connection timeout
+      serverSelectionTimeoutMS: 10000, // Server selection timeout
       maxIdleTimeMS: 60000,
       retryWrites: true,
     };

@@ -15,7 +15,7 @@
  * ✅ Better perceived performance (TTFMC)
  */
 
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const revalidate = 3600; // ISR: revalidate every 1 hour (prevents slow DB queries)
 
 import { Suspense } from 'react';
 import Hero from '@/components/Hero';
