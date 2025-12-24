@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faCheck, faTimes, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faFilter } from '@fortawesome/free-solid-svg-icons';
 
 interface Review {
   _id: string;
