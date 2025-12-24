@@ -18,10 +18,7 @@ interface Professional {
   featured: boolean;
   rating: number;
   reviewCount: number;
-  category?: {
-    name: string;
-    slug: string;
-  };
+  category?: string; // Now just an ID string (not populated)
 }
 
 interface Props {
@@ -160,17 +157,6 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
                   }}>
                     {professional.name}
                   </h3>
-
-                  {/* Category */}
-                  {professional.category && (
-                    <p style={{
-                      fontSize: '0.875rem',
-                      color: '#6b7280',
-                      marginBottom: '0.75rem',
-                    }}>
-                      {professional.category.name}
-                    </p>
-                  )}
 
                   {/* Rating */}
                   <div style={{

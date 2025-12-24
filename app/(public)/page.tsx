@@ -169,16 +169,5 @@ async function ProfessionalsSection() {
     return null;
   }
 
-  // Transform for frontend
-  const transformed = professionals.map((p: any) => ({
-    ...p,
-    _id: p._id?.toString(),
-    category: {
-      _id: p.category?._id?.toString(),
-      name: p.category?.name,
-      slug: p.category?.slug,
-    },
-  }));
-
-  return <FeaturedProfessionalsServer professionals={transformed} />;
+  return <FeaturedProfessionalsServer professionals={professionals} />;
 }

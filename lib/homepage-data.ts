@@ -20,23 +20,30 @@ import mongoose from 'mongoose';
  */
 export const getFeaturedProfessionals = cache(async () => {
   try {
-    // Check if already connected to prevent cold-start reconnects
     if (mongoose.connection.readyState !== 1) {
       await connectDB();
     }
 
+    // Query: featured + active, sorted by creation date (deterministic)
+    // NO populate - defer category lookup to component layer
+    // Smaller payload = faster ISR revalidation
     const professionals = await ProfessionalModel.find({ featured: true, active: true })
       .select('name slug images gallery rating reviewCount category createdAt')
-      .populate('category', 'name slug') // Only for featured - justified by small dataset
-      .sort({ createdAt: -1 }) // Deterministic sort
+      .sort({ createdAt: -1 })
       .limit(4)
-      .lean();
+      .lean()
+      .exec(); // Explicit execution for timing
 
-    console.log(`[CACHE] Fetched ${professionals?.length || 0} featured professionals`);
+    console.log(`[PROFESSIONALS] Fetched ${professionals?.length || 0} in ${Date.now()}ms`);
 
-    return professionals || [];
+    // Transform: convert ObjectId to string, keep category as ID only
+    return professionals.map((p: any) => ({
+      ...p,
+      _id: p._id?.toString(),
+      category: p.category?.toString?.() || p.category,
+    })) || [];
   } catch (error) {
-    console.error('[CACHE] Error fetching featured professionals:', error);
+    console.error('[PROFESSIONALS] Error:', error);
     return [];
   }
 });
