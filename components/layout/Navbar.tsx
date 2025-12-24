@@ -86,6 +86,11 @@ export const Navbar: React.FC = () => {
                 📊 {t.nav.dashboard}
               </Link>
             )}
+            {user?.accountType === 'professional' && (
+              <Link href="/professional" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-semibold transition">
+                💼 {t.nav.professionalDashboard || 'My Dashboard'}
+              </Link>
+            )}
           </div>
 
           {/* Language Toggle Switch */}
@@ -213,6 +218,11 @@ export const Navbar: React.FC = () => {
             {user?.role === 'admin' && (
               <Link href="/dashboard" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700" onClick={closeMenu}>
                 📊 {t.nav.dashboard}
+              </Link>
+            )}
+            {user?.accountType === 'professional' && (
+              <Link href="/professional" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700" onClick={closeMenu}>
+                💼 {t.nav.professionalDashboard || 'My Dashboard'}
               </Link>
             )}
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-3">
