@@ -53,20 +53,27 @@ export default function LoginPage() {
       const userRole = data.data?.role;
       console.log('🎯 REDIRECT LOGIC - userRole:', userRole, 'type:', typeof userRole);
       
+      // TEMPORARY: Alert to debug
+      alert(`Login successful! Role: ${userRole}. Check console for details.`);
+      
       if (userRole === 'admin') {
         console.log('🔵 Admin detected - Redirecting to /dashboard');
+        alert('Redirecting admin to /dashboard');
         window.location.href = '/dashboard';
       } else if (userRole === 'professional') {
         console.log('🟢 Professional detected - Redirecting to /professional');
+        alert('Redirecting professional to /professional');
         window.location.href = '/professional';
       } else {
         console.log('🟡 Regular user detected - Redirecting to /directory');
+        alert('Redirecting to /directory');
         window.location.href = '/directory';
       }
       
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Network error';
-      console.error('Login error:', err);
+      console.error('❌ Login error caught:', err);
+      console.error('❌ Error details:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
