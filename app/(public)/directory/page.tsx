@@ -132,13 +132,23 @@ export default function DirectoryPage() {
 
         const data = await response.json();
 
+        console.log('[Directory] API response:', { 
+          success: data.success, 
+          hasDataData: !!data.data?.data,
+          isDataArray: Array.isArray(data.data),
+          dataLength: Array.isArray(data.data) ? data.data.length : (data.data?.data?.length || 0)
+        });
+
         if (data.success && data.data.data) {
           setProfessionals(Array.isArray(data.data.data) ? data.data.data : []);
         } else if (data.success && Array.isArray(data.data)) {
           setProfessionals(data.data);
+        } else {
+          console.warn('[Directory] Unexpected API response structure:', data);
+          setProfessionals([]);
         }
       } catch (error) {
-        console.error('Failed to fetch professionals:', error);
+        console.error('[Directory] Failed to fetch professionals:', error);
         setProfessionals([]);
       } finally {
         setLoading(false);
