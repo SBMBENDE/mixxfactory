@@ -46,28 +46,22 @@ export default function LoginPage() {
       console.log('🔑 data.data.role:', data.data?.role);
       setLoading(false);
       
-      // Wait a brief moment for cookie to be properly set
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait longer for cookie to be properly set and propagate
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Redirect based on user role
       const userRole = data.data?.role;
       console.log('🎯 REDIRECT LOGIC - userRole:', userRole, 'type:', typeof userRole);
       
-      // TEMPORARY: Alert to debug
-      alert(`Login successful! Role: ${userRole}. Check console for details.`);
-      
       if (userRole === 'admin') {
         console.log('🔵 Admin detected - Redirecting to /dashboard');
-        alert('Redirecting admin to /dashboard');
-        window.location.href = '/dashboard';
+        window.location.replace('/dashboard');
       } else if (userRole === 'professional') {
         console.log('🟢 Professional detected - Redirecting to /professional');
-        alert('Redirecting professional to /professional');
-        window.location.href = '/professional';
+        window.location.replace('/professional');
       } else {
         console.log('🟡 Regular user detected - Redirecting to /directory');
-        alert('Redirecting to /directory');
-        window.location.href = '/directory';
+        window.location.replace('/directory');
       }
       
     } catch (err) {

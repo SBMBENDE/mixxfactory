@@ -79,6 +79,9 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         onSuccess(data.data.userId);
       }
 
+      // Wait for cookie to propagate
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Redirect based on mode and user role
       if (mode === 'login') {
         const userRole = data.data.role;
@@ -86,16 +89,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         
         if (userRole === 'admin') {
           console.log('🔵 Redirecting admin to /dashboard');
-          window.location.href = '/dashboard';
+          window.location.replace('/dashboard');
         } else if (userRole === 'professional') {
           console.log('🟢 Redirecting professional to /professional');
-          window.location.href = '/professional';
+          window.location.replace('/professional');
         } else {
           console.log('🟡 Redirecting user to /directory');
-          window.location.href = '/directory';
+          window.location.replace('/directory');
         }
       } else {
-        window.location.href = '/register/professional';
+        window.location.replace('/register/professional');
       }
     } catch (err) {
       setError(t.auth.networkError);
