@@ -71,6 +71,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       }
 
       // Success
+      console.log('✅ Auth successful! Response:', JSON.stringify(data, null, 2));
+      console.log('🔑 User role from response:', data.data?.role);
       setLoading(false);
       
       if (onSuccess) {
@@ -80,11 +82,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       // Redirect based on mode and user role
       if (mode === 'login') {
         const userRole = data.data.role;
+        console.log('🎯 REDIRECT - userRole:', userRole, 'type:', typeof userRole);
+        
         if (userRole === 'admin') {
+          console.log('🔵 Redirecting admin to /dashboard');
           window.location.href = '/dashboard';
         } else if (userRole === 'professional') {
+          console.log('🟢 Redirecting professional to /professional');
           window.location.href = '/professional';
         } else {
+          console.log('🟡 Redirecting user to /directory');
           window.location.href = '/directory';
         }
       } else {

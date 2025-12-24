@@ -41,7 +41,9 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-      console.log('Login successful:', data);
+      console.log('✅ Login successful! Full response:', JSON.stringify(data, null, 2));
+      console.log('📊 data.data:', data.data);
+      console.log('🔑 data.data.role:', data.data?.role);
       setLoading(false);
       
       // Wait a brief moment for cookie to be properly set
@@ -49,16 +51,16 @@ export default function LoginPage() {
       
       // Redirect based on user role
       const userRole = data.data?.role;
-      console.log('User role:', userRole);
+      console.log('🎯 REDIRECT LOGIC - userRole:', userRole, 'type:', typeof userRole);
       
       if (userRole === 'admin') {
-        console.log('Redirecting admin to dashboard...');
+        console.log('🔵 Admin detected - Redirecting to /dashboard');
         window.location.href = '/dashboard';
       } else if (userRole === 'professional') {
-        console.log('Redirecting professional to dashboard...');
+        console.log('🟢 Professional detected - Redirecting to /professional');
         window.location.href = '/professional';
       } else {
-        console.log('Redirecting user to directory...');
+        console.log('🟡 Regular user detected - Redirecting to /directory');
         window.location.href = '/directory';
       }
       
