@@ -5,13 +5,14 @@
  * - Hero renders instantly (no Suspense)
  * - Categories stream in (Suspense boundary)
  * - Professionals stream in (Suspense boundary)
- * - User sees interactive page before data arrives
+ * - Each component owns its own data fetching
  * 
  * Why this works:
  * ✅ Hero above-the-fold visible immediately
  * ✅ Page interactive while data streams
- * ✅ No skeleton flicker
- * ✅ Better perceived performance
+ * ✅ Each Suspense component fetches independently
+ * ✅ Proper ISR revalidate at component level
+ * ✅ Better perceived performance (TTFMC)
  */
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
@@ -19,12 +20,11 @@ export const revalidate = 60; // ISR: revalidate every 60 seconds
 import { Suspense } from 'react';
 import Hero from '@/components/Hero';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
-import PopularCategoriesServer from '@/components/PopularCategoriesServer';
-import FeaturedProfessionalsServer from '@/components/FeaturedProfessionalsServer';
+import PopularCategories from '@/components/PopularCategories';
+import FeaturedProfessionals from '@/components/FeaturedProfessionals';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
 import { StickySearchBar } from '@/components/StickySearchBar';
-import { getPopularCategories, getFeaturedProfessionals } from '@/lib/homepage-data';
 
 // Fallback component - minimal, non-deceptive
 function SectionFallback() {
@@ -45,12 +45,12 @@ export default function Page() {
 
       {/* Popular Categories - Streams in while page is interactive */}
       <Suspense fallback={<SectionFallback />}>
-        <CategoriesSection />
+        <PopularCategories />
       </Suspense>
 
       {/* Featured Professionals - Streams in after categories */}
       <Suspense fallback={<SectionFallback />}>
-        <ProfessionalsSection />
+        <FeaturedProfessionals />
       </Suspense>
 
       {/* CTA Section - Static, renders with Hero */}
@@ -142,32 +142,4 @@ export default function Page() {
       <TestimonialCarousel />
     </>
   );
-}
-
-/**
- * Categories Section - Async Server Component
- * Wrapped in Suspense to stream separately
- */
-async function CategoriesSection() {
-  const categories = await getPopularCategories();
-
-  if (!categories || categories.length === 0) {
-    return null;
-  }
-
-  return <PopularCategoriesServer categories={categories} />;
-}
-
-/**
- * Professionals Section - Async Server Component
- * Wrapped in Suspense to stream separately
- */
-async function ProfessionalsSection() {
-  const professionals = await getFeaturedProfessionals();
-
-  if (!professionals || professionals.length === 0) {
-    return null;
-  }
-
-  return <FeaturedProfessionalsServer professionals={professionals} />;
 }
