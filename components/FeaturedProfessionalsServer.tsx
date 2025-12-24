@@ -44,7 +44,7 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
             marginBottom: '0.5rem',
             color: '#1f2937',
           }}>
-            Featured Professionals
+            Top-Rated Professionals
           </h2>
           <p style={{
             color: '#6b7280',
