@@ -8,6 +8,7 @@
 
 import { cache } from 'react';
 import { connectDB } from '@/lib/db/connection';
+import { initializeDatabase } from '@/lib/db/initialize';
 import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 import mongoose from 'mongoose';
 
@@ -29,6 +30,9 @@ export const getFeaturedProfessionals = cache(async () => {
       if (mongoose.connection.readyState !== 1) {
         await connectDB();
       }
+
+      // Initialize database with seed data if empty
+      await initializeDatabase();
 
       // First try: featured + active professionals (strict)
       let professionals = await ProfessionalModel.find({ featured: true, active: true })
@@ -96,6 +100,9 @@ export const getPopularCategories = cache(async () => {
       if (mongoose.connection.readyState !== 1) {
         await connectDB();
       }
+
+      // Initialize database with seed data if empty
+      await initializeDatabase();
 
       const categories = await CategoryModel.find({})
         .select('name slug icon description')
