@@ -1,13 +1,14 @@
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
+import HomePage from '@/components/home/HomePage';
 import Hero from '@/components/Hero';
 
 export default async function Page() {
   try {
-    console.log('[PAGE] Starting page render...');
+    console.log('[PAGE] Starting homepage render...');
 
-    // Try to fetch data with very short timeout
-    let data = { professionals: [], categories: [] };
+    // Try to fetch data with graceful fallback
+    let data = { professionals: [], categories: [], newsFlashes: [] };
 
     try {
       const dataPromise = (async () => {
@@ -30,7 +31,7 @@ export default async function Page() {
             .lean(),
         ]);
 
-        console.log('[PAGE] Data fetched');
+        console.log('[PAGE] Data fetched:', { profCount: professionals?.length, catCount: categories?.length });
         return {
           professionals: professionals?.map((p: any) => ({
             ...p,
@@ -41,6 +42,7 @@ export default async function Page() {
             ...c,
             _id: c._id?.toString(),
           })) || [],
+          newsFlashes: [],
         };
       })();
 
@@ -50,21 +52,13 @@ export default async function Page() {
       );
 
       data = await Promise.race([dataPromise, timeoutPromise as any]);
-      console.log('[PAGE] Data ready:', { profCount: data.professionals?.length, catCount: data.categories?.length });
     } catch (dbError) {
       console.error('[PAGE] DB error (using fallback):', dbError);
       // Continue with empty data - homepage still renders
     }
 
-    return (
-      <main style={{ padding: '2rem' }}>
-        <Hero />
-        <div style={{ marginTop: '2rem' }}>
-          <h2>Data Status</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      </main>
-    );
+    console.log('[PAGE] Rendering with data:', { profCount: data.professionals?.length, catCount: data.categories?.length });
+    return <HomePage data={data} />;
   } catch (error) {
     console.error('[PAGE] Fatal error:', error);
     return (
