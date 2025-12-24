@@ -1,4 +1,4 @@
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const revalidate = 60;
 
 import HomePage from '@/components/home/HomePage';
 
@@ -9,7 +9,8 @@ export default async function Page() {
     const { connectDBWithTimeout } = await import('@/lib/db/connection');
     const { ProfessionalModel, CategoryModel } = await import('@/lib/db/models');
     
-    await connectDBWithTimeout(15000);
+    // Reduced timeout to 8 seconds for faster response
+    await connectDBWithTimeout(8000);
 
     const [professionals, categories] = await Promise.all([
       ProfessionalModel.find({ active: true })
@@ -37,6 +38,7 @@ export default async function Page() {
     };
   } catch (error) {
     console.error('[PAGE] DB fetch failed:', error);
+    // Page still renders with skeleton states
   }
 
   return <HomePage data={data} />;
