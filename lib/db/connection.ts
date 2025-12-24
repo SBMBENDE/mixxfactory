@@ -39,13 +39,17 @@ export async function connectDB() {
       bufferCommands: false,
       maxPoolSize: 10,
       minPoolSize: 2,
-      socketTimeoutMS: 45000, // Increased to 45 seconds for slow queries
-      connectTimeoutMS: 10000, // Initial connection timeout
-      serverSelectionTimeoutMS: 10000, // Server selection timeout
+      socketTimeoutMS: 120000, // Increased to 120 seconds for very slow Atlas connections
+      connectTimeoutMS: 30000, // Increased to 30 seconds for initial connection
+      serverSelectionTimeoutMS: 30000, // Increased to 30 seconds for server selection
       maxIdleTimeMS: 60000,
       retryWrites: true,
+      // Add connection resilience for serverless environments
+      family: 4, // Use IPv4, skip IPv6 resolution which can be slow
     };
 
+    console.log('[DB] Attempting MongoDB connection...');
+    
     cached.promise = mongoose
       .connect(MONGODB_URI!, opts)
       .then((mongoose) => {
@@ -55,6 +59,8 @@ export async function connectDB() {
       })
       .catch((error) => {
         console.error('❌ MongoDB connection failed:', error);
+        console.error('❌ Connection string format:', MONGODB_URI?.substring(0, 30) + '...');
+        cached.promise = null; // Clear failed promise
         throw error;
       });
   }
