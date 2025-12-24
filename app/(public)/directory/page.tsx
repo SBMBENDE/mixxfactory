@@ -404,10 +404,10 @@ export default function DirectoryPage() {
             {professionals.map((prof) => (
               <a key={prof._id} href={`/professionals/${prof.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', transition: 'transform 0.2s, boxShadow 0.2s', cursor: 'pointer' }}>
-                  {prof.images && prof.images[0] && (
+                  {(prof.images?.[0] || prof.gallery?.[0]) ? (
                     <div style={{ width: '100%', aspectRatio: '1.5', overflow: 'hidden', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                       <AppImage
-                        src={prof.images[0]}
+                        src={prof.images?.[0] || prof.gallery?.[0] || ''}
                         alt={prof.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -416,7 +416,7 @@ export default function DirectoryPage() {
                         objectPosition="center"
                       />
                     </div>
-                  )}{!prof.images || !prof.images[0] && (
+                  ) : (
                     <div style={{ width: '100%', aspectRatio: '1.5', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
                       📷 No image
                     </div>
