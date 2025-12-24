@@ -2,6 +2,16 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @layer base {
   html {
     @apply scroll-smooth;
