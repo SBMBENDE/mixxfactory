@@ -8,7 +8,6 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faReply,
-  faCheckCircle,
   faFilter,
 } from '@fortawesome/free-solid-svg-icons';
 
