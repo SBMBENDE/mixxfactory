@@ -1,4 +1,4 @@
-export const revalidate = 1;
+export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 import HomePage from '@/components/home/HomePage';
 

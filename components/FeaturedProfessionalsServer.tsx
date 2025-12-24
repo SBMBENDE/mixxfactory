@@ -13,7 +13,8 @@ interface Professional {
   _id: string;
   name: string;
   slug: string;
-  profilePicture?: string;
+  images?: string[];
+  gallery?: string[];
   featured: boolean;
   rating: number;
   reviewCount: number;
@@ -100,9 +101,9 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
                   backgroundColor: '#f3f4f6',
                   overflow: 'hidden',
                 }}>
-                  {professional.profilePicture ? (
+                  {(professional.images?.[0] || professional.gallery?.[0]) ? (
                     <AppImage
-                      src={professional.profilePicture}
+                      src={professional.images?.[0] || professional.gallery?.[0] || ''}
                       alt={professional.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 300px"
