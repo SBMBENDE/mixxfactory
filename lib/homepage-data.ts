@@ -24,17 +24,37 @@ export const getFeaturedProfessionals = cache(async () => {
       await connectDB();
     }
 
-    // Query: featured + active, sorted by creation date (deterministic)
-    // NO populate - defer category lookup to component layer
-    // Smaller payload = faster ISR revalidation
-    const professionals = await ProfessionalModel.find({ featured: true, active: true })
-      .select('name slug images gallery rating reviewCount category createdAt')
+    // First try: featured + active professionals (strict)
+    let professionals = await ProfessionalModel.find({ featured: true, active: true })
+      .select('name slug images gallery rating reviewCount category createdAt featured active')
       .sort({ createdAt: -1 })
       .limit(4)
       .lean()
-      .exec(); // Explicit execution for timing
+      .exec();
 
-    console.log(`[PROFESSIONALS] Fetched ${professionals?.length || 0} in ${Date.now()}ms`);
+    // Fallback: if no featured found, get top active professionals
+    if (!professionals || professionals.length === 0) {
+      console.log('[PROFESSIONALS] No featured found, falling back to active');
+      professionals = await ProfessionalModel.find({ active: true })
+        .select('name slug images gallery rating reviewCount category createdAt featured active')
+        .sort({ rating: -1, reviewCount: -1, createdAt: -1 })
+        .limit(4)
+        .lean()
+        .exec();
+    }
+
+    // Final fallback: get any professionals
+    if (!professionals || professionals.length === 0) {
+      console.log('[PROFESSIONALS] No active found, getting any professionals');
+      professionals = await ProfessionalModel.find({})
+        .select('name slug images gallery rating reviewCount category createdAt featured active')
+        .sort({ createdAt: -1 })
+        .limit(4)
+        .lean()
+        .exec();
+    }
+
+    console.log(`[PROFESSIONALS] Fetched ${professionals?.length || 0} professionals`);
 
     // Transform: convert ObjectId to string, keep category as ID only
     return professionals.map((p: any) => ({
