@@ -89,9 +89,9 @@ export default function ImageGallery({
   return (
     <div className="space-y-4">
       {/* Gallery Grid */}
-      <div>
+      <div className="w-full max-w-4xl mx-auto">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">{title}</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 min-w-[320px]">
           {localImages.map((imageUrl, index) => (
             <div
               key={imageUrl}
