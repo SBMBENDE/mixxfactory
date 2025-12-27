@@ -6,19 +6,6 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faEye,
-  faEnvelope,
-  faStar,
-  faChartLine,
-  faEdit,
-  faCrown,
-  faCheckCircle,
-  faExclamationTriangle,
-} from '@fortawesome/free-solid-svg-icons';
 
 interface DashboardStats {
   profile: {
