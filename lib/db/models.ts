@@ -2,7 +2,7 @@
 import { Booking, Availability, BlockedTime } from '@/types';
 
 interface IBookingDocument extends Omit<Booking, '_id'>, Document {}
-const bookingSchema = new Schema<IBookingDocument>({
+const bookingSchema = new Schema({
   professionalId: { type: mongoose.Types.ObjectId, ref: 'Professional', required: true, index: true },
   clientId: { type: mongoose.Types.ObjectId, ref: 'User' },
   service: { type: String, required: true },
@@ -15,7 +15,7 @@ export const BookingModel = (mongoose.models.Booking as Model<IBookingDocument>)
 
 // ============ AVAILABILITY MODEL ============
 interface IAvailabilityDocument extends Omit<Availability, '_id'>, Document {}
-const availabilitySchema = new Schema<IAvailabilityDocument>({
+const availabilitySchema = new Schema({
   professionalId: { type: mongoose.Types.ObjectId, ref: 'Professional', required: true, index: true },
   days: [{ type: Number, required: true }],
   startTime: { type: String, required: true },
@@ -28,7 +28,7 @@ export const AvailabilityModel = (mongoose.models.Availability as Model<IAvailab
 
 // ============ BLOCKED TIME MODEL ============
 interface IBlockedTimeDocument extends Omit<BlockedTime, '_id'>, Document {}
-const blockedTimeSchema = new Schema<IBlockedTimeDocument>({
+const blockedTimeSchema = new Schema({
   professionalId: { type: mongoose.Types.ObjectId, ref: 'Professional', required: true, index: true },
   start: { type: Date, required: true, index: true },
   end: { type: Date, required: true, index: true },
