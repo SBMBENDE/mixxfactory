@@ -59,7 +59,9 @@ export async function POST(request: NextRequest) {
 
     // Always set role: 'professional' for professional users
     let role = (user as any).role;
-    if ((user as any).accountType === 'professional' || (user as any).role === 'professional') {
+    if ((user as any).accountType === 'admin' || (user as any).role === 'admin') {
+      role = 'admin';
+    } else if ((user as any).accountType === 'professional' || (user as any).role === 'professional') {
       role = 'professional';
     }
     // Generate token with session ID
@@ -79,7 +81,7 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user._id.toString(),
           email: user.email,
-          role: user.accountType,
+          role,
           token,
         },
         message: 'Login successful',
