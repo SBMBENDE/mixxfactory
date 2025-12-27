@@ -7,44 +7,6 @@
 'use client';
 
 
-interface DashboardStats {
-  profile: {
-    name: string;
-    slug: string;
-    verified: boolean;
-    subscriptionTier: string;
-    profileCompletionPercentage: number;
-  };
-  analytics: {
-    viewsThisMonth: number;
-    viewsLastMonth: number;
-    contactClicks: number;
-    searchImpressions: number;
-  };
-  reviews: {
-    total: number;
-    averageRating: number;
-    pending: number;
-    recent: Array<{
-      _id: string;
-      clientName: string;
-      rating: number;
-      title: string;
-      createdAt: string;
-    }>;
-  };
-  inquiries: {
-    total: number;
-    new: number;
-    recent: Array<{
-      _id: string;
-      clientName: string;
-      subject: string;
-      status: string;
-      createdAt: string;
-    }>;
-  };
-}
 
 export default function ProfessionalDashboard() {
   return (
