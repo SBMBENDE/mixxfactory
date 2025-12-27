@@ -38,7 +38,13 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // Slot generation logic
-function generateSlotsForDay(date, availability, bookings, blocks, durationMinutes) {
+function generateSlotsForDay(
+  date: Date,
+  availability: any,
+  bookings: any[],
+  blocks: any[],
+  durationMinutes: number
+) {
   // Only generate for available days
   const dayOfWeek = date.getUTCDay();
   if (!availability.days.includes(dayOfWeek)) return [];
