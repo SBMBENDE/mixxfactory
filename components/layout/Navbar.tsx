@@ -90,7 +90,7 @@ export const Navbar: React.FC = () => {
               {t.nav.contact}
             </Link>
             {user?.role === 'admin' && (
-              <Link href="/dashboard" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-semibold transition">
+              <Link href="/admin" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-semibold transition">
                 📊 {t.nav.dashboard}
               </Link>
             )}
@@ -224,7 +224,7 @@ export const Navbar: React.FC = () => {
               {t.nav.contact}
             </Link>
             {user?.role === 'admin' && (
-              <Link href="/dashboard" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700" onClick={closeMenu}>
+              <Link href="/admin" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700" onClick={closeMenu}>
                 📊 {t.nav.dashboard}
               </Link>
             )}

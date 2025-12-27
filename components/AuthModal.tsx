@@ -88,8 +88,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         console.log('🎯 REDIRECT - userRole:', userRole, 'type:', typeof userRole);
         
         if (userRole === 'admin') {
-          console.log('🔵 Redirecting admin to /dashboard');
-          window.location.replace('/dashboard');
+          console.log('🔵 Redirecting admin to /admin');
+          window.location.replace('/admin');
         } else if (userRole === 'professional') {
           console.log('🟢 Redirecting professional to /professional');
           window.location.replace('/professional');
