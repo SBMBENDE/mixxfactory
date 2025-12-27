@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
-import { BookingModel, AvailabilityModel, BlockedTimeModel } from '@/lib/db/models';
+import { BookingModel, BlockedTimeModel } from '@/lib/db/models';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const professionalId = params.id;
     const url = new URL(request.url);
     const dateStr = url.searchParams.get('date'); // YYYY-MM-DD
-    const service = url.searchParams.get('service');
     const durationMinutes = parseInt(url.searchParams.get('duration') || '60');
     if (!dateStr) {
       return NextResponse.json({ success: false, error: 'Missing date' }, { status: 400 });
