@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
-import { BookingModel, AvailabilityModel, BlockedTimeModel } from '@/lib/db/models';
+import { BookingModel, BlockedTimeModel } from '@/lib/db/models';
 import { verifyAuth } from '@/lib/auth/verify';
 
 export const dynamic = 'force-dynamic';
