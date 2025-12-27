@@ -1,3 +1,41 @@
+// ============ BOOKING MODEL ============
+import { Booking, Availability, BlockedTime } from '@/types';
+
+interface IBookingDocument extends Omit<Booking, '_id'>, Document {}
+const bookingSchema = new Schema<IBookingDocument>({
+  professionalId: { type: Schema.Types.ObjectId, ref: 'Professional', required: true, index: true },
+  clientId: { type: Schema.Types.ObjectId, ref: 'User' },
+  service: { type: String, required: true },
+  start: { type: Date, required: true, index: true },
+  end: { type: Date, required: true, index: true },
+  status: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'expired'], required: true, index: true },
+}, { timestamps: true });
+bookingSchema.index({ professionalId: 1, start: 1, end: 1 }, { unique: true }); // Prevent double-booking
+export const BookingModel = (mongoose.models.Booking as Model<IBookingDocument>) || mongoose.model<IBookingDocument>('Booking', bookingSchema);
+
+// ============ AVAILABILITY MODEL ============
+interface IAvailabilityDocument extends Omit<Availability, '_id'>, Document {}
+const availabilitySchema = new Schema<IAvailabilityDocument>({
+  professionalId: { type: Schema.Types.ObjectId, ref: 'Professional', required: true, index: true },
+  days: [{ type: Number, required: true }],
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  bufferMinutes: { type: Number, default: 0 },
+  exceptions: [{ date: Date, reason: String }],
+}, { timestamps: true });
+availabilitySchema.index({ professionalId: 1 });
+export const AvailabilityModel = (mongoose.models.Availability as Model<IAvailabilityDocument>) || mongoose.model<IAvailabilityDocument>('Availability', availabilitySchema);
+
+// ============ BLOCKED TIME MODEL ============
+interface IBlockedTimeDocument extends Omit<BlockedTime, '_id'>, Document {}
+const blockedTimeSchema = new Schema<IBlockedTimeDocument>({
+  professionalId: { type: Schema.Types.ObjectId, ref: 'Professional', required: true, index: true },
+  start: { type: Date, required: true, index: true },
+  end: { type: Date, required: true, index: true },
+  reason: { type: String },
+}, { timestamps: true });
+blockedTimeSchema.index({ professionalId: 1, start: 1, end: 1 });
+export const BlockedTimeModel = (mongoose.models.BlockedTime as Model<IBlockedTimeDocument>) || mongoose.model<IBlockedTimeDocument>('BlockedTime', blockedTimeSchema);
 /**
  * Mongoose models for categories and professionals
  */

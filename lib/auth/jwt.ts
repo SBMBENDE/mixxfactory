@@ -76,9 +76,10 @@ export async function getTokenFromRequest(request: Request | any): Promise<strin
  * Set auth token in cookies (for use in Response)
  */
 export function setAuthCookieHeader(token: string) {
-  return `auth_token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}${
-    process.env.NODE_ENV === 'production' ? '; Secure' : ''
-  }`;
+  // Always set Path=/, never restrict to /api
+  // Only set Secure in production
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  return `auth_token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}${secure}`;
 }
 
 /**
@@ -91,7 +92,7 @@ export async function setAuthCookie(token: string) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60, // 7 days
-    path: '/',
+    path: '/', // Always set for root
   });
 }
 

@@ -105,7 +105,7 @@ export function Footer() {
             <h4 className="text-base font-semibold mb-4 text-white">{t.footer?.forPros || 'For Professionals'}</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/about" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                <Link href="/pricing" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
                   {t.footer?.pricing || 'Pricing'}
                 </Link>
               </li>

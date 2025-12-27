@@ -56,11 +56,17 @@ export async function POST(request: NextRequest) {
       deviceInfo.ipAddress
     );
 
+
+    // Always set role: 'professional' for professional users
+    let role = user.role;
+    if (user.accountType === 'professional' || user.role === 'professional') {
+      role = 'professional';
+    }
     // Generate token with session ID
     const token = generateToken({
       userId: user._id.toString(),
       email: user.email,
-      role: user.accountType,
+      role,
       sessionId,
     });
 

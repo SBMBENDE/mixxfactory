@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
       q: searchParams.get('q') || undefined,
       category: searchParams.get('category') || undefined,
       slug: searchParams.get('slug') || undefined,
+      userId: searchParams.get('userId') || undefined,
       page: searchParams.get('page') || '1',
       limit: searchParams.get('limit') || '12',
       sort: (searchParams.get('sort') as any) || 'newest',
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
-    const { q, category, slug, page, limit, sort } = validationResult.data;
+    const { q, category, slug, userId, page, limit, sort } = validationResult.data;
 
     // Build MongoDB filter
     // If querying by slug (for edit), allow inactive profiles
@@ -42,6 +43,16 @@ export async function GET(request: NextRequest) {
 
     if (slug) {
       filter.slug = slug;
+    }
+
+    if (userId) {
+      // Ensure userId is cast to ObjectId for MongoDB query
+      try {
+        const { Types } = await import('mongoose');
+        filter.userId = new Types.ObjectId(userId);
+      } catch (e) {
+        filter.userId = userId; // fallback, but should not happen
+      }
     }
 
     if (q) {

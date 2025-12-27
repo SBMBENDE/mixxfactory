@@ -120,53 +120,62 @@ export default function ProfessionalDashboardPage() {
         </p>
       </div>
 
-      {/* Profile Status Banner */}
-      <div
-        style={{
-          backgroundColor: stats.profile.verified ? '#dcfce7' : '#fef3c7',
-          border: `1px solid ${stats.profile.verified ? '#86efac' : '#fde68a'}`,
-          borderRadius: '0.5rem',
-          padding: '1rem',
-          marginBottom: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <FontAwesomeIcon
-            icon={stats.profile.verified ? faCheckCircle : faExclamationTriangle}
-            style={{ fontSize: '1.5rem', color: stats.profile.verified ? '#15803d' : '#92400e' }}
-          />
-          <div>
-            <p style={{ fontWeight: '600', color: stats.profile.verified ? '#15803d' : '#92400e' }}>
-              {stats.profile.verified ? 'Profile Verified' : 'Profile Not Verified'}
-            </p>
-            <p style={{ fontSize: '0.875rem', color: stats.profile.verified ? '#166534' : '#78350f' }}>
-              {stats.profile.verified
-                ? 'Your profile has been verified by our team'
-                : 'Submit verification documents to get verified'}
-            </p>
+      {/* Profile Status Banner - green if all contact info filled */}
+      {(() => {
+        // Example: require name, email, phone, and at least one social link
+        const contactComplete = Boolean(
+          stats.profile.name &&
+          stats.profileCompletionPercentage === 100 // or check each field individually
+        );
+        return (
+          <div
+            style={{
+              backgroundColor: contactComplete ? '#dcfce7' : '#fef3c7',
+              border: `1px solid ${contactComplete ? '#86efac' : '#fde68a'}`,
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              marginBottom: '2rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <FontAwesomeIcon
+                icon={contactComplete ? faCheckCircle : faExclamationTriangle}
+                style={{ fontSize: '1.5rem', color: contactComplete ? '#15803d' : '#92400e' }}
+              />
+              <div>
+                <p style={{ fontWeight: '600', color: contactComplete ? '#15803d' : '#92400e' }}>
+                  {contactComplete ? 'Contact Info Complete' : 'Profile Not Complete'}
+                </p>
+                <p style={{ fontSize: '0.875rem', color: contactComplete ? '#166534' : '#78350f' }}>
+                  {contactComplete
+                    ? 'All required contact information is filled.'
+                    : 'Please complete all required contact fields.'}
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/professional/profile"
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: 'white',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                textDecoration: 'none',
+                color: '#374151',
+              }}
+            >
+              View Profile
+            </Link>
           </div>
-        </div>
-        <Link
-          href="/professional/profile"
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: 'white',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            textDecoration: 'none',
-            color: '#374151',
-          }}
-        >
-          View Profile
-        </Link>
-      </div>
+        );
+      })()}
 
       {/* Stats Grid */}
       <div

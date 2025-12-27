@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { AppImage } from '@/components/AppImage';
 import { useTranslations } from '@/hooks/useTranslations';
+import Link from 'next/link';
 
 interface FormData {
   name: string;
@@ -353,6 +354,11 @@ export default function EditProfessionalPage() {
             Update your professional details
           </p>
         </div>
+
+        {/* Back to Dashboard Link */}
+        <Link href="/professional" style={{ color: '#2563eb', fontWeight: 500, marginBottom: '1.5rem', display: 'inline-block', fontSize: '1rem' }}>
+          ← Back to Dashboard
+        </Link>
 
         {/* Form Container */}
         <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>

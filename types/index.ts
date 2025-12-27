@@ -1,3 +1,39 @@
+// Booking status: pending (awaiting confirmation), confirmed, cancelled, expired
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'expired';
+
+export interface Booking {
+  _id: string;
+  professionalId: string;
+  clientId?: string;
+  service: string;
+  start: Date;
+  end: Date;
+  status: BookingStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Availability {
+  _id: string;
+  professionalId: string;
+  days: number[]; // 0=Sun, 1=Mon, ...
+  startTime: string; // '09:00'
+  endTime: string;   // '17:00'
+  bufferMinutes: number;
+  exceptions: Array<{ date: Date; reason?: string }>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BlockedTime {
+  _id: string;
+  professionalId: string;
+  start: Date;
+  end: Date;
+  reason?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 /**
  * Core type definitions for the application
  */
@@ -6,7 +42,8 @@ export interface User {
   _id: string;
   email: string;
   password: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'user' | 'professional';
+  accountType?: string; // for legacy compatibility
   createdAt: Date;
   updatedAt: Date;
 }

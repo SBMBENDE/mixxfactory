@@ -16,10 +16,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 export const Navbar: React.FC = () => {
+
   const [isOpen, setIsOpen] = useState(false);
   const { authStatus, isAuthenticated, user, logout } = useAuth();
   const { language, setLanguage } = useLanguage();
   const t = useTranslations();
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-console
+      console.log('[Navbar DEBUG]', { user, isAuthenticated, authStatus });
+    }
+  }, [user, isAuthenticated, authStatus]);
 
   const closeMenu = () => {
     setIsOpen(false);
@@ -86,7 +94,7 @@ export const Navbar: React.FC = () => {
                 📊 {t.nav.dashboard}
               </Link>
             )}
-            {user?.accountType === 'professional' && (
+            {isAuthenticated && user?.role === 'professional' && (
               <Link href="/professional" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-semibold transition">
                 💼 {t.nav.professionalDashboard || 'My Dashboard'}
               </Link>
@@ -220,7 +228,7 @@ export const Navbar: React.FC = () => {
                 📊 {t.nav.dashboard}
               </Link>
             )}
-            {user?.accountType === 'professional' && (
+            {isAuthenticated && user?.role === 'professional' && (
               <Link href="/professional" className="block py-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700" onClick={closeMenu}>
                 💼 {t.nav.professionalDashboard || 'My Dashboard'}
               </Link>
