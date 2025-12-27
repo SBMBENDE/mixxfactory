@@ -63,7 +63,7 @@ function generateSlotsForDay(
       (slotStart < b.end && slotEnd > b.start)
     );
     // Check for exceptions
-    const isException = (availability.exceptions || []).some(e => {
+      const isException = (availability.exceptions || []).some((e: { date: string }) => {
       const exDate = new Date(e.date);
       return exDate.getUTCFullYear() === date.getUTCFullYear() &&
         exDate.getUTCMonth() === date.getUTCMonth() &&
