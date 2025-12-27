@@ -133,9 +133,17 @@ export async function GET(request: NextRequest) {
       sessionId,
     });
 
-    // Create response with redirect
+    // Redirect based on user role
+    let redirectPath = '/';
+    if (user.accountType === 'admin') {
+      redirectPath = '/admin';
+    } else if (user.accountType === 'professional') {
+      redirectPath = '/professional';
+    } else {
+      redirectPath = '/';
+    }
     const response = NextResponse.redirect(
-      new URL('/dashboard', process.env.NEXT_PUBLIC_APP_URL)
+      new URL(redirectPath, process.env.NEXT_PUBLIC_APP_URL)
     );
 
     // Set JWT in httpOnly cookie
