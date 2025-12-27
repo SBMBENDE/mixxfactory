@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
-    const { q, category, slug, userId, page, limit, sort } = validationResult.data;
+    const { q, category, slug, page, limit, sort } = validationResult.data;
 
     // Build MongoDB filter
     // If querying by slug (for edit), allow inactive profiles
