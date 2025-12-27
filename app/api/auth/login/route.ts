@@ -58,8 +58,8 @@ export async function POST(request: NextRequest) {
 
 
     // Always set role: 'professional' for professional users
-    let role = user.role;
-    if (user.accountType === 'professional' || user.role === 'professional') {
+    let role = (user as any).role;
+    if ((user as any).accountType === 'professional' || (user as any).role === 'professional') {
       role = 'professional';
     }
     // Generate token with session ID
