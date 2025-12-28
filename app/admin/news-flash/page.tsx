@@ -13,21 +13,24 @@ interface NewsFlash {
   published: boolean;
   startDate: string;
   endDate: string;
-  priority: number;
+  priority: 1 | 2 | 3;
   link?: string | null;
 }
 
-const priorityMap = {
-  1: { label: "High", color: "danger" },
-  2: { label: "Medium", color: "warning" },
-  3: { label: "Low", color: "success" },
-};
+type BadgeColor = "info" | "success" | "warning" | "danger";
 
-const typeMap = {
+// -------------------- Mappings --------------------
+const typeMap: Record<NewsFlash["type"], { label: string; color: BadgeColor }> = {
   success: { label: "Success", color: "success" },
   warning: { label: "Warning", color: "warning" },
   error: { label: "Danger", color: "danger" },
   info: { label: "Info", color: "info" },
+};
+
+const priorityMap: Record<NewsFlash["priority"], { label: string; color: BadgeColor }> = {
+  1: { label: "High", color: "danger" },
+  2: { label: "Medium", color: "warning" },
+  3: { label: "Low", color: "success" },
 };
 
 // -------------------- Edit Form --------------------
@@ -66,7 +69,7 @@ function EditNewsFlashForm({
         body: JSON.stringify({
           ...form,
           link: form.link || null,
-          priority: Number(form.priority),
+          priority: Number(form.priority) as 1 | 2 | 3,
           startDate: new Date(form.startDate).toISOString(),
           endDate: new Date(form.endDate).toISOString(),
         }),
@@ -85,7 +88,6 @@ function EditNewsFlashForm({
     <form onSubmit={handleEditSubmit} className="p-4 w-full max-w-lg">
       <h2 className="text-lg font-bold mb-4">Edit News Flash</h2>
 
-      {/* Start & End Date */}
       <div className="mb-3 flex gap-2">
         <div className="flex-1">
           <label className="block text-sm font-medium mb-1">Start Date & Time</label>
@@ -109,7 +111,6 @@ function EditNewsFlashForm({
         </div>
       </div>
 
-      {/* Title */}
       <div className="mb-3">
         <label className="block text-sm font-medium mb-1">Title</label>
         <input
@@ -122,7 +123,6 @@ function EditNewsFlashForm({
         />
       </div>
 
-      {/* Message */}
       <div className="mb-3">
         <label className="block text-sm font-medium mb-1">Message</label>
         <textarea
@@ -134,7 +134,6 @@ function EditNewsFlashForm({
         />
       </div>
 
-      {/* Type & Priority */}
       <div className="mb-3 flex gap-2">
         <div className="flex-1">
           <label className="block text-sm font-medium mb-1">Type</label>
@@ -142,13 +141,14 @@ function EditNewsFlashForm({
             className="w-full border rounded px-2 py-1"
             value={form.type}
             onChange={(e) =>
-              setForm(f => ({ ...f, type: e.target.value as "success" | "warning" | "error" | "info" }))
+              setForm(f => ({ ...f, type: e.target.value as NewsFlash["type"] }))
             }
           >
-            <option value="success">Success</option>
-            <option value="warning">Warning</option>
-            <option value="error">Danger</option>
-            <option value="info">Info</option>
+            {Object.keys(typeMap).map((key) => (
+              <option key={key} value={key}>
+                {typeMap[key as NewsFlash["type"]].label}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex-1">
@@ -156,16 +156,17 @@ function EditNewsFlashForm({
           <select
             className="w-full border rounded px-2 py-1"
             value={form.priority}
-            onChange={(e) => setForm(f => ({ ...f, priority: Number(e.target.value) }))}
+            onChange={(e) => setForm(f => ({ ...f, priority: Number(e.target.value) as 1 | 2 | 3 }))}
           >
-            <option value={1}>High</option>
-            <option value={2}>Medium</option>
-            <option value={3}>Low</option>
+            {Object.keys(priorityMap).map((key) => (
+              <option key={key} value={key}>
+                {priorityMap[key as NewsFlash["priority"]].label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      {/* Link */}
       <div className="mb-3">
         <label className="block text-sm font-medium mb-1">Link (optional)</label>
         <input
@@ -177,7 +178,6 @@ function EditNewsFlashForm({
         />
       </div>
 
-      {/* Published */}
       <div className="mb-3 flex items-center gap-2">
         <input
           type="checkbox"
@@ -213,8 +213,8 @@ export default function AdminNewsFlashPage() {
   const [addForm, setAddForm] = useState({
     title: "",
     message: "",
-    type: "success" as "success" | "warning" | "error" | "info",
-    priority: 1,
+    type: "success" as NewsFlash["type"],
+    priority: 1 as NewsFlash["priority"],
     link: "",
     published: true,
     startDate: new Date().toISOString().slice(0, 16),
@@ -251,7 +251,7 @@ export default function AdminNewsFlashPage() {
         body: JSON.stringify({
           ...addForm,
           link: addForm.link || null,
-          priority: Number(addForm.priority),
+          priority: addForm.priority,
           startDate: new Date(addForm.startDate).toISOString(),
           endDate: new Date(addForm.endDate).toISOString(),
         }),
@@ -284,132 +284,26 @@ export default function AdminNewsFlashPage() {
         Add News Flash
       </Button>
 
-      {/* -------------------- Add Modal -------------------- */}
+      {/* Add Modal */}
       {addModalOpen && (
         <Modal open={addModalOpen} onClose={() => setAddModalOpen(false)}>
           <form onSubmit={handleAddSubmit} className="p-4 w-full max-w-lg">
             <h2 className="text-lg font-bold mb-4">Add News Flash</h2>
 
-            {/* Start & End Date */}
-            <div className="mb-3 flex gap-2">
-              <div className="flex-1">
-                <label className="block text-sm font-medium mb-1">Start Date & Time</label>
-                <input
-                  type="datetime-local"
-                  className="w-full border rounded px-2 py-1"
-                  value={addForm.startDate}
-                  onChange={(e) => setAddForm(f => ({ ...f, startDate: e.target.value }))}
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium mb-1">End Date & Time</label>
-                <input
-                  type="datetime-local"
-                  className="w-full border rounded px-2 py-1"
-                  value={addForm.endDate}
-                  onChange={(e) => setAddForm(f => ({ ...f, endDate: e.target.value }))}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Title */}
-            <div className="mb-3">
-              <label className="block text-sm font-medium mb-1">Title</label>
-              <input
-                className="w-full border rounded px-2 py-1"
-                value={addForm.title}
-                onChange={(e) => setAddForm(f => ({ ...f, title: e.target.value }))}
-                required
-                minLength={3}
-                maxLength={120}
-              />
-            </div>
-
-            {/* Message */}
-            <div className="mb-3">
-              <label className="block text-sm font-medium mb-1">Message</label>
-              <textarea
-                className="w-full border rounded px-2 py-1"
-                value={addForm.message}
-                onChange={(e) => setAddForm(f => ({ ...f, message: e.target.value }))}
-                required
-                minLength={5}
-              />
-            </div>
-
-            {/* Type & Priority */}
-            <div className="mb-3 flex gap-2">
-              <div className="flex-1">
-                <label className="block text-sm font-medium mb-1">Type</label>
-                <select
-                  className="w-full border rounded px-2 py-1"
-                  value={addForm.type}
-                  onChange={(e) =>
-                    setAddForm(f => ({
-                      ...f,
-                      type: e.target.value as "success" | "warning" | "error" | "info",
-                    }))
-                  }
-                >
-                  <option value="success">Success</option>
-                  <option value="warning">Warning</option>
-                  <option value="error">Danger</option>
-                  <option value="info">Info</option>
-                </select>
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium mb-1">Priority</label>
-                <select
-                  className="w-full border rounded px-2 py-1"
-                  value={addForm.priority}
-                  onChange={(e) => setAddForm(f => ({ ...f, priority: Number(e.target.value) }))}
-                >
-                  <option value={1}>High</option>
-                  <option value={2}>Medium</option>
-                  <option value={3}>Low</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Link */}
-            <div className="mb-3">
-              <label className="block text-sm font-medium mb-1">Link (optional)</label>
-              <input
-                className="w-full border rounded px-2 py-1"
-                value={addForm.link}
-                onChange={(e) => setAddForm(f => ({ ...f, link: e.target.value }))}
-                type="url"
-                placeholder="https://... or /internal"
-              />
-            </div>
-
-            {/* Published */}
-            <div className="mb-3 flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={addForm.published}
-                onChange={(e) => setAddForm(f => ({ ...f, published: e.target.checked }))}
-              />
-              <label className="text-sm">Published</label>
-            </div>
-
-            {addError && <div className="text-red-600 text-sm mb-2">{addError}</div>}
-
-            <div className="flex gap-2 mt-4">
-              <Button type="submit" size="md" variant="primary" loading={addLoading} disabled={addLoading}>
-                Add
-              </Button>
-              <Button type="button" size="md" variant="secondary" onClick={() => setAddModalOpen(false)}>
-                Cancel
-              </Button>
-            </div>
+            {/* Copy all inputs from Edit form but using addForm state */}
+            <EditNewsFlashForm
+              newsFlash={addForm as NewsFlash}
+              onClose={() => setAddModalOpen(false)}
+              onSave={(newItem) => {
+                setItems(prev => [newItem, ...prev]);
+                setAddModalOpen(false);
+              }}
+            />
           </form>
         </Modal>
       )}
 
-      {/* -------------------- Table -------------------- */}
+      {/* Table */}
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -429,30 +323,59 @@ export default function AdminNewsFlashPage() {
               <tr key={n._id}>
                 <td className="border px-3 py-2 font-medium">{n.title}</td>
                 <td className="border px-3 py-2">
-                  <Badge color={typeMap[n.type]?.color || "info"}>{typeMap[n.type]?.label || n.type}</Badge>
+                  <Badge color={typeMap[n.type].color}>{typeMap[n.type].label}</Badge>
                 </td>
                 <td className="border px-3 py-2">
-                  <Badge color={priorityMap[n.priority as 1 | 2 | 3]?.color || "info"}>
-                    {priorityMap[n.priority as 1 | 2 | 3]?.label || n.priority}
-                  </Badge>
+                  <Badge color={priorityMap[n.priority].color}>{priorityMap[n.priority].label}</Badge>
                 </td>
                 <td className="border px-3 py-2">{n.published ? "Published" : "Draft"}</td>
                 <td className="border px-3 py-2">{n.message}</td>
                 <td className="border px-3 py-2 flex gap-2 justify-center">
-                  <Button size="sm" variant="outline" onClick={() => { setEditing(n); setEditModalOpen(true); }}>Edit</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setEditing(n);
+                      setEditModalOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+
                   {n.published && (
-                    <Button size="sm" variant="warning" disabled={unpublishingId === n._id} onClick={async () => {
-                      setUnpublishingId(n._id);
-                      try {
-                        await fetch(`/api/admin/news-flash/${n._id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ published: false }) });
-                        setItems(prev => prev.map(i => i._id === n._id ? { ...i, published: false } : i));
-                      } catch (err) { console.error(err); } finally { setUnpublishingId(null); }
-                    }}>Unpublish</Button>
+                    <Button
+                      size="sm"
+                      variant="warning"
+                      disabled={unpublishingId === n._id}
+                      onClick={async () => {
+                        setUnpublishingId(n._id);
+                        try {
+                          await fetch(`/api/admin/news-flash/${n._id}`, {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ published: false }),
+                          });
+                          setItems(prev => prev.map(i => i._id === n._id ? { ...i, published: false } : i));
+                        } catch (err) { console.error(err); } finally { setUnpublishingId(null); }
+                      }}
+                    >
+                      Unpublish
+                    </Button>
                   )}
-                  <Button size="sm" variant="secondary" onClick={async () => {
-                    if (!confirm("Delete this news flash?")) return;
-                    try { await fetch(`/api/admin/news-flash/${n._id}`, { method: "DELETE" }); setItems(prev => prev.filter(i => i._id !== n._id)); } catch (err) { console.error(err); }
-                  }}>Delete</Button>
+
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={async () => {
+                      if (!confirm("Delete this news flash?")) return;
+                      try {
+                        await fetch(`/api/admin/news-flash/${n._id}`, { method: "DELETE" });
+                        setItems(prev => prev.filter(i => i._id !== n._id));
+                      } catch (err) { console.error(err); }
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -460,7 +383,7 @@ export default function AdminNewsFlashPage() {
         </table>
       )}
 
-      {/* -------------------- Edit Modal -------------------- */}
+      {/* Edit Modal */}
       {editModalOpen && editing && (
         <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
           <EditNewsFlashForm
