@@ -14,6 +14,16 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
+    // Delete past events: endDate < today, or (no endDate and startDate < today)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    await EventModel.deleteMany({
+      $or: [
+        { endDate: { $lt: today } },
+        { $and: [ { $or: [ { endDate: { $exists: false } }, { endDate: null } ] }, { startDate: { $lt: today } } ] }
+      ]
+    });
+
     const { searchParams } = new URL(req.url);
     const category = searchParams.get('category');
     const featured = searchParams.get('featured');
@@ -33,8 +43,6 @@ export async function GET(req: NextRequest) {
     }
 
     // Only show upcoming events by default (after today)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     query.startDate = { $gte: today };
 
     // Fetch events sorted by start date

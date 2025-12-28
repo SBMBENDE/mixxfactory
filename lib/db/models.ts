@@ -1,3 +1,40 @@
+// ============ NEWS FLASH MODEL ============
+import { z } from 'zod';
+
+
+export interface NewsFlash {
+  _id?: string;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  published: boolean;
+  startDate?: Date;
+  endDate?: Date;
+  priority?: number;
+  link?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+interface INewsFlashDocument extends Omit<NewsFlash, '_id'>, Document {}
+
+
+const newsFlashSchema = new Schema<INewsFlashDocument>({
+  title: { type: String, required: true, trim: true },
+  message: { type: String, required: true },
+  type: { type: String, enum: ['info', 'success', 'warning', 'error'], default: 'info' },
+  published: { type: Boolean, default: false, index: true },
+  startDate: { type: Date, default: Date.now },
+  endDate: { type: Date, default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
+  priority: { type: Number, default: 0, index: true },
+  link: { type: String, default: null },
+}, { timestamps: true });
+
+newsFlashSchema.index({ published: 1, createdAt: -1 });
+
+export const NewsFlashModel =
+  (mongoose.models.NewsFlash as Model<INewsFlashDocument>) ||
+  mongoose.model<INewsFlashDocument>('NewsFlash', newsFlashSchema);
 // ============ BOOKING MODEL ============
 import { Booking, Availability, BlockedTime } from '@/types';
 
@@ -135,6 +172,45 @@ const professionalSchema = new Schema<IProfessionalDocument>(
       type: Boolean,
       default: false,
       index: true,
+    },
+    featuredSince: {
+      type: Date,
+      default: null,
+      index: true,
+    },
+    featuredUntil: {
+      type: Date,
+      default: null,
+      index: true,
+    },
+    priority: {
+      type: Number,
+      default: 5,
+      min: 1,
+      max: 10,
+      index: true,
+    },
+    autoUnfeature: {
+      type: Boolean,
+      default: false,
+    },
+    featuredBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+      index: true,
+    },
+    featuredViews: {
+      type: Number,
+      default: 0,
+    },
+    featuredClicks: {
+      type: Number,
+      default: 0,
+    },
+    featuredBookings: {
+      type: Number,
+      default: 0,
     },
     active: {
       type: Boolean,
@@ -508,66 +584,6 @@ export const BlogPostModel =
   (mongoose.models.BlogPost as Model<IBlogPostDocument>) ||
   mongoose.model<IBlogPostDocument>('BlogPost', blogPostSchema);
 
-// ============ NEWS FLASH MODEL ============
-interface INewsFlashDocument extends Document {
-  title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  published: boolean;
-  startDate: Date;
-  endDate: Date;
-  priority: number;
-  link?: string; // Optional link to redirect when clicked
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const newsFlashSchema = new Schema<INewsFlashDocument>(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      enum: ['info', 'success', 'warning', 'error'],
-      default: 'info',
-    },
-    published: {
-      type: Boolean,
-      default: false,
-      index: true,
-    },
-    startDate: {
-      type: Date,
-      default: Date.now,
-    },
-    endDate: {
-      type: Date,
-      default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-    },
-    priority: {
-      type: Number,
-      default: 0,
-      index: true,
-    },
-    link: {
-      type: String,
-      default: null, // Optional: redirect link when clicked
-    },
-  },
-  { timestamps: true }
-);
-
-newsFlashSchema.index({ published: 1, priority: -1, startDate: -1 });
-
-export const NewsFlashModel =
-  (mongoose.models.NewsFlash as Model<INewsFlashDocument>) ||
-  mongoose.model<INewsFlashDocument>('NewsFlash', newsFlashSchema);
 
 // ============ USER MODEL (Enhanced) ============
 interface IUserDocument extends Document {
@@ -936,6 +952,45 @@ const eventSchema = new Schema<IEventDocument>(
       type: Boolean,
       default: false,
       index: true,
+    },
+    featuredSince: {
+      type: Date,
+      default: null,
+      index: true,
+    },
+    featuredUntil: {
+      type: Date,
+      default: null,
+      index: true,
+    },
+    priority: {
+      type: Number,
+      default: 5,
+      min: 1,
+      max: 10,
+      index: true,
+    },
+    autoUnfeature: {
+      type: Boolean,
+      default: false,
+    },
+    featuredBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+      index: true,
+    },
+    featuredViews: {
+      type: Number,
+      default: 0,
+    },
+    featuredClicks: {
+      type: Number,
+      default: 0,
+    },
+    featuredBookings: {
+      type: Number,
+      default: 0,
     },
     published: {
       type: Boolean,

@@ -54,8 +54,8 @@ export default function LoginPage() {
       console.log('🎯 REDIRECT LOGIC - userRole:', userRole, 'type:', typeof userRole);
       
       if (userRole === 'admin') {
-        console.log('🔵 Admin detected - Redirecting to /dashboard');
-        window.location.replace('/dashboard');
+        console.log('🔵 Admin detected - Redirecting to /admin');
+        window.location.replace('/admin');
       } else if (userRole === 'professional') {
         console.log('🟢 Professional detected - Redirecting to /professional');
         window.location.replace('/professional');
