@@ -21,18 +21,22 @@ interface NewsFlash {
 type BadgeColor = "info" | "success" | "warning" | "danger";
 
 // -------------------- Mappings --------------------
-const typeMap = {
-  success: { label: "Success", color: "success" as BadgeColor },
-  warning: { label: "Warning", color: "warning" as BadgeColor },
-  error: { label: "Danger", color: "danger" as BadgeColor },
-  info: { label: "Info", color: "info" as BadgeColor },
-} as const;
+const typeMap: Record<NewsFlash["type"], { label: string; color: BadgeColor }> = {
+  success: { label: "Success", color: "success" },
+  warning: { label: "Warning", color: "warning" },
+  error: { label: "Danger", color: "danger" },
+  info: { label: "Info", color: "info" },
+};
 
-const priorityMap = {
-  1: { label: "High", color: "danger" as BadgeColor },
-  2: { label: "Medium", color: "warning" as BadgeColor },
-  3: { label: "Low", color: "success" as BadgeColor },
-} as const;
+const priorityMap: Record<NewsFlash["priority"], { label: string; color: BadgeColor }> = {
+  1: { label: "High", color: "danger" },
+  2: { label: "Medium", color: "warning" },
+  3: { label: "Low", color: "success" },
+};
+
+// Explicit arrays for type-safe mapping
+const priorityKeys: NewsFlash["priority"][] = [1, 2, 3];
+const typeKeys: NewsFlash["type"][] = ["success", "warning", "error", "info"];
 
 // -------------------- Form Component (Add/Edit) --------------------
 function NewsFlashForm({
@@ -81,9 +85,6 @@ function NewsFlashForm({
       setLoading(false);
     }
   };
-
-  const priorityKeys = Object.keys(priorityMap) as Array<keyof typeof priorityMap>;
-  const typeKeys = Object.keys(typeMap) as Array<keyof typeof typeMap>;
 
   return (
     <form onSubmit={handleSubmit} className="p-4 w-full max-w-lg">
