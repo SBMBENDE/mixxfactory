@@ -88,8 +88,8 @@ export default function AdminEventsPage() {
                   </Button>
                   <Button
                     size="sm"
-                    variant="danger"
-                    className="ml-2"
+                    variant="outline"
+                    className="ml-2 text-red-600 border-red-400 hover:bg-red-50 dark:text-red-400 dark:border-red-600 dark:hover:bg-red-900"
                     onClick={async () => {
                       if (confirm(`Are you sure you want to delete the event "${event.title}"?`)) {
                         const res = await fetch(`/api/events/${event._id}`, {
