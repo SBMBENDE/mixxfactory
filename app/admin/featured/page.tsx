@@ -10,7 +10,6 @@ export default function FeaturedAdminPage() {
 
   const [events, setEvents] = useState([]);
   const [professionals, setProfessionals] = useState([]);
-  const [auditLog, setAuditLog] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
