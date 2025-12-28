@@ -209,8 +209,11 @@ export default function AdminNewsFlashPage() {
           </table>
         )}
       </div>
+
     </div>
   );
 }
+
+export default AdminNewsFlashPage;
 
 export default AdminNewsFlashPage;
