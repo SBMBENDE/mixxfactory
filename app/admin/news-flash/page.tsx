@@ -212,3 +212,5 @@ export default function AdminNewsFlashPage() {
     </div>
   );
 }
+
+export default AdminNewsFlashPage;
