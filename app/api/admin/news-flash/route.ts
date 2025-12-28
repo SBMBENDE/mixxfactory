@@ -15,7 +15,7 @@ const newsFlashSchema = z.object({
 });
 
 // GET: List all news flashes (latest first)
-export async function GET(req: NextRequest) {
+export async function GET() {
   await connectDB();
   const news = await NewsFlashModel.find().sort({ createdAt: -1 }).limit(20);
   return NextResponse.json({ news });
