@@ -81,7 +81,7 @@ export default function FeaturedAdminPage() {
         setProfessionals(pros => pros.map(p => p._id === item._id ? { ...p, priority: newPriority } : p));
       }
     } catch (err) {
-      setToast({ message: err.message || 'Error updating priority', type: 'error' });
+      setToast({ message: err instanceof Error ? err.message : 'Error updating priority', type: 'error' });
     }
   };
 
