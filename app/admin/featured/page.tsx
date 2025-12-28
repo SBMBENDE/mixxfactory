@@ -13,7 +13,7 @@ export default function FeaturedAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [toast, setToast] = useState(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [typeFilter, setTypeFilter] = useState('all');
 
   // Fetch all events and professionals on mount
