@@ -67,6 +67,15 @@ export interface SocialLinks {
 }
 
 export interface Professional {
+    // Featured management fields
+    featuredSince?: Date | null;
+    featuredUntil?: Date | null;
+    priority?: number;
+    autoUnfeature?: boolean;
+    featuredBy?: string | null;
+    featuredViews?: number;
+    featuredClicks?: number;
+    featuredBookings?: number;
   _id: string;
   userId?: string; // Reference to User who owns this profile
   name: string;
