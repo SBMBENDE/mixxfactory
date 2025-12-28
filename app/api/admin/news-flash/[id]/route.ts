@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { NewsFlashModel } from '@/lib/db/models';
 import { connectDB } from '@/lib/db/connection';
+import { verifyAdminAuth } from '@/lib/auth/middleware';
 
 const newsFlashSchema = z.object({
   title: z.string().min(3).max(120),
@@ -16,7 +17,10 @@ const newsFlashSchema = z.object({
 });
 
 // GET: Get a single news flash
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+// GET: Get a single news flash (admin only)
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await verifyAdminAuth(req);
+  if (!auth.isValid) return auth.error;
   await connectDB();
   const news = await NewsFlashModel.findById(params.id);
   if (!news) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -24,7 +28,10 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 }
 
 // PUT: Edit a news flash
+// PUT: Edit a news flash (admin only)
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await verifyAdminAuth(req);
+  if (!auth.isValid) return auth.error;
   await connectDB();
   const body = await req.json();
   const parsed = newsFlashSchema.safeParse(body);
@@ -45,7 +52,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE: Delete a news flash
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+// DELETE: Delete a news flash (admin only)
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await verifyAdminAuth(req);
+  if (!auth.isValid) return auth.error;
   await connectDB();
   const deleted = await NewsFlashModel.findByIdAndDelete(params.id);
   if (!deleted) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -53,7 +63,10 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
 }
 
 // PATCH: Publish/unpublish
+// PATCH: Publish/unpublish (admin only)
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await verifyAdminAuth(req);
+  if (!auth.isValid) return auth.error;
   await connectDB();
   const { published } = await req.json();
   if (typeof published !== 'boolean') {

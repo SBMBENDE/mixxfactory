@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+
 import { NewsFlashModel } from '@/lib/db/models';
 import { connectDB } from '@/lib/db/connection';
+import { verifyAdminAuth } from '@/lib/auth/middleware';
 
 const newsFlashSchema = z.object({
   title: z.string().min(3).max(120),
@@ -14,15 +16,21 @@ const newsFlashSchema = z.object({
   link: z.string().url().optional().nullable(),
 });
 
-// GET: List all news flashes (latest first)
-export async function GET() {
+
+// GET: List all news flashes (latest first, admin only)
+export async function GET(request: NextRequest) {
+  const auth = await verifyAdminAuth(request);
+  if (!auth.isValid) return auth.error;
   await connectDB();
   const news = await NewsFlashModel.find().sort({ createdAt: -1 }).limit(20);
   return NextResponse.json({ news });
 }
 
-// POST: Create a news flash
+
+// POST: Create a news flash (admin only)
 export async function POST(req: NextRequest) {
+  const auth = await verifyAdminAuth(req);
+  if (!auth.isValid) return auth.error;
   await connectDB();
   let body = await req.json();
   // Fallback: if 'content' is present but 'message' is not, map it
