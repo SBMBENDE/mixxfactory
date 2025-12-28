@@ -50,7 +50,7 @@ const eventSchema = z.object({
 });
 
 // GET: List all events (latest first)
-export async function GET(req: NextRequest) {
+ export async function GET(_: NextRequest) {
   await connectDB();
   const events = await EventModel.find().sort({ createdAt: -1 }).limit(20);
   return NextResponse.json({ events });
