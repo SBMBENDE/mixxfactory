@@ -56,7 +56,7 @@ export default function FeaturedAdminPage() {
         setProfessionals(pros => pros.map(p => p._id === item._id ? { ...p, featured: !p.featured } : p));
       }
     } catch (err) {
-      setToast({ message: err.message || 'Error updating featured status', type: 'error' });
+      setToast({ message: err instanceof Error ? err.message : 'Error updating featured status', type: 'error' });
     }
   };
 
