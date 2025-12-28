@@ -302,7 +302,7 @@ export default function AdminNewsFlashPage() {
                   {n.published && (
                     <Button
                       size="sm"
-                      variant="warning"
+                      variant="outline"
                       disabled={unpublishingId === n._id}
                       onClick={async () => {
                         setUnpublishingId(n._id);
