@@ -1,5 +1,4 @@
 // ============ NEWS FLASH MODEL ============
-import { z } from 'zod';
 
 
 export interface NewsFlash {
