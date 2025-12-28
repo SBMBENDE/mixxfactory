@@ -189,6 +189,15 @@ export interface JWTPayload {
 }
 
 export interface Event {
+    // Featured management fields
+    featuredSince?: Date | null;
+    featuredUntil?: Date | null;
+    priority?: number;
+    autoUnfeature?: boolean;
+    featuredBy?: string | null;
+    featuredViews?: number;
+    featuredClicks?: number;
+    featuredBookings?: number;
   _id: string;
   title: string;
   slug: string;
