@@ -287,10 +287,26 @@ export default function AdminNewsFlashPage() {
       {/* -------------------- Add Modal -------------------- */}
       {addModalOpen && (
         <Modal open={addModalOpen} onClose={() => setAddModalOpen(false)}>
-          <form onSubmit={handleAddSubmit} className="p-4 w-full max-w-lg">
+                         <Badge color={
+                           typeMap[n.type]?.color === 'error' ? 'danger'
+                             : typeMap[n.type]?.color === 'danger' ? 'danger'
+                             : typeMap[n.type]?.color === 'success' ? 'success'
+                             : typeMap[n.type]?.color === 'warning' ? 'warning'
+                             : typeMap[n.type]?.color === 'info' ? 'info'
+                             : 'info'
+                         }>
+                           {typeMap[n.type]?.label || n.type}
+                         </Badge>
             <h2 className="text-lg font-bold mb-4">Add News Flash</h2>
 
-            {/* Start & End Date */}
+                         <Badge color={
+                           priorityMap[n.priority as 1 | 2 | 3]?.color === 'error' ? 'danger'
+                             : priorityMap[n.priority as 1 | 2 | 3]?.color === 'danger' ? 'danger'
+                             : priorityMap[n.priority as 1 | 2 | 3]?.color === 'success' ? 'success'
+                             : priorityMap[n.priority as 1 | 2 | 3]?.color === 'warning' ? 'warning'
+                             : priorityMap[n.priority as 1 | 2 | 3]?.color === 'info' ? 'info'
+                             : 'info'
+                         }>
             <div className="mb-3 flex gap-2">
               <div className="flex-1">
                 <label className="block text-sm font-medium mb-1">Start Date & Time</label>
