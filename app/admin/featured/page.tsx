@@ -13,7 +13,6 @@ export default function FeaturedAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalItem, setModalItem] = useState(null);
   const [toast, setToast] = useState(null);
   const [typeFilter, setTypeFilter] = useState('all');
   const role = "super"; // Replace with real auth logic
