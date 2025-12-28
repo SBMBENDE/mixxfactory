@@ -11,7 +11,6 @@ export default function FeaturedAdminPage() {
   const [professionals, setProfessionals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [typeFilter, setTypeFilter] = useState('all');
 
