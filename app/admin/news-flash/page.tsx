@@ -32,8 +32,8 @@ export default function AdminNewsFlashPage() {
               <tr key={n.id}>
                 <td className="border px-3 py-2">{n.title}</td>
                 <td className="border px-3 py-2">{n.status}</td>
-                <td className="border px-3 py-2 text-center">
-                  <Button size="sm" variant="danger">
+                <td className="border px-4 py-2 text-center">
+                  <Button size="sm" variant="secondary">
                     Delete
                   </Button>
                 </td>
