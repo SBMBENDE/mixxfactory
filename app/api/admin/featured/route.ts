@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { EventModel, ProfessionalModel } from '@/lib/db/models';
 
-export async function GET(req: NextRequest) {
+export async function GET(_: NextRequest) {
   await connectDB();
   // Auto-unfeature expired items
   await Promise.all([
