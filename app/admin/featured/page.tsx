@@ -8,8 +8,8 @@ import { Toast } from "@/components/ui/Toast";
 export default function FeaturedAdminPage() {
 
 
-  const [events, setEvents] = useState([]);
-  const [professionals, setProfessionals] = useState([]);
+  const [events, setEvents] = useState<any[]>([]);
+  const [professionals, setProfessionals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
