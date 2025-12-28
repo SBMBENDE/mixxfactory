@@ -792,6 +792,15 @@ export const NewsletterSubscriberModel =
 
 // ============ EVENT MODEL ============
 interface IEventDocument extends Document {
+    // Featured management fields
+    featuredSince?: Date | null;
+    featuredUntil?: Date | null;
+    priority?: number;
+    autoUnfeature?: boolean;
+    featuredBy?: string | null;
+    featuredViews?: number;
+    featuredClicks?: number;
+    featuredBookings?: number;
   title: string;
   slug: string;
   description: string;
