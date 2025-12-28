@@ -36,7 +36,7 @@ export default function FeaturedAdminPage() {
 
 
   // Toggle featured status for event or professional
-  const handleToggleFeatured = async (type, item) => {
+  const handleToggleFeatured = async (type: 'event' | 'professional', item: any) => {
     const url = type === 'event'
       ? `/api/events/${item._id}`
       : `/api/professionals/${item._id}`;
@@ -61,7 +61,7 @@ export default function FeaturedAdminPage() {
   };
 
   // Change priority (move up/down)
-  const handleChangePriority = async (type, item, direction) => {
+  const handleChangePriority = async (type: 'event' | 'professional', item: any, direction: 'up' | 'down') => {
     const url = type === 'event'
       ? `/api/events/${item._id}`
       : `/api/professionals/${item._id}`;
