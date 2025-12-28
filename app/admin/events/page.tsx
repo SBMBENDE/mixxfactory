@@ -57,7 +57,7 @@ export default function AdminEventsPage() {
                 <td className="px-4 py-2">
                   <Button
                     size="sm"
-                    variant={event.featured ? 'success' : 'secondary'}
+                    variant={event.featured ? 'primary' : 'secondary'}
                     onClick={async () => {
                       const res = await fetch(`/api/events/${event._id}`, {
                         method: 'PUT',
