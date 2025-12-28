@@ -214,6 +214,5 @@ export default function AdminNewsFlashPage() {
   );
 }
 
-export default AdminNewsFlashPage;
 
 export default AdminNewsFlashPage;
