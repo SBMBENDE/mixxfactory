@@ -15,7 +15,6 @@ export default function FeaturedAdminPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [typeFilter, setTypeFilter] = useState('all');
-  const role = "super"; // Replace with real auth logic
 
   // Fetch all events and professionals on mount
   React.useEffect(() => {
