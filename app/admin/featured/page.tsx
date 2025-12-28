@@ -207,26 +207,7 @@ export default function FeaturedAdminPage() {
           )}
         </>
       )}
-      {/* Unfeature Modal */}
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Unfeature Item">
-        {modalItem && (
-          <div>
-            <p className="mb-4">Are you sure you want to unfeature this {modalItem.type === "event" ? "event" : "professional"}?</p>
-            <ul className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-              <li><b>Title/Name:</b> {modalItem.title || modalItem.name}</li>
-              <li><b>Priority:</b> {modalItem.priority}</li>
-              <li><b>Featured Since:</b> {modalItem.featuredSince ? new Date(modalItem.featuredSince).toLocaleDateString() : "-"}</li>
-              <li><b>Featured Until:</b> {modalItem.featuredUntil ? new Date(modalItem.featuredUntil).toLocaleDateString() : "-"}</li>
-            </ul>
-            <div className="flex gap-4 justify-end">
-              <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={modalItem?.processing}>Cancel</Button>
-              <Button variant="danger" onClick={() => handleUnfeature(modalItem.type, modalItem._id)} disabled={modalItem?.processing}>
-                {modalItem?.processing ? "Processing..." : "Unfeature"}
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
+      {/* Unfeature Modal removed: modalItem state no longer present */}
 
       {/* Toast Notification */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
