@@ -1,3 +1,48 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/Button";
+
+export default function AdminNewsFlashPage() {
+  const [news, setNews] = useState<
+    { id: string; title: string; status: string }[]
+  >([]);
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">News Flash Admin</h1>
+
+      {news.length === 0 ? (
+        <p className="text-gray-500">No news flashes yet.</p>
+      ) : (
+        <table className="min-w-full border">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border px-4 py-2 text-left">Title</th>
+              <th className="border px-4 py-2">Status</th>
+              <th className="border px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {news.map((item) => (
+              <tr key={item.id}>
+                <td className="border px-4 py-2">{item.title}</td>
+                <td className="border px-4 py-2 text-center">
+                  {item.status}
+                </td>
+                <td className="border px-4 py-2 text-center">
+                  <Button size="sm" variant="danger">
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
 
 "use client";
 import { useEffect, useState } from "react";
