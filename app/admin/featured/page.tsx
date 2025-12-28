@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Modal } from "@/components/ui/Modal";
 import { Toast } from "@/components/ui/Toast";
 
 export default function FeaturedAdminPage() {
