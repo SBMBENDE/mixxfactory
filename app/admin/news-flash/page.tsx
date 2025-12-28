@@ -33,7 +33,9 @@ export default function AdminNewsFlashPage() {
 
   useEffect(() => { fetchNews(); }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type, checked } = e.target;
     setForm((f) => ({ ...f, [name]: type === "checkbox" ? checked : value }));
   };
@@ -89,11 +91,13 @@ export default function AdminNewsFlashPage() {
       const data = await res.json();
       setError(data.error ? JSON.stringify(data.error) : "Error");
       return;
-    }
-    setShowForm(false);
-    setEditingId(null);
-    setForm(defaultForm);
-    fetchNews();
+
+      const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      ) => {
+        const { name, value, type, checked } = e.target;
+        setForm((f) => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+      };
   };
 
   return (
