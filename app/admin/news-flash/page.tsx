@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 
+// -------------------- Types --------------------
 interface NewsFlash {
   _id: string;
   title: string;
@@ -20,73 +21,73 @@ interface NewsFlash {
 type BadgeColor = "info" | "success" | "warning" | "danger";
 
 // -------------------- Mappings --------------------
-const typeMap: Record<NewsFlash["type"], { label: string; color: BadgeColor }> = {
-  success: { label: "Success", color: "success" },
-  warning: { label: "Warning", color: "warning" },
-  error: { label: "Danger", color: "danger" },
-  info: { label: "Info", color: "info" },
-};
+const typeMap = {
+  success: { label: "Success", color: "success" as BadgeColor },
+  warning: { label: "Warning", color: "warning" as BadgeColor },
+  error: { label: "Danger", color: "danger" as BadgeColor },
+  info: { label: "Info", color: "info" as BadgeColor },
+} as const;
 
-const priorityMap: Record<NewsFlash["priority"], { label: string; color: BadgeColor }> = {
-  1: { label: "High", color: "danger" },
-  2: { label: "Medium", color: "warning" },
-  3: { label: "Low", color: "success" },
-};
+const priorityMap = {
+  1: { label: "High", color: "danger" as BadgeColor },
+  2: { label: "Medium", color: "warning" as BadgeColor },
+  3: { label: "Low", color: "success" as BadgeColor },
+} as const;
 
-// -------------------- Edit Form --------------------
-function EditNewsFlashForm({
-  newsFlash,
+// -------------------- Form Component (Add/Edit) --------------------
+function NewsFlashForm({
+  initialData,
   onClose,
   onSave,
 }: {
-  newsFlash: NewsFlash;
+  initialData: NewsFlash;
   onClose: () => void;
-  onSave: (updated: NewsFlash) => void;
+  onSave: (news: NewsFlash) => void;
 }) {
-  const [form, setForm] = useState({
-    title: newsFlash.title,
-    message: newsFlash.message,
-    type: newsFlash.type,
-    priority: newsFlash.priority,
-    link: newsFlash.link || "",
-    published: newsFlash.published,
-    startDate: newsFlash.startDate.slice(0, 16),
-    endDate: newsFlash.endDate.slice(0, 16),
-  });
-
+  const [form, setForm] = useState({ ...initialData });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleEditSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const res = await fetch(`/api/admin/news-flash/${newsFlash._id}`, {
-        method: "PUT",
+      const method = initialData._id ? "PUT" : "POST";
+      const url = initialData._id
+        ? `/api/admin/news-flash/${initialData._id}`
+        : `/api/admin/news-flash`;
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          link: form.link || null,
-          priority: Number(form.priority) as 1 | 2 | 3,
+          priority: form.priority,
           startDate: new Date(form.startDate).toISOString(),
           endDate: new Date(form.endDate).toISOString(),
+          link: form.link || null,
         }),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error?.message || "Failed to update news flash");
+      if (!res.ok) throw new Error(data?.error?.message || "Failed to save news flash");
+
       onSave(data.news);
     } catch (err: any) {
-      setError(err.message || "Failed to update news flash");
+      setError(err.message || "Failed to save news flash");
     } finally {
       setLoading(false);
     }
   };
 
+  const priorityKeys = Object.keys(priorityMap) as Array<keyof typeof priorityMap>;
+  const typeKeys = Object.keys(typeMap) as Array<keyof typeof typeMap>;
+
   return (
-    <form onSubmit={handleEditSubmit} className="p-4 w-full max-w-lg">
-      <h2 className="text-lg font-bold mb-4">Edit News Flash</h2>
+    <form onSubmit={handleSubmit} className="p-4 w-full max-w-lg">
+      <h2 className="text-lg font-bold mb-4">{initialData._id ? "Edit" : "Add"} News Flash</h2>
 
       <div className="mb-3 flex gap-2">
         <div className="flex-1">
@@ -144,9 +145,9 @@ function EditNewsFlashForm({
               setForm(f => ({ ...f, type: e.target.value as NewsFlash["type"] }))
             }
           >
-            {Object.keys(typeMap).map((key) => (
+            {typeKeys.map((key) => (
               <option key={key} value={key}>
-                {typeMap[key as NewsFlash["type"]].label}
+                {typeMap[key].label}
               </option>
             ))}
           </select>
@@ -158,9 +159,9 @@ function EditNewsFlashForm({
             value={form.priority}
             onChange={(e) => setForm(f => ({ ...f, priority: Number(e.target.value) as 1 | 2 | 3 }))}
           >
-            {Object.keys(priorityMap).map((key) => (
+            {priorityKeys.map((key) => (
               <option key={key} value={key}>
-                {priorityMap[key as NewsFlash["priority"]].label}
+                {priorityMap[key].label}
               </option>
             ))}
           </select>
@@ -171,7 +172,7 @@ function EditNewsFlashForm({
         <label className="block text-sm font-medium mb-1">Link (optional)</label>
         <input
           className="w-full border rounded px-2 py-1"
-          value={form.link}
+          value={form.link || ""}
           onChange={(e) => setForm(f => ({ ...f, link: e.target.value }))}
           type="url"
           placeholder="https://... or /internal"
@@ -210,20 +211,6 @@ export default function AdminNewsFlashPage() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [unpublishingId, setUnpublishingId] = useState<string | null>(null);
 
-  const [addForm, setAddForm] = useState({
-    title: "",
-    message: "",
-    type: "success" as NewsFlash["type"],
-    priority: 1 as NewsFlash["priority"],
-    link: "",
-    published: true,
-    startDate: new Date().toISOString().slice(0, 16),
-    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-  });
-
-  const [addLoading, setAddLoading] = useState(false);
-  const [addError, setAddError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchNews = async () => {
       setLoading(true);
@@ -240,42 +227,16 @@ export default function AdminNewsFlashPage() {
     fetchNews();
   }, []);
 
-  const handleAddSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAddLoading(true);
-    setAddError(null);
-    try {
-      const res = await fetch("/api/admin/news-flash", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...addForm,
-          link: addForm.link || null,
-          priority: addForm.priority,
-          startDate: new Date(addForm.startDate).toISOString(),
-          endDate: new Date(addForm.endDate).toISOString(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error?.message || "Failed to add news flash");
-
-      setItems((prev) => [data.news, ...prev]);
-      setAddModalOpen(false);
-      setAddForm({
-        title: "",
-        message: "",
-        type: "success",
-        priority: 1,
-        link: "",
-        published: true,
-        startDate: new Date().toISOString().slice(0, 16),
-        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-      });
-    } catch (err: any) {
-      setAddError(err.message || "Failed to add news flash");
-    } finally {
-      setAddLoading(false);
-    }
+  const initialAddForm: NewsFlash = {
+    _id: "",
+    title: "",
+    message: "",
+    type: "success",
+    priority: 1,
+    link: "",
+    published: true,
+    startDate: new Date().toISOString().slice(0, 16),
+    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
   };
 
   return (
@@ -287,19 +248,14 @@ export default function AdminNewsFlashPage() {
       {/* Add Modal */}
       {addModalOpen && (
         <Modal open={addModalOpen} onClose={() => setAddModalOpen(false)}>
-          <form onSubmit={handleAddSubmit} className="p-4 w-full max-w-lg">
-            <h2 className="text-lg font-bold mb-4">Add News Flash</h2>
-
-            {/* Copy all inputs from Edit form but using addForm state */}
-            <EditNewsFlashForm
-              newsFlash={addForm as NewsFlash}
-              onClose={() => setAddModalOpen(false)}
-              onSave={(newItem) => {
-                setItems(prev => [newItem, ...prev]);
-                setAddModalOpen(false);
-              }}
-            />
-          </form>
+          <NewsFlashForm
+            initialData={initialAddForm}
+            onClose={() => setAddModalOpen(false)}
+            onSave={(newItem) => {
+              setItems(prev => [newItem, ...prev]);
+              setAddModalOpen(false);
+            }}
+          />
         </Modal>
       )}
 
@@ -386,8 +342,8 @@ export default function AdminNewsFlashPage() {
       {/* Edit Modal */}
       {editModalOpen && editing && (
         <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
-          <EditNewsFlashForm
-            newsFlash={editing}
+          <NewsFlashForm
+            initialData={editing}
             onClose={() => setEditModalOpen(false)}
             onSave={(updated) => {
               setItems(prev => prev.map(i => i._id === updated._id ? updated : i));
