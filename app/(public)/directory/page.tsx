@@ -21,7 +21,7 @@ import { AppImage } from '@/components/AppImage';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
-import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
+// import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
 // Emoji mapping for categories
 const categoryEmojis: Record<string, string> = {
