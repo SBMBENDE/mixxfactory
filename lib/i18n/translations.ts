@@ -358,6 +358,7 @@ export const translations = {
       alreadyReviewed: 'You have already submitted a review for this professional.',
       verified: 'Verified Review',
       stars: 'stars',
+      loginRequired: 'You must be logged in to leave a review.',
     },
     // Error page
     error: {
@@ -803,6 +804,7 @@ export const translations = {
       alreadyReviewed: 'Vous avez déjà soumis un avis pour ce professionnel.',
       verified: 'Avis vérifié',
       stars: 'étoiles',
+      loginRequired: 'Vous devez être connecté pour laisser un avis.',
     },
     // Error page
     error: {
