@@ -24,27 +24,11 @@ import { useLanguage } from '@/hooks/useLanguage';
 // import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
 // Emoji mapping for categories
-const categoryEmojis: Record<string, string> = {
-  dj: '🎧',
-  'event-hall': '🏛️',
-  stylist: '✨',
-  restaurant: '🍽️',
-  nightclub: '🌙',
-  cameraman: '📹',
-  promoter: '📢',
-  decorator: '🎨',
-  caterer: '🍽️',
-  florist: '🌸',
-  tech: '💻',
-  'transport-service': '🚗',
-  'cleaning-services': '🧹',
-  childcare: '👶',
-  'grocery-stores': '🛒',
-  'handyman-services': '🔧',
-};
+// Removed unused categoryEmojis
 
 // Map category slugs to tagline translation keys
 const categoryTaglineKeys: Record<string, string> = {
+  const categoryTaglineKeys: Record<string, string> = {
   dj: 'dj',
   'event-hall': 'eventHall',
   stylist: 'stylist',
