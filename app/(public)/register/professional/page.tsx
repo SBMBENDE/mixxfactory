@@ -69,7 +69,7 @@ export default function ProfessionalRegistrationPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   // Removed unused isAuthenticated state
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified] = useState(false);
 
   // (Removed forced auth check and redirect. Registration page is now accessible to unauthenticated users.)
 
