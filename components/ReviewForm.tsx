@@ -19,7 +19,7 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
     title: '',
     comment: '',
   });
-  const { authStatus, isAuthenticated, user } = useAuth();
+  const { authStatus, isAuthenticated } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
