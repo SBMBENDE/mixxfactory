@@ -48,7 +48,7 @@ const categoryTaglineKeys: Record<string, string> = {
 
 export default function DirectoryPage() {
   const searchParams = useSearchParams();
-  const { language } = useLanguage();
+  // const { language } = useLanguage();
   const [professionals, setProfessionals] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
