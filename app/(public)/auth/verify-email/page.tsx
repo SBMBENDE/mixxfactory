@@ -52,7 +52,7 @@ export default function VerifyEmailPage() {
         setStatus('success');
         setMessage(data.message || 'Email verified successfully!');
 
-        // Redirect to professional profile completion after 3 seconds
+        // Always redirect to complete profile page after 3 seconds
         setTimeout(() => {
           router.push('/register/professional');
         }, 3000);

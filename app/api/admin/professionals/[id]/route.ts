@@ -4,7 +4,7 @@
 
 import { NextRequest } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
-import { ProfessionalModel } from '@/lib/db/models';
+import { ProfessionalModel, UserModel } from '@/lib/db/models';
 import { updateProfessionalSchema } from '@/lib/validations';
 import { verifyAdminAuth } from '@/lib/auth/middleware';
 import { verifyAuth } from '@/lib/auth/verify';
@@ -119,13 +119,29 @@ export async function DELETE(
 
     const { id } = params;
 
+    // Find and delete the professional
     const professional = await ProfessionalModel.findByIdAndDelete(id);
 
     if (!professional) {
       return notFoundResponse('Professional');
     }
 
-    return successResponse(null, 'Professional deleted successfully');
+
+    // Also delete the associated user by email if present, with logging
+    if (professional.email) {
+      try {
+        const userDeleteResult = await UserModel.deleteOne({ email: professional.email });
+        if (userDeleteResult.deletedCount === 1) {
+          console.log(`[DELETE] User with email ${professional.email} deleted successfully.`);
+        } else {
+          console.warn(`[DELETE] No user found with email ${professional.email} to delete.`);
+        }
+      } catch (err) {
+        console.error(`[DELETE] Error deleting user with email ${professional.email}:`, err);
+      }
+    }
+
+    return successResponse(null, 'Professional and associated user deleted successfully');
   } catch (error) {
     console.error('Error deleting professional:', error);
     return internalErrorResponse();

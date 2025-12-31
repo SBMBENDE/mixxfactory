@@ -107,12 +107,23 @@ export async function POST(request: NextRequest) {
       socialLinks: socialLinks || {},
       priceRange: priceRange || {},
     });
-    
+
     console.log('💾 Saving professional to database...');
     await professional.save();
     console.log('💾 Professional saved, populating category...');
     await professional.populate('category');
     console.log('✅ Category populated');
+
+    // Upgrade user accountType to 'professional' if not already
+    if (userId) {
+      const { UserModel } = await import('@/lib/db/models');
+      const userDoc = await UserModel.findById(userId);
+      if (userDoc && userDoc.accountType !== 'professional') {
+        userDoc.accountType = 'professional';
+        await userDoc.save();
+        console.log('✅ User accountType updated to professional');
+      }
+    }
 
     console.log('✅ Professional created:', { slug: professional.slug, userId: professional.userId });
 

@@ -1,3 +1,5 @@
+"use client";
+import { CategorySelect } from '@/components/ui/CategorySelect';
 /**
  * Directory page - browse professionals
  * Uses Server Components + Suspense for initial load
@@ -8,8 +10,6 @@
  * - Client handles dynamic search/category filtering
  * - Suspense prevents blocking initial page load
  */
-
-'use client';
 
 // ISR: Revalidate every 5 minutes (300 seconds)
 export const revalidate = 300;
@@ -265,43 +265,12 @@ export default function DirectoryPage() {
 
           {/* Category Filter */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '220px' }}>
-            <select
+            <CategorySelect
+              categories={categories}
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              style={{
-                padding: '0.75rem 1rem',
-                border: '2px solid #e5e7eb',
-                borderRadius: '0.5rem',
-                fontSize: '0.95rem',
-                color: selectedCategory ? '#1f2937' : '#9ca3af',
-                backgroundColor: '#fafafa',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontWeight: '500',
-                appearance: 'none',
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231f2937' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 0.75rem center',
-                paddingRight: '2rem',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#2563eb';
-                e.currentTarget.style.backgroundColor = '#ffffff';
-                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = '#e5e7eb';
-                e.currentTarget.style.backgroundColor = '#fafafa';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <option value="">{t.directory.allCategories}</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category.slug}>
-                  {categoryEmojis[category.slug] || '•'} {getCategoryNameTranslation(category.slug, language as 'en' | 'fr')}
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedCategory}
+              placeholder={t.directory.allCategories}
+            />
           </div>
 
           {/* Clear/Search Button */}

@@ -8,9 +8,8 @@ import { ProfessionalModel, CategoryModel } from '@/lib/db/models';
 import { searchQuerySchema } from '@/lib/validations';
 import { successResponse, validationErrorResponse } from '@/utils/api-response';
 
-// Cache for 30 minutes (1800 seconds) when no search/filter params
-// Professionals list changes less frequently than you'd think
-export const revalidate = 1800;
+// Disable cache for instant updates (dev/debug)
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   try {

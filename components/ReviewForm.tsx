@@ -6,6 +6,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ReviewFormProps {
   professionalId: string;
@@ -14,12 +15,11 @@ interface ReviewFormProps {
 
 export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProps) {
   const [formData, setFormData] = useState({
-    clientName: '',
-    clientEmail: '',
     rating: 5,
     title: '',
     comment: '',
   });
+  const { authStatus, isAuthenticated, user } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -38,6 +38,12 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
     setLoading(true);
     setMessage(null);
 
+    if (!isAuthenticated) {
+      setMessage({ type: 'error', text: t.reviews.loginRequired });
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/reviews', {
         method: 'POST',
@@ -52,7 +58,7 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
 
       if (response.ok) {
         setMessage({ type: 'success', text: t.reviews.submitSuccess });
-        setFormData({ clientName: '', clientEmail: '', rating: 5, title: '', comment: '' });
+        setFormData({ rating: 5, title: '', comment: '' });
         if (onSuccess) onSuccess();
       } else {
         setMessage({ type: 'error', text: data.error || t.reviews.submitError });
@@ -63,6 +69,40 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
       setLoading(false);
     }
   };
+
+
+  if (authStatus === 'loading') {
+    return (
+      <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', textAlign: 'center' }}>
+        {t.reviews.loadingAuth}
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', textAlign: 'center' }}>
+        <p style={{ marginBottom: '1rem' }}>{t.reviews.loginToReview}</p>
+        {/* You can replace this with your actual login modal/trigger */}
+        <button
+          type="button"
+          style={{
+            padding: '0.75rem 2rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.375rem',
+            fontSize: '1rem',
+            fontWeight: '600',
+            cursor: 'pointer',
+          }}
+          onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal'))}
+        >
+          {t.reviews.loginButton}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
@@ -81,50 +121,6 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
           {message.text}
         </div>
       )}
-
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.375rem' }}>
-          {t.reviews.yourName} *
-        </label>
-        <input
-          type="text"
-          name="clientName"
-          value={formData.clientName}
-          onChange={handleChange}
-          required
-          minLength={2}
-          maxLength={100}
-          style={{
-            width: '100%',
-            padding: '0.625rem 1rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            fontSize: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
-      </div>
-
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.375rem' }}>
-          {t.reviews.yourEmail} *
-        </label>
-        <input
-          type="email"
-          name="clientEmail"
-          value={formData.clientEmail}
-          onChange={handleChange}
-          required
-          style={{
-            width: '100%',
-            padding: '0.625rem 1rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            fontSize: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
-      </div>
 
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.375rem' }}>
@@ -163,7 +159,7 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
           required
           minLength={3}
           maxLength={200}
-          placeholder="Summarize your experience"
+          placeholder={t.reviews.reviewTitlePlaceholder || "Summarize your experience"}
           style={{
             width: '100%',
             padding: '0.625rem 1rem',
@@ -187,7 +183,7 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
           minLength={10}
           maxLength={5000}
           rows={4}
-          placeholder="Share your experience with this professional..."
+          placeholder={t.reviews.reviewCommentPlaceholder || "Share your experience with this professional..."}
           style={{
             width: '100%',
             padding: '0.75rem 1rem',

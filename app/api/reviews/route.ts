@@ -6,9 +6,10 @@
 
 import { NextRequest } from 'next/server';
 import { connectDBWithTimeout } from '@/lib/db/connection';
-import { ReviewModel, ProfessionalModel } from '@/lib/db/models';
+import { ReviewModel, ProfessionalModel, UserModel } from '@/lib/db/models';
 import { createReviewSchema } from '@/lib/validations';
 import { successResponse, errorResponse, validationErrorResponse } from '@/utils/api-response';
+import { verifyAuth } from '@/lib/auth/verify';
 
 // Cache for 5 minutes - reviews update periodically
 export const revalidate = 300;
@@ -106,15 +107,27 @@ export async function POST(request: NextRequest) {
   try {
     await connectDBWithTimeout();
 
-    const body = await request.json();
+    // Require authentication
+    const auth = await verifyAuth(request);
+    if (!auth?.payload) {
+      return errorResponse('Authentication required to submit a review', 401);
+    }
+    const userId = auth.payload.userId;
 
-    // Validate input
+    // Get user info
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return errorResponse('User not found', 404);
+    }
+
+    const body = await request.json();
+    // Validate input (but ignore clientName/clientEmail from body)
     const validationResult = createReviewSchema.safeParse(body);
     if (!validationResult.success) {
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
-    const { professionalId, clientName, clientEmail, rating, title, comment } = validationResult.data;
+    const { professionalId, rating, title, comment } = validationResult.data;
 
     // Verify professional exists
     const professional = await ProfessionalModel.findById(professionalId);
@@ -122,12 +135,16 @@ export async function POST(request: NextRequest) {
       return errorResponse('Professional not found', 404);
     }
 
-    // Check if review already exists from this email
+    // Prevent professionals from reviewing themselves
+    if (professional.userId && professional.userId.toString() === userId) {
+      return errorResponse('You cannot review your own profile', 403);
+    }
+
+    // Check if review already exists from this user
     const existingReview = await ReviewModel.findOne({
       professionalId,
-      clientEmail,
+      clientEmail: user.email,
     });
-
     if (existingReview) {
       return errorResponse('You have already submitted a review for this professional', 409);
     }
@@ -135,8 +152,8 @@ export async function POST(request: NextRequest) {
     // Create review (requires admin approval)
     const review = new ReviewModel({
       professionalId,
-      clientName,
-      clientEmail,
+      clientName: user.firstName || user.email.split('@')[0],
+      clientEmail: user.email,
       rating,
       title,
       comment,

@@ -24,7 +24,6 @@ function useProvideAuth(): UseAuthReturn {
 
   const checkAuth = useCallback(async () => {
     if (hasCheckedAuth) return;
-    
     setAuthStatus('loading');
     try {
       const response = await fetch('/api/auth/me', {
@@ -41,6 +40,10 @@ function useProvideAuth(): UseAuthReturn {
         setUser(data.data || null);
         setAuthStatus('authenticated');
       } else {
+        // Dispatch global 401 event if unauthorized
+        if (response.status === 401 && typeof window !== 'undefined') {
+          import('@/hooks/useGlobal401Handler').then(mod => mod.dispatchGlobal401());
+        }
         setUser(null);
         setAuthStatus('unauthenticated');
       }

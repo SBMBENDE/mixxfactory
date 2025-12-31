@@ -14,6 +14,8 @@ const quickLinks = [
   { label: 'Manage Featured', href: '/admin/featured' },
   { label: 'Manage Users', href: '/admin/users' },
   { label: 'Manage Professionals', href: '/admin/professionals' },
+  { label: 'Manage Categories', href: '/admin/categories' },
+  { label: 'Manage Reviews', href: '/admin/reviews' },
   { label: 'View Bookings', href: '/admin/bookings' },
 ];
 

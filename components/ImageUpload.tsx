@@ -12,12 +12,14 @@ interface ImageUploadProps {
   professionalId: string;
   onImagesAdded: (newImages: string[]) => void;
   isLoading?: boolean;
+  manualSave?: boolean;
 }
 
 export default function ImageUpload({
   professionalId,
   onImagesAdded,
   isLoading = false,
+  manualSave = false,
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -151,6 +153,8 @@ export default function ImageUpload({
         formData.append('file', file);
         formData.append('upload_preset', 'mixxfactory'); // You can customize this
 
+        // Debug: log file and formData
+        console.log('Uploading file to Cloudinary:', file);
         // Upload to Cloudinary
         const cloudinaryResponse = await fetch(
           `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
@@ -159,33 +163,40 @@ export default function ImageUpload({
             body: formData,
           }
         );
-
+        console.log('Cloudinary response status:', cloudinaryResponse.status);
         if (!cloudinaryResponse.ok) {
+          const errorText = await cloudinaryResponse.text();
+          console.error('Cloudinary error:', errorText);
           throw new Error(`Failed to upload ${file.name} to Cloudinary`);
         }
 
         const cloudinaryData = await cloudinaryResponse.json();
+        console.log('Cloudinary upload result:', cloudinaryData);
         uploadedUrls.push(cloudinaryData.secure_url);
-      }
-
-      // Save to database
-      const response = await fetch(`/api/admin/professionals/${professionalId}/images`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ images: uploadedUrls }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Failed to save images');
       }
 
       // Clean up previews
       previewUrls.forEach(({ preview }) => URL.revokeObjectURL(preview));
       setPreviewUrls([]);
-      onImagesAdded(uploadedUrls);
+
+      if (manualSave) {
+        onImagesAdded(uploadedUrls);
+      } else {
+        // Save to database
+        const response = await fetch(`/api/admin/professionals/${professionalId}/images`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ images: uploadedUrls }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to save images');
+        }
+        onImagesAdded(uploadedUrls);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload images');
     } finally {

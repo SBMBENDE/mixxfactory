@@ -5,11 +5,14 @@
  */
 
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as SolidIcons from '@fortawesome/free-solid-svg-icons';
 
 interface Category {
   _id: string;
   name: string;
   slug: string;
+  icon?: string;
 }
 
 interface Props {
@@ -89,7 +92,22 @@ export default function PopularCategoriesServer({ categories }: Props) {
             }
           `}</style>
           {categories.map((category) => {
-            const emoji = categoryEmojis[category.slug] || '⭐';
+            let iconNode: React.ReactNode = categoryEmojis[category.slug] || '⭐';
+            if (category.icon) {
+              if (category.icon.startsWith('fa-')) {
+                const iconKey =
+                  'fa' +
+                  category.icon
+                    .replace(/^fa-/, '-')
+                    .split('-')
+                    .map((part, i) => (i === 0 ? '' : part.charAt(0).toUpperCase() + part.slice(1)))
+                    .join('');
+                const faIcon = (SolidIcons as any)[iconKey] || (SolidIcons as any)['faPaintBrush'];
+                iconNode = <FontAwesomeIcon icon={faIcon} style={{ fontSize: '2rem', marginBottom: '0.5rem' }} />;
+              } else {
+                iconNode = <span style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{category.icon}</span>;
+              }
+            }
             return (
               <Link
                 key={category._id}
@@ -99,8 +117,11 @@ export default function PopularCategoriesServer({ categories }: Props) {
                 <div style={{
                   fontSize: '2rem',
                   marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                  {emoji}
+                  {iconNode}
                 </div>
                 <h3 style={{
                   fontSize: '0.95rem',

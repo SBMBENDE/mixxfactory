@@ -10,7 +10,8 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "security:check": "node scripts/monitor-security-patches.js"
+    "security:check": "node scripts/monitor-security-patches.js",
+    "cleanup:orphans": "ts-node -r tsconfig-paths/register scripts/cleanup-orphaned-users.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",

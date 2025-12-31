@@ -71,35 +71,7 @@ export default function ProfessionalRegistrationPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
 
-  // Check authentication and email verification
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me', { 
-          credentials: 'include',
-          cache: 'no-store',
-        });
-        if (!res.ok) {
-          router.push('/auth/login');
-          return;
-        }
-        const userData = await res.json();
-        setIsAuthenticated(true);
-        
-        // Check if email is verified
-        if (userData.data?.emailVerified) {
-          setEmailVerified(true);
-        } else {
-          // Email not verified - redirect to verification page
-          router.push('/auth/resend-verification');
-          return;
-        }
-      } catch {
-        router.push('/auth/login');
-      }
-    };
-    checkAuth();
-  }, [router]);
+  // (Removed forced auth check and redirect. Registration page is now accessible to unauthenticated users.)
 
   // Fetch categories
   useEffect(() => {

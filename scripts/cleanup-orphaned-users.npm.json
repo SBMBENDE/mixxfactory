@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "cleanup:orphans": "ts-node -r tsconfig-paths/register scripts/cleanup-orphaned-users.ts"
+  }
+}
