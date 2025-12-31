@@ -68,7 +68,7 @@ export default function ProfessionalRegistrationPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Removed unused isAuthenticated state
   const [emailVerified, setEmailVerified] = useState(false);
 
   // (Removed forced auth check and redirect. Registration page is now accessible to unauthenticated users.)
@@ -254,13 +254,7 @@ export default function ProfessionalRegistrationPage() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div style={{ padding: '3rem 1rem', textAlign: 'center' }}>
-        <p style={{ color: '#6b7280' }}>Loading...</p>
-      </div>
-    );
-  }
+  // Removed unused isAuthenticated check and loading UI
 
   if (!emailVerified) {
     return (
