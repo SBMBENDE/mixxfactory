@@ -20,7 +20,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { AppImage } from '@/components/AppImage';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
-import { useLanguage } from '@/hooks/useLanguage';
+// import { useLanguage } from '@/hooks/useLanguage';
 // import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
 // Emoji mapping for categories
