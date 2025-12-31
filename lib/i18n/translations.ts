@@ -359,6 +359,7 @@ export const translations = {
       verified: 'Verified Review',
       stars: 'stars',
       loginRequired: 'You must be logged in to leave a review.',
+      loginToReview: 'Please log in to leave a review.',
       loadingAuth: 'Checking authentication...',
     },
     // Error page
@@ -806,6 +807,7 @@ export const translations = {
       verified: 'Avis vérifié',
       stars: 'étoiles',
       loginRequired: 'Vous devez être connecté pour laisser un avis.',
+      loginToReview: 'Veuillez vous connecter pour laisser un avis.',
       loadingAuth: "Vérification de l'authentification...",
     },
     // Error page
