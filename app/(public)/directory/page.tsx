@@ -28,7 +28,6 @@ import { useLanguage } from '@/hooks/useLanguage';
 
 // Map category slugs to tagline translation keys
 const categoryTaglineKeys: Record<string, string> = {
-  const categoryTaglineKeys: Record<string, string> = {
   dj: 'dj',
   'event-hall': 'eventHall',
   stylist: 'stylist',
