@@ -130,11 +130,15 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                     fontWeight: '500',
                   }}>
                     {(() => {
-                      const slug = professional.category?.slug || professional.category?.name?.toLowerCase().replace(/\s+/g, '-');
+                      // Accept both with and without slug property for compatibility
+                      const cat: any = professional.category;
+                      const slug = (typeof cat.slug === 'string' && cat.slug)
+                        || (typeof cat.name === 'string' && cat.name.toLowerCase().replace(/\s+/g, '-'))
+                        || '';
                       if (slug && categories && Object.prototype.hasOwnProperty.call(categories, slug)) {
                         return categories[slug];
                       }
-                      return professional.category?.name;
+                      return cat.name;
                     })()}
                   </span>
                 )}
