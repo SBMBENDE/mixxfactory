@@ -7,6 +7,8 @@
 
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslations } from '@/hooks/useTranslations';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faEye, faCheckCircle, faExclamationTriangle, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +30,7 @@ interface ProfileData {
   gallery: string[];
   category: {
     name: string;
+    slug?: string;
   };
   location: {
     city: string;
@@ -45,6 +48,8 @@ interface ProfileData {
 
 
 export default function ProfilePage() {
+    const { language } = useLanguage();
+    const t = useTranslations();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [gallery, setGallery] = useState<string[]>([]);
@@ -376,7 +381,19 @@ export default function ProfilePage() {
           
           <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
             <span style={{ fontWeight: '600', color: '#6b7280' }}>Category:</span>
-            <span>{profile.category.name}</span>
+            <span>{
+              (() => {
+                // Use translation mapping if available
+                // Prefer slug if available, fallback to name
+                // Only use slug if it exists, otherwise compute from name
+                const slug = profile.category.slug || profile.category.name?.toLowerCase().replace(/\s+/g, '-');
+                const categories = t.categories as Record<string, string>;
+                if (language === 'fr' && categories && slug && Object.prototype.hasOwnProperty.call(categories, slug)) {
+                  return categories[slug];
+                }
+                return profile.category.name;
+              })()
+            }</span>
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
