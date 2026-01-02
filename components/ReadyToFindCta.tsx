@@ -1,5 +1,4 @@
 "use client";
-import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslations } from '@/hooks/useTranslations';
 
 export default function ReadyToFindCta() {
