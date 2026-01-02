@@ -496,8 +496,8 @@ export const translations = {
     // Home page
     home: {
       title: 'Découvrez les Professionnels\nde Confiance Vérifiés',
-      tagline: 'Trouvez des experts de confiance et les événements à proximité.',
-      subtitle: 'Accédez instantanément à des professionnels de confiance, des lieux et des événements près de vous.',
+        tagline: 'Connexion avec des professionnels vérifiés et de confiance',
+        subtitle: 'Découvrez des professionnels de confiance, des lieux et des événements — instantanément.',
       discoverBtn: 'Trouver un professionnel',
       eventsBtn: 'Explorer les événements',
       registerBtn: 'S\'inscrire en tant que professionnel',
