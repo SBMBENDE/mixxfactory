@@ -1,13 +1,17 @@
+
 /**
- * FeaturedProfessionals Server Component
+ * FeaturedProfessionals Client Component
  * Receives data from parent server component
- * Pure rendering - no fetching, no hooks
+ * Uses translation hook
  */
+
+'use client';
 
 import Link from 'next/link';
 import { AppImage } from '@/components/AppImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface Professional {
   _id: string;
@@ -26,6 +30,7 @@ interface Props {
 }
 
 export default function FeaturedProfessionalsServer({ professionals }: Props) {
+  const t = useTranslations();
   if (!professionals || professionals.length === 0) {
     return null;
   }
@@ -44,13 +49,13 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
             marginBottom: '0.5rem',
             color: '#1f2937',
           }}>
-            Top-Rated Professionals
+            {t.home.topRatedProfessionals}
           </h2>
           <p style={{
             color: '#6b7280',
             fontSize: '1rem',
           }}>
-            Discover top-rated professionals in your area
+            {t.home.featuredDesc}
           </p>
         </div>
 

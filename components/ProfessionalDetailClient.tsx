@@ -127,7 +127,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                     fontSize: '0.875rem',
                     fontWeight: '500',
                   }}>
-                    {professional.category.name}
+                    {t.categories[professional.category.slug] || professional.category.name}
                   </span>
                 )}
                 {professional.featured && (

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as SolidIcons from '@fortawesome/free-solid-svg-icons';
 import EditCategoryModal from "@/components/EditCategoryModal";
 
+
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
@@ -60,8 +61,9 @@ export default function AdminCategoriesPage() {
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [categoryError, setCategoryError] = useState<string | null>(null);
 
+  // Force a fresh fetch of categories after add/edit/delete
   const fetchCategories = async () => {
-    const res = await fetch("/api/categories");
+    const res = await fetch(`/api/categories?ts=${Date.now()}`); // cache-busting param
     const data = await res.json();
     setCategories(data.data || []);
   };
@@ -129,7 +131,7 @@ export default function AdminCategoriesPage() {
                 ) : (
                   <span className="text-xl text-gray-400">🖌️</span>
                 )}
-                <span className="font-medium truncate max-w-[120px]">{cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}</span>
+                <span className="font-medium truncate max-w-[120px]">{cat.name}</span>
                 <span className="text-xs text-gray-500 ml-2 truncate max-w-[80px]">{cat.slug}</span>
                 {cat.description && <span className="ml-4 text-gray-600 truncate max-w-[200px]">{cat.description}</span>}
                 {/* Removed: featured flag not present in Category type */}

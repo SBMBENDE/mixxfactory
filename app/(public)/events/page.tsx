@@ -176,7 +176,7 @@ export default function EventsPage() {
                   e.currentTarget.style.color = 'white';
                 }}
               >
-                📋 My Events
+                📋 {t.events.myEvents ?? 'My Events'}
               </a>
             </div>
           </div>

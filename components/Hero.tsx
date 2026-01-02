@@ -6,9 +6,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from '@/hooks/useTranslations';
 
 export default function Hero() {
   const [isMobile, setIsMobile] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,7 +47,7 @@ export default function Hero() {
                 '0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(249, 115, 22, 0.2)',
             }}
           >
-            MixxFactory
+            {t.home.brandName}
           </h2>
 
           <h1
@@ -57,7 +59,7 @@ export default function Hero() {
               maxWidth: isMobile ? '100%' : '700px',
             }}
           >
-            Discover Verified & Trusted Professionals
+            {t.home.tagline}
           </h1>
 
           <p
@@ -70,7 +72,7 @@ export default function Hero() {
               fontWeight: '500',
             }}
           >
-            Access trusted professionals, venues, and events near you — instantly.
+            {t.home.subtitle}
           </p>
 
           <div
@@ -106,7 +108,7 @@ export default function Hero() {
                 e.currentTarget.style.borderColor = 'rgb(249, 115, 22)';
               }}
             >
-              Find a professional
+              {t.home.discoverBtn}
             </a>
 
             <a
@@ -132,7 +134,7 @@ export default function Hero() {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              Explore events
+              {t.home.eventsBtn}
             </a>
           </div>
         </div>

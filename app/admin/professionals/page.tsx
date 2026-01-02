@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -25,6 +26,9 @@ function EditProfessionalForm({
   onCancel: () => void;
   onSave: (form: Partial<Professional>) => Promise<{ success: boolean; error?: string }>;
 }) {
+  // Helper to get category translation by slug (use current language)
+
+
   const [form, setForm] = useState<Partial<Professional>>({
     name: professional.name || "",
     category: typeof professional.category === "object" ? professional.category._id : professional.category || "",
@@ -47,7 +51,7 @@ function EditProfessionalForm({
       className="p-4 w-full max-w-lg"
       onSubmit={async (e) => {
         e.preventDefault();
-        // Removed: setError and setSuccess (unused)
+        console.log('EditProfessionalForm submit', form);
         const result = await onSave(form);
         if (result.success) {
           setTimeout(() => onCancel(), 1000);
@@ -373,7 +377,11 @@ export default function AdminProfessionalsPage() {
                 .map((pro) => (
                   <tr key={pro._id} className="border-b">
                     <td className="px-3 py-2 border font-medium">{pro.name}</td>
-                    <td className="px-3 py-2 border">{typeof pro.category === "object" ? pro.category.name : pro.category || "-"}</td>
+                    <td className="px-3 py-2 border">{
+                      typeof pro.category === "object"
+                        ? pro.category.name
+                        : pro.category || "-"
+                    }</td>
                     <td className="px-3 py-2 border">
                       <Badge color={pro.active ? "success" : "warning"}>
                         {pro.active ? "Active" : "Inactive"}

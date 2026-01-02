@@ -1,6 +1,6 @@
 'use client';
 
-import { useLanguage } from './useLanguage';
+import { useLanguage } from '../useLanguage';
 import { translations } from '@/lib/i18n/translations';
 
 /**

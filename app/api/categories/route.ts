@@ -53,9 +53,18 @@ export async function GET() {
       data,
     });
 
-    // Allow caching for 1 hour (3600 seconds)
-    // Categories are static and rarely change
-    response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400');
+    // Disable all HTTP caching for admin fetches (if ?ts= param present)
+    if (typeof globalThis !== 'undefined' && typeof Request !== 'undefined') {
+      // This is a hack for Next.js API routes to check for query param
+      // (Next.js API routes don't expose req.query directly in app router)
+    }
+    // If ?ts= param is present, set no-store
+    const url = new URL(globalThis.location?.href || '', 'http://localhost');
+    if (url.searchParams.has('ts')) {
+      response.headers.set('Cache-Control', 'no-store, max-age=0');
+    } else {
+      response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400');
+    }
 
     return response;
   } catch (error) {

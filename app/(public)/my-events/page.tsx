@@ -6,7 +6,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+
 import { AppImage } from '@/components/AppImage';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface PromotionTier {
   id: string;
@@ -53,6 +55,7 @@ interface Event {
 }
 
 export default function MyEventsPage() {
+  const t = useTranslations();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -139,7 +142,7 @@ export default function MyEventsPage() {
       <section style={{ padding: '2rem 1rem', minHeight: '80vh', backgroundColor: '#f9fafb' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1rem', color: '#1f2937' }}>
-            My Events
+            {t.events.myEvents ?? 'My Events'}
           </h1>
 
           {error && (

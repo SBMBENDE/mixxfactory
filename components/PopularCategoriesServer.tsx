@@ -1,12 +1,17 @@
 /**
- * PopularCategories Server Component
+ * PopularCategories Client Component
  * Receives data from parent server component
- * Pure rendering - no hooks
+ * Uses translation hook
  */
+
+'use client';
 
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as SolidIcons from '@fortawesome/free-solid-svg-icons';
+
+import { useTranslations } from '@/hooks/useTranslations';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface Category {
   _id: string;
@@ -39,9 +44,20 @@ const categoryEmojis: Record<string, string> = {
 };
 
 export default function PopularCategoriesServer({ categories }: Props) {
+
+  const t = useTranslations();
+  const { language } = useLanguage();
   if (!categories || categories.length === 0) {
     return null;
   }
+
+  const getCategoryLabel = (cat: Category) => {
+    const categories = t.categories as any;
+    if (language === 'fr' && categories && cat.slug && Object.prototype.hasOwnProperty.call(categories, cat.slug)) {
+      return categories[cat.slug];
+    }
+    return cat.name;
+  };
 
   return (
     <section style={{ padding: '3rem 1rem', backgroundColor: '#ffffff' }}>
@@ -54,13 +70,13 @@ export default function PopularCategoriesServer({ categories }: Props) {
             marginBottom: '0.5rem',
             color: '#1f2937',
           }}>
-            Popular Categories
+            {t.home.popularCategories}
           </h2>
           <p style={{
             color: '#6b7280',
             fontSize: '0.95rem',
           }}>
-            Find professionals in your favorite category
+            {t.home.loadingCategories}
           </p>
         </div>
 
@@ -92,7 +108,7 @@ export default function PopularCategoriesServer({ categories }: Props) {
             }
           `}</style>
           {categories.map((category) => {
-            let iconNode: React.ReactNode = categoryEmojis[category.slug] || '⭐';
+            let iconNode: React.ReactNode = categoryEmojis[category.slug] || '\u2b50';
             if (category.icon) {
               if (category.icon.startsWith('fa-')) {
                 const iconKey =
@@ -129,7 +145,7 @@ export default function PopularCategoriesServer({ categories }: Props) {
                   margin: 0,
                   lineHeight: '1.3',
                 }}>
-                  {category.name}
+                  {getCategoryLabel(category)}
                 </h3>
               </Link>
             );

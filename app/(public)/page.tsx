@@ -18,13 +18,17 @@
 export const revalidate = 60; // ISR: revalidate every 1 minute (faster updates for featured professionals)
 
 import { Suspense } from 'react';
+import TrustedByThousandsSection from '@/components/TrustedByThousandsSection';
+
 import Hero from '@/components/Hero';
 import NewsFlashBanner from '@/components/NewsFlashBanner';
 import PopularCategories from '@/components/PopularCategories';
 import FeaturedProfessionals from '@/components/FeaturedProfessionals';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
+import ReadyToFindCta from '@/components/ReadyToFindCta';
 import { StickySearchBar } from '@/components/StickySearchBar';
+
 
 // Fallback component - minimal, non-deceptive
 function SectionFallback() {
@@ -53,87 +57,14 @@ export default function Page() {
         <FeaturedProfessionals />
       </Suspense>
 
-      {/* CTA Section - Static, renders with Hero */}
-      <section style={{
-        padding: '4rem 1rem',
-        backgroundColor: '#f3f4f6',
-        textAlign: 'center',
-      }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-          Ready to Find Your Perfect Professional?
-        </h2>
-        <a
-          href="/directory"
-          style={{
-            display: 'inline-block',
-            padding: '1rem 2rem',
-            backgroundColor: '#2563eb',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '0.5rem',
-            fontWeight: 'bold',
-          }}
-        >
-          Browse All Professionals
-        </a>
-      </section>
 
       {/* Numbers/Stats Section */}
-      <section style={{
-        padding: '4rem 1rem',
-        backgroundColor: '#ffffff',
-        textAlign: 'center',
-      }}>
-        <h2 style={{
-          fontSize: '2.5rem',
-          fontWeight: 'bold',
-          marginBottom: '3rem',
-          color: '#1f2937',
-        }}>
-          Trusted by Thousands
-        </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '2rem',
-          maxWidth: '1200px',
-          margin: '0 auto',
-        }}>
-          <div>
-            <h3 style={{
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              color: '#2563eb',
-              marginBottom: '0.5rem',
-            }}>
-              500+
-            </h3>
-            <p style={{ color: '#6b7280' }}>Active Professionals</p>
-          </div>
-          <div>
-            <h3 style={{
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              color: '#2563eb',
-              marginBottom: '0.5rem',
-            }}>
-              10K+
-            </h3>
-            <p style={{ color: '#6b7280' }}>Happy Clients</p>
-          </div>
-          <div>
-            <h3 style={{
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              color: '#2563eb',
-              marginBottom: '0.5rem',
-            }}>
-              50+
-            </h3>
-            <p style={{ color: '#6b7280' }}>Service Categories</p>
-          </div>
-        </div>
-      </section>
+      <TrustedByThousandsSection />
+
+
+      {/* Ready to Find Your Perfect Professional Section */}
+      <ReadyToFindCta />
+
 
       {/* Newsletter Section */}
       <Newsletter />

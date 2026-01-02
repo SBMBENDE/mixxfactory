@@ -205,7 +205,7 @@ export default function ContactPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Your name"
+                  placeholder={t.contact.namePlaceholder || 'Your name'}
                   required
                   style={{
                     width: '100%',
@@ -235,7 +235,7 @@ export default function ContactPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="your@email.com"
+                  placeholder={t.contact.emailPlaceholder || 'your@email.com'}
                   required
                   style={{
                     width: '100%',
@@ -265,7 +265,7 @@ export default function ContactPage() {
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  placeholder="How can we help?"
+                  placeholder={t.contact.subjectPlaceholder || 'How can we help?'}
                   required
                   style={{
                     width: '100%',
@@ -294,7 +294,7 @@ export default function ContactPage() {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  placeholder="Tell us more..."
+                  placeholder={t.contact.messagePlaceholder || 'Tell us more...'}
                   required
                   rows={5}
                   style={{

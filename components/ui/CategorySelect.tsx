@@ -1,6 +1,8 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as SolidIcons from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react';
+import { useTranslations } from '@/hooks/useTranslations';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface Category {
   _id: string;
@@ -35,9 +37,12 @@ const categoryEmojis: Record<string, string> = {
   'handyman-services': '🔧',
 };
 
+
 export const CategorySelect: React.FC<CategorySelectProps> = ({ categories, value, onChange, placeholder }) => {
   const [open, setOpen] = React.useState(false);
   const selectRef = React.useRef<HTMLDivElement>(null);
+  const t = useTranslations();
+  const { language } = useLanguage();
 
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -65,7 +70,15 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({ categories, valu
         return <span className="mr-2">{cat.icon}</span>;
       }
     }
-    return <span className="mr-2">{categoryEmojis[cat.slug] || '⭐'}</span>;
+    return <span className="mr-2">{categoryEmojis[cat.slug] || '\u2b50'}</span>;
+  };
+
+  const getCategoryLabel = (cat: Category) => {
+    const categories: Record<string, string> = t.categories as Record<string, string>;
+    if (language === 'fr' && categories && cat.slug && Object.prototype.hasOwnProperty.call(categories, cat.slug)) {
+      return categories[cat.slug];
+    }
+    return cat.name;
   };
 
   const selected = categories.find(c => c.slug === value);
@@ -81,7 +94,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({ categories, valu
       >
         <span className="flex items-center">
           {selected ? getIconNode(selected) : null}
-          {selected ? selected.name : (placeholder || 'Select category')}
+          {selected ? getCategoryLabel(selected) : (placeholder || 'Select category')}
         </span>
         <svg className="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
       </button>
@@ -106,7 +119,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({ categories, valu
               aria-selected={value === cat.slug}
             >
               {getIconNode(cat)}
-              {cat.name}
+              {getCategoryLabel(cat)}
             </li>
           ))}
         </ul>
