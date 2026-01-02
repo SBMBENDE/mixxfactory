@@ -3,7 +3,6 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslations } from '@/hooks/useTranslations';
 
 export default function ReadyToFindCta() {
-  const { language } = useLanguage();
   const t = useTranslations();
   return (
     <section style={{
