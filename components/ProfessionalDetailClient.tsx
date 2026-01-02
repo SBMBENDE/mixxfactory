@@ -61,6 +61,8 @@ export default function ProfessionalDetailClient({ professional }: Props) {
   const { user } = useAuth();
   const t = useTranslations();
   const [isOwner, setIsOwner] = useState(false);
+  // Ensure categories is a Record<string, string> for type safety
+  const categories: Record<string, string> = t.categories as Record<string, string>;
 
   // Check if the current user owns this profile
   useEffect(() => {
@@ -127,7 +129,13 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                     fontSize: '0.875rem',
                     fontWeight: '500',
                   }}>
-                    {t.categories[professional.category.slug] || professional.category.name}
+                    {(() => {
+                      const slug = professional.category?.slug || professional.category?.name?.toLowerCase().replace(/\s+/g, '-');
+                      if (slug && categories && Object.prototype.hasOwnProperty.call(categories, slug)) {
+                        return categories[slug];
+                      }
+                      return professional.category?.name;
+                    })()}
                   </span>
                 )}
                 {professional.featured && (
