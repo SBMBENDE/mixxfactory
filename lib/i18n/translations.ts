@@ -608,6 +608,7 @@ export const translations = {
       travel: 'Voyages',
       designer: 'Styliste',
       cosmetics: 'Cosmétiques',
+      health: 'Santé',
       // Removed duplicate eventHall key to ensure 'Salles' is used
     },
     // Category Taglines
