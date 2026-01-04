@@ -388,6 +388,10 @@ export default function ProfilePage() {
                 // Only use slug if it exists, otherwise compute from name
                 const slug = profile.category.slug || profile.category.name?.toLowerCase().replace(/\s+/g, '-');
                 const categories = t.categories as Record<string, string>;
+                // Patch: Translate 'Health' to 'Santé' in French
+                if (language === 'fr' && slug === 'health') {
+                  return 'Santé';
+                }
                 if (language === 'fr' && categories && slug && Object.prototype.hasOwnProperty.call(categories, slug)) {
                   return categories[slug];
                 }
