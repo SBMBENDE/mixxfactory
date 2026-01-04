@@ -83,7 +83,7 @@ export default function AdminCategoriesPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to add category");
       setAddCategoryOpen(false);
-      setCategoryForm({ name: '', slug: '', description: '', icon: '', featured: false });
+      setCategoryForm({ name: '', slug: '', description: '', icon: '', popular: false });
       fetchCategories();
     } catch (err: any) {
       setCategoryError(err.message || "Failed to add category");
