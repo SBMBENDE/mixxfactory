@@ -209,13 +209,23 @@ export default function DirectoryPage() {
           padding: '2rem',
           marginBottom: '3rem',
           display: 'grid',
-          gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'auto 1fr auto',
+          gridTemplateColumns: gridColumns,
           gap: '1rem',
           alignItems: 'flex-end',
           boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%)',
           border: '1px solid rgba(229, 231, 235, 0.5)',
         }}>
+            // Responsive grid columns for search/filter bar
+            const [gridColumns, setGridColumns] = useState('auto 1fr auto');
+            useEffect(() => {
+              const handleResize = () => {
+                setGridColumns(window.innerWidth < 768 ? '1fr' : 'auto 1fr auto');
+              };
+              handleResize(); // Set on mount
+              window.addEventListener('resize', handleResize);
+              return () => window.removeEventListener('resize', handleResize);
+            }, []);
           {/* Search Input */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '200px' }}>
             <input
