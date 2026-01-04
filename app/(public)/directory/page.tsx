@@ -142,6 +142,9 @@ export default function DirectoryPage() {
     return () => clearTimeout(timer);
   }, [searchTerm, selectedCategory]);
 
+  // Responsive grid columns for search/filter bar
+  // ...existing code for gridColumns state and useEffect...
+
   return (
     <div style={{ padding: '3rem 1rem' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
