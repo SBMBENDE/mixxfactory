@@ -142,8 +142,17 @@ export default function DirectoryPage() {
     return () => clearTimeout(timer);
   }, [searchTerm, selectedCategory]);
 
+
   // Responsive grid columns for search/filter bar
-  // ...existing code for gridColumns state and useEffect...
+  const [gridColumns, setGridColumns] = useState('auto 1fr auto');
+  useEffect(() => {
+    const handleResize = () => {
+      setGridColumns(window.innerWidth < 768 ? '1fr' : 'auto 1fr auto');
+    };
+    handleResize(); // Set on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div style={{ padding: '3rem 1rem' }}>
@@ -219,16 +228,6 @@ export default function DirectoryPage() {
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%)',
           border: '1px solid rgba(229, 231, 235, 0.5)',
         }}>
-            // Responsive grid columns for search/filter bar
-            const [gridColumns, setGridColumns] = useState('auto 1fr auto');
-            useEffect(() => {
-              const handleResize = () => {
-                setGridColumns(window.innerWidth < 768 ? '1fr' : 'auto 1fr auto');
-              };
-              handleResize(); // Set on mount
-              window.addEventListener('resize', handleResize);
-              return () => window.removeEventListener('resize', handleResize);
-            }, []);
           {/* Search Input */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '200px' }}>
             <input
