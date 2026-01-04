@@ -99,6 +99,11 @@ const categorySchema = new Schema<ICategoryDocument>(
     },
     description: String,
     icon: String,
+    popular: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
   { timestamps: true }
 );

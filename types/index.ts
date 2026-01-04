@@ -54,6 +54,7 @@ export interface Category {
   slug: string;
   description?: string;
   icon?: string;
+  popular?: boolean; // If true, category is shown as popular on homepage
   createdAt: Date;
   updatedAt: Date;
 }

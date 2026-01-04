@@ -81,12 +81,23 @@ export const getPopularCategories = cache(async () => {
       await connectDB();
     }
 
-    const categories = await CategoryModel.find({})
-      .select('name slug icon description')
+    // Try to get categories marked as popular
+    let categories = await CategoryModel.find({ popular: true })
+      .select('name slug icon description popular')
       .sort({ name: 1 })
       .limit(7)
       .lean()
       .exec();
+
+    // Fallback: if none are marked popular, use old logic
+    if (!categories || categories.length === 0) {
+      categories = await CategoryModel.find({})
+        .select('name slug icon description popular')
+        .sort({ name: 1 })
+        .limit(7)
+        .lean()
+        .exec();
+    }
 
     console.log(`[CATEGORIES] Fetched ${categories?.length || 0} categories`);
     return categories || [];

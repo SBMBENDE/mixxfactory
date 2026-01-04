@@ -59,13 +59,15 @@ export async function PUT(
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
-    const { name, slug: customSlug, description, icon } = validationResult.data;
+
+    const { name, slug: customSlug, description, icon, popular } = validationResult.data;
 
     const updateData: any = {};
     if (name) updateData.name = name;
     if (customSlug) updateData.slug = generateSlug(customSlug);
     if (description !== undefined) updateData.description = description;
     if (icon !== undefined) updateData.icon = icon;
+    if (popular !== undefined) updateData.popular = popular;
 
     const category = await CategoryModel.findByIdAndUpdate(id, updateData, {
       new: true,

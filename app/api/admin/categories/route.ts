@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return validationErrorResponse(validationResult.error.errors[0].message);
     }
 
-    const { name, slug: customSlug, description, icon } = validationResult.data;
+    const { name, slug: customSlug, description, icon, popular } = validationResult.data;
 
     // Generate slug if not provided
     const slug = customSlug || generateSlug(name);
@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
       slug,
       description,
       icon,
+      popular: !!popular,
     });
 
     await category.save();

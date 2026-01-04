@@ -13,7 +13,7 @@ export default function EditCategoryModal({ category, onSave, onCancel, loading 
     slug: category.slug,
     description: category.description || '',
     icon: category.icon || '',
-    // ...existing code...
+    popular: category.popular || false,
   });
   return (
     <form
@@ -63,7 +63,17 @@ export default function EditCategoryModal({ category, onSave, onCancel, loading 
           maxLength={100}
         />
       </div>
-      {/* Removed: featured checkbox (not in Category type) */}
+      <div className="mb-3">
+        <label className="inline-flex items-center">
+          <input
+            type="checkbox"
+            className="mr-2"
+            checked={form.popular}
+            onChange={e => setForm(f => ({ ...f, popular: e.target.checked }))}
+          />
+          Popular (Show on homepage)
+        </label>
+      </div>
       <div className="flex gap-2 mt-4">
         <Button type="submit" size="md" variant="primary" loading={loading} disabled={loading}>
           Save

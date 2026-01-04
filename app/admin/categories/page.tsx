@@ -16,7 +16,7 @@ export default function AdminCategoriesPage() {
     slug: '',
     description: '',
     icon: '',
-    featured: false,
+    popular: false,
   });
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [editLoading, setEditLoading] = useState(false);
@@ -213,6 +213,17 @@ export default function AdminCategoriesPage() {
                 onChange={e => setCategoryForm(f => ({ ...f, icon: e.target.value }))}
                 maxLength={100}
               />
+            </div>
+            <div className="mb-3">
+              <label className="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={categoryForm.popular}
+                  onChange={e => setCategoryForm(f => ({ ...f, popular: e.target.checked }))}
+                />
+                Popular (Show on homepage)
+              </label>
             </div>
             {categoryError && <div className="text-red-600 text-sm mb-2">{categoryError}</div>}
             <div className="flex gap-2 mt-4">

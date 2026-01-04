@@ -12,11 +12,13 @@ export const registerSchema = z.object({
   role: z.enum(['professional', 'admin', 'user']).default('professional'),
 });
 
+
 export const createCategorySchema = z.object({
   name: z.string().min(1).max(100),
   slug: z.string().min(1).max(100).toLowerCase(),
   description: z.string().max(500).optional(),
   icon: z.string().optional(),
+  popular: z.boolean().optional(),
 });
 
 export const updateCategorySchema = createCategorySchema.partial();
