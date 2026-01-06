@@ -112,3 +112,35 @@ export async function clearAuthCookie() {
 export function isAdmin(payload: JWTPayload): boolean {
   return payload.role === 'admin';
 }
+
+/**
+ * Verify authentication from request
+ * Returns authenticated status and user info
+ */
+export async function verifyAuth(request: Request | any): Promise<{
+  authenticated: boolean;
+  userId?: string;
+  email?: string;
+  role?: string;
+  payload?: JWTPayload;
+}> {
+  const token = await getTokenFromRequest(request);
+  
+  if (!token) {
+    return { authenticated: false };
+  }
+
+  const payload = verifyToken(token);
+  
+  if (!payload) {
+    return { authenticated: false };
+  }
+
+  return {
+    authenticated: true,
+    userId: payload.userId,
+    email: payload.email,
+    role: payload.role,
+    payload,
+  };
+}

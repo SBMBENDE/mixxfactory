@@ -44,6 +44,8 @@ export interface User {
   password: string;
   role: 'admin' | 'user' | 'professional';
   accountType?: string; // for legacy compatibility
+  subscriptionTier?: 'free' | 'basic' | 'premium' | 'enterprise';
+  stripeCustomerId?: string;
   createdAt: Date;
   updatedAt: Date;
 }

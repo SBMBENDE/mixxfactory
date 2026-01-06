@@ -637,6 +637,10 @@ interface IUserDocument extends Document {
   loginAttempts: number;
   lockUntil?: Date;
   
+  // Subscription
+  subscriptionTier?: 'free' | 'basic' | 'premium' | 'enterprise';
+  stripeCustomerId?: string;
+  
   createdAt: Date;
   updatedAt: Date;
 }
@@ -724,6 +728,15 @@ const userSchema = new Schema<IUserDocument>(
     lastLogin: Date,
     loginAttempts: { type: Number, default: 0 },
     lockUntil: Date,
+    
+    // Subscription (for payment system)
+    subscriptionTier: {
+      type: String,
+      enum: ['free', 'basic', 'premium', 'enterprise'],
+      default: 'free',
+      index: true,
+    },
+    stripeCustomerId: String, // Stripe customer ID for payment tracking
   },
   { timestamps: true }
 );
