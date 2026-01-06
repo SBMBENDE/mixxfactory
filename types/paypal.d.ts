@@ -32,10 +32,12 @@ declare module '@paypal/checkout-server-sdk' {
   export class OrdersCreateRequest {
     constructor();
     requestBody(body: any): void;
+    prefer(preference: string): void;
   }
 
   export class OrdersCaptureRequest {
     constructor(orderId: string);
+    requestBody(body: any): void;
   }
 
   export class OrdersGetRequest {
@@ -48,6 +50,15 @@ declare module '@paypal/checkout-server-sdk' {
 
   export class CapturesRefundRequest {
     constructor(captureId: string);
+    requestBody(body: any): void;
+  }
+
+  export class notifications {
+    static VerifyWebhookSignature: typeof VerifyWebhookSignature;
+  }
+
+  export class VerifyWebhookSignature {
+    constructor();
     requestBody(body: any): void;
   }
 }

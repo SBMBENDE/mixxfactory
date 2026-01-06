@@ -127,7 +127,7 @@ function PaymentProcessContent() {
   );
 }
 
-function StripeCheckoutForm({ clientSecret }: { clientSecret: string }) {
+function StripeCheckoutForm({ clientSecret: _clientSecret }: { clientSecret: string }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
