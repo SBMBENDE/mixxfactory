@@ -70,7 +70,6 @@ export default function ProfessionalRegistrationPage() {
   const [success, setSuccess] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [existingProfile, setExistingProfile] = useState(false);
 
   // Check authentication and existing profile
   useEffect(() => {
@@ -83,7 +82,6 @@ export default function ProfessionalRegistrationPage() {
           // Check if professional profile already exists
           const profileRes = await fetch('/api/professional/my-profile', { credentials: 'include' });
           if (profileRes.ok) {
-            setExistingProfile(true);
             // Redirect to dashboard if profile exists
             router.push('/professional/profile');
           }
