@@ -23,7 +23,7 @@ function getStripe(): Stripe {
 
 // Export stripe getter for backward compatibility
 export const stripe = new Proxy({} as Stripe, {
-  get: (target, prop) => {
+  get: (_target, prop) => {
     return getStripe()[prop as keyof Stripe];
   }
 });
