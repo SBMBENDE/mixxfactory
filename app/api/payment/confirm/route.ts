@@ -22,7 +22,7 @@ const confirmPaymentSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication
-    const token = request.cookies.get('token')?.value;
+    const token = request.cookies.get('auth_token')?.value;
     if (!token) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -103,6 +103,15 @@ export async function POST(request: NextRequest) {
         user.subscriptionTier = payment.subscriptionTier;
         await user.save();
         console.log(`[Payment] User ${decoded.userId} upgraded to ${payment.subscriptionTier}`);
+        
+        // Also update Professional model if exists
+        const { ProfessionalModel } = await import('@/lib/db/models');
+        const professional = await ProfessionalModel.findOne({ userId: decoded.userId });
+        if (professional) {
+          professional.subscriptionTier = payment.subscriptionTier;
+          await professional.save();
+          console.log(`[Payment] Professional profile upgraded to ${payment.subscriptionTier}`);
+        }
       }
     }
 

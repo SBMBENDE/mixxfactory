@@ -61,6 +61,134 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
 }
 
 /**
+ * Password reset email template
+ */
+export function getPasswordResetEmailHTML(
+  firstName: string,
+  resetUrl: string
+): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          .email-wrapper {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+          }
+          .content {
+            padding: 30px 20px;
+          }
+          .content p {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #555;
+          }
+          .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: 600;
+            transition: opacity 0.2s;
+          }
+          .button:hover {
+            opacity: 0.9;
+          }
+          .link-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 12px;
+            color: #666;
+          }
+          .footer {
+            background: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+          }
+          .warning {
+            background: #fff3cd;
+            padding: 12px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #856404;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="email-wrapper">
+            <div class="header">
+              <h1>🔐 Password Reset</h1>
+            </div>
+            <div class="content">
+              <p>Hello ${firstName || 'there'},</p>
+              <p>We received a request to reset your password for your MixxFactory account.</p>
+              <p>Click the button below to reset your password:</p>
+              <div style="text-align: center;">
+                <a href="${resetUrl}" class="button">Reset Password</a>
+              </div>
+              <div class="warning">
+                ⚠️ This link will expire in <strong>1 hour</strong> for security reasons.
+              </div>
+              <p>If the button doesn't work, copy and paste this link into your browser:</p>
+              <div class="link-section">
+                ${resetUrl}
+              </div>
+              <p><strong>Didn't request a password reset?</strong></p>
+              <p>If you didn't request this, you can safely ignore this email. Your password will remain unchanged.</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email from MixxFactory.</p>
+              <p>Need help? Contact us at support@mixxfactory.com</p>
+              <p>&copy; ${new Date().getFullYear()} MixxFactory. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+/**
  * Email verification template
  */
 export function getVerificationEmailHTML(

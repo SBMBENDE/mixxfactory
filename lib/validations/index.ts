@@ -78,8 +78,8 @@ export const contactSchema = z.object({
 
 export const createReviewSchema = z.object({
   professionalId: z.string().min(1, 'Professional ID is required'),
-  clientName: z.string().min(2, 'Name must be at least 2 characters').max(100),
-  clientEmail: z.string().email('Invalid email address'),
+  clientName: z.string().min(2, 'Name must be at least 2 characters').max(100).optional(),
+  clientEmail: z.string().email('Invalid email address').optional(),
   rating: z.number().min(1).max(5, 'Rating must be between 1 and 5'),
   title: z.string().min(3, 'Title must be at least 3 characters').max(200),
   comment: z.string().min(10, 'Comment must be at least 10 characters').max(5000),

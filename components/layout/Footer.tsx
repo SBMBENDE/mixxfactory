@@ -110,7 +110,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/directory" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                <Link href="/premium-listing" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
                   {t.footer?.premiumListings || 'Premium Listings'}
                 </Link>
               </li>

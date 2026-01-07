@@ -60,16 +60,16 @@ export default function PaymentSuccessPage() {
 
         <div className="flex gap-4 justify-center flex-wrap">
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/professional')}
             className="px-8 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
           >
             Go to Dashboard
           </button>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/directory')}
             className="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
           >
-            Back to Home
+            Back to Homepage
           </button>
         </div>
       </div>

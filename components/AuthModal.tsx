@@ -14,9 +14,10 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot-password'>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,9 +37,37 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
+      // Handle forgot password separately
+      if (mode === 'forgot-password') {
+        const res = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.error || 'Failed to send reset email');
+          setLoading(false);
+          return;
+        }
+
+        setSuccess('Password reset link sent! Check your email.');
+        setLoading(false);
+        // Clear form and switch back to login after 3 seconds
+        setTimeout(() => {
+          setMode('login');
+          setFormData({ email: '', password: '', confirmPassword: '' });
+          setSuccess('');
+        }, 3000);
+        return;
+      }
+
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       
       const body: any = {
@@ -132,7 +161,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
-            {mode === 'login' ? t.auth.login : t.auth.register}
+            {mode === 'login' ? t.auth.login : mode === 'register' ? t.auth.register : 'Forgot Password'}
           </h2>
           <button
             onClick={onClose}
@@ -148,37 +177,39 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           </button>
         </div>
 
-        {/* Mode Tabs */}
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
-          <button
-            onClick={() => setMode('login')}
-            style={{
-              padding: '0.75rem',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: mode === 'login' ? 'bold' : 'normal',
-              color: mode === 'login' ? '#2563eb' : '#6b7280',
-              borderBottom: mode === 'login' ? '2px solid #2563eb' : 'none',
-            }}
-          >
-            {t.auth.login}
-          </button>
-          <button
-            onClick={() => setMode('register')}
-            style={{
-              padding: '0.75rem',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: mode === 'register' ? 'bold' : 'normal',
-              color: mode === 'register' ? '#2563eb' : '#6b7280',
-              borderBottom: mode === 'register' ? '2px solid #2563eb' : 'none',
-            }}
-          >
-            {t.auth.register}
-          </button>
-        </div>
+        {/* Mode Tabs - Hide when in forgot-password mode */}
+        {mode !== 'forgot-password' && (
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
+            <button
+              onClick={() => setMode('login')}
+              style={{
+                padding: '0.75rem',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: mode === 'login' ? 'bold' : 'normal',
+                color: mode === 'login' ? '#2563eb' : '#6b7280',
+                borderBottom: mode === 'login' ? '2px solid #2563eb' : 'none',
+              }}
+            >
+              {t.auth.login}
+            </button>
+            <button
+              onClick={() => setMode('register')}
+              style={{
+                padding: '0.75rem',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: mode === 'register' ? 'bold' : 'normal',
+                color: mode === 'register' ? '#2563eb' : '#6b7280',
+                borderBottom: mode === 'register' ? '2px solid #2563eb' : 'none',
+              }}
+            >
+              {t.auth.register}
+            </button>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
@@ -192,6 +223,19 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               fontSize: '0.875rem',
             }}>
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div style={{
+              padding: '0.75rem',
+              backgroundColor: '#dcfce7',
+              color: '#166534',
+              borderRadius: '0.375rem',
+              marginBottom: '1rem',
+              fontSize: '0.875rem',
+            }}>
+              {success}
             </div>
           )}
 
@@ -222,52 +266,77 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             />
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              marginBottom: '0.25rem',
-            }}>
-              {t.auth.password}
-            </label>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="••••••••"
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  paddingRight: '2.5rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box',
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  right: '0.5rem',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#6b7280',
-                  fontSize: '1.25rem',
-                  padding: '0.25rem 0.5rem',
-                }}
-                title={showPassword ? t.auth.hidePassword : t.auth.showPassword}
-              >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-          </div>
+          {/* Password field - hide in forgot-password mode */}
+          {mode !== 'forgot-password' && (
+            <>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  marginBottom: '0.25rem',
+                }}>
+                  {t.auth.password}
+                </label>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="••••••••"
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      paddingRight: '2.5rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '0.5rem',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: '#6b7280',
+                      fontSize: '1.25rem',
+                      padding: '0.25rem 0.5rem',
+                    }}
+                    title={showPassword ? t.auth.hidePassword : t.auth.showPassword}
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Forgot password link - show only in login mode */}
+              {mode === 'login' && (
+                <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
+                  <button
+                    type="button"
+                    onClick={() => setMode('forgot-password')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#3b82f6',
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
+            </>
+          )}
 
           {mode === 'register' && (
             <div style={{ marginBottom: '1rem' }}>
@@ -333,8 +402,35 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               fontSize: '1rem',
             }}
           >
-            {loading ? (mode === 'login' ? t.auth.redirecting : t.auth.registering) : (mode === 'login' ? t.auth.login : t.auth.register)}
+            {loading 
+              ? (mode === 'forgot-password' ? 'Sending...' : mode === 'login' ? t.auth.redirecting : t.auth.registering)
+              : (mode === 'forgot-password' ? 'Send Reset Link' : mode === 'login' ? t.auth.login : t.auth.register)
+            }
           </button>
+
+          {/* Back to login from forgot password */}
+          {mode === 'forgot-password' && (
+            <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('login');
+                  setError('');
+                  setSuccess('');
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#6b7280',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                }}
+              >
+                Back to Login
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

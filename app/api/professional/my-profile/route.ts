@@ -33,9 +33,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get user's email verification status and subscription tier
+    const { UserModel } = await import('@/lib/db/models');
+    const user = await UserModel.findById(userId).select('emailVerified subscriptionTier');
+    
+    // Use the most recent subscriptionTier (prefer User model as source of truth)
+    const subscriptionTier = user?.subscriptionTier || professional.subscriptionTier || 'free';
+    
+    // Combine professional data with email verification status and subscription
+    const profileData = {
+      ...professional.toObject(),
+      verified: user?.emailVerified || false, // Use email verification status
+      subscriptionTier, // Ensure we use the latest tier
+    };
+
     return NextResponse.json({
       success: true,
-      data: professional,
+      data: profileData,
     });
   } catch (error) {
     console.error('My Profile API error:', error);

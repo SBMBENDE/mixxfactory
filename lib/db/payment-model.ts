@@ -53,7 +53,7 @@ const PaymentSchema = new Schema<Payment>(
     },
     subscriptionTier: {
       type: String,
-      enum: ['free', 'basic', 'premium', 'enterprise'],
+      enum: ['free', 'starter', 'pro'],
       required: true,
     },
     description: {
@@ -80,8 +80,12 @@ PaymentSchema.index({ userId: 1, createdAt: -1 });
 PaymentSchema.index({ professionalId: 1, status: 1 });
 PaymentSchema.index({ status: 1, createdAt: -1 });
 
-// Prevent model recompilation in development
-const PaymentModel: Model<Payment> = 
-  mongoose.models.Payment || mongoose.model<Payment>('Payment', PaymentSchema);
+// Delete cached model to prevent enum issues
+if (mongoose.models.Payment) {
+  delete mongoose.models.Payment;
+}
+
+// Create fresh model with updated schema
+const PaymentModel: Model<Payment> = mongoose.model<Payment>('Payment', PaymentSchema);
 
 export default PaymentModel;

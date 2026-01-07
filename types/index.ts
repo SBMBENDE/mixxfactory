@@ -44,7 +44,7 @@ export interface User {
   password: string;
   role: 'admin' | 'user' | 'professional';
   accountType?: string; // for legacy compatibility
-  subscriptionTier?: 'free' | 'basic' | 'premium' | 'enterprise';
+  subscriptionTier?: 'free' | 'starter' | 'pro';
   stripeCustomerId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -104,7 +104,7 @@ export interface Professional {
     max?: number;
   };
   // Dashboard features
-  subscriptionTier?: 'free' | 'pro' | 'premium';
+  subscriptionTier?: 'free' | 'starter' | 'pro';
   subscriptionExpiry?: Date;
   analytics?: {
     views: {

@@ -105,6 +105,15 @@ async function handlePaymentCompleted(resource: any) {
       user.subscriptionTier = payment.subscriptionTier;
       await user.save();
       console.log(`[PayPal Webhook] User ${payment.userId} upgraded to ${payment.subscriptionTier}`);
+      
+      // Also update Professional model if exists
+      const { ProfessionalModel } = await import('@/lib/db/models');
+      const professional = await ProfessionalModel.findOne({ userId: payment.userId });
+      if (professional) {
+        professional.subscriptionTier = payment.subscriptionTier;
+        await professional.save();
+        console.log(`[PayPal Webhook] Professional profile upgraded to ${payment.subscriptionTier}`);
+      }
     }
 
     console.log(`[PayPal Webhook] Payment ${payment._id} completed`);

@@ -243,7 +243,7 @@ const professionalSchema = new Schema<IProfessionalDocument>(
     // Dashboard features
     subscriptionTier: {
       type: String,
-      enum: ['free', 'pro', 'premium'],
+      enum: ['free', 'starter', 'pro'],
       default: 'free',
       index: true,
     },
@@ -638,7 +638,7 @@ interface IUserDocument extends Document {
   lockUntil?: Date;
   
   // Subscription
-  subscriptionTier?: 'free' | 'basic' | 'premium' | 'enterprise';
+  subscriptionTier?: 'free' | 'starter' | 'pro';
   stripeCustomerId?: string;
   
   createdAt: Date;
@@ -732,7 +732,7 @@ const userSchema = new Schema<IUserDocument>(
     // Subscription (for payment system)
     subscriptionTier: {
       type: String,
-      enum: ['free', 'basic', 'premium', 'enterprise'],
+      enum: ['free', 'starter', 'pro'],
       default: 'free',
       index: true,
     },

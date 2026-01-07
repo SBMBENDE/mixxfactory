@@ -68,10 +68,34 @@ export default function ProfessionalRegistrationPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  // Removed unused isAuthenticated state
-  const [emailVerified] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [existingProfile, setExistingProfile] = useState(false);
 
-  // (Removed forced auth check and redirect. Registration page is now accessible to unauthenticated users.)
+  // Check authentication and existing profile
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (res.ok) {
+          setIsAuthenticated(true);
+          
+          // Check if professional profile already exists
+          const profileRes = await fetch('/api/professional/my-profile', { credentials: 'include' });
+          if (profileRes.ok) {
+            setExistingProfile(true);
+            // Redirect to dashboard if profile exists
+            router.push('/professional/profile');
+          }
+        }
+      } catch (err) {
+        console.log('Not authenticated or no profile');
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   // Fetch categories
   useEffect(() => {
@@ -254,19 +278,30 @@ export default function ProfessionalRegistrationPage() {
     }
   };
 
-  // Removed unused isAuthenticated check and loading UI
+  // Show loading while checking auth
+  if (checkingAuth) {
+    return (
+      <div style={{ padding: '3rem 1rem', backgroundColor: '#f9fafb', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p style={{ color: '#6b7280' }}>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (!emailVerified) {
+  // Require authentication
+  if (!isAuthenticated) {
     return (
       <div style={{ padding: '3rem 1rem', backgroundColor: '#f9fafb', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ maxWidth: '500px', backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1rem' }}>Verify Your Email First</h1>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1rem' }}>Login Required</h1>
           <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-            Please verify your email address before completing your professional profile.
+            Please log in to complete your professional profile.
           </p>
           <a
-            href="/auth/resend-verification"
+            href="/login?redirect=/register/professional"
             style={{
               display: 'inline-block',
               padding: '0.75rem 1.5rem',
@@ -277,7 +312,7 @@ export default function ProfessionalRegistrationPage() {
               fontWeight: '600',
             }}
           >
-            Verify Email
+            Go to Login
           </a>
         </div>
       </div>
@@ -392,6 +427,7 @@ export default function ProfessionalRegistrationPage() {
                   onChange={handleInputChange}
                   placeholder={t.professional.tellUs}
                   required
+                  maxLength={250}
                   style={{
                     width: '100%',
                     padding: '0.625rem 1rem',
@@ -403,6 +439,9 @@ export default function ProfessionalRegistrationPage() {
                     boxSizing: 'border-box',
                   }}
                 />
+                <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem', textAlign: 'right' }}>
+                  {formData.description.length}/250 characters (Free tier limit. <a href="/checkout" style={{ color: '#2563eb', textDecoration: 'underline' }}>Upgrade</a> for unlimited.)
+                </div>
               </div>
             </fieldset>
 

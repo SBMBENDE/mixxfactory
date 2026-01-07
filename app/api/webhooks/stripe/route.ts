@@ -101,6 +101,15 @@ async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
       user.subscriptionTier = payment.subscriptionTier;
       await user.save();
       console.log(`[Stripe Webhook] User ${payment.userId} upgraded to ${payment.subscriptionTier}`);
+      
+      // Also update Professional model if exists
+      const { ProfessionalModel } = await import('@/lib/db/models');
+      const professional = await ProfessionalModel.findOne({ userId: payment.userId });
+      if (professional) {
+        professional.subscriptionTier = payment.subscriptionTier;
+        await professional.save();
+        console.log(`[Stripe Webhook] Professional profile upgraded to ${payment.subscriptionTier}`);
+      }
     }
 
     console.log(`[Stripe Webhook] Payment ${payment._id} succeeded`);

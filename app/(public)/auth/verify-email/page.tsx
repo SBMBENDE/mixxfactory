@@ -52,9 +52,9 @@ export default function VerifyEmailPage() {
         setStatus('success');
         setMessage(data.message || 'Email verified successfully!');
 
-        // Always redirect to complete profile page after 3 seconds
+        // Redirect to choose plan page after 3 seconds
         setTimeout(() => {
-          router.push('/register/professional');
+          router.push('/register/choose-plan');
         }, 3000);
       } catch (error) {
         setStatus('error');
@@ -133,13 +133,13 @@ export default function VerifyEmailPage() {
                 </p>
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Redirecting to complete your profile...
+                Redirecting to plan selection...
               </p>
               <Link
-                href="/register/professional"
+                href="/register/choose-plan"
                 className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Complete Profile
+                Choose Your Plan
               </Link>
             </div>
           )}

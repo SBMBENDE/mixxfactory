@@ -12,17 +12,32 @@ interface GalleryUploadProps {
   gallery: string[];
   onGalleryUpdated: (gallery: string[]) => void;
   isLoading?: boolean;
+  subscriptionTier?: string;
+  maxImages?: number;
 }
 
 export default function GalleryUpload({
   gallery,
   onGalleryUpdated,
   isLoading = false,
+  subscriptionTier = 'free',
+  maxImages,
 }: GalleryUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Calculate max images based on tier
+  const getMaxImages = () => {
+    if (maxImages !== undefined) return maxImages;
+    if (subscriptionTier === 'free') return 1;
+    if (subscriptionTier === 'starter') return 5;
+    return 999; // Pro = unlimited
+  };
+
+  const tierMaxImages = getMaxImages();
+  const canUploadMore = gallery.length < tierMaxImages;
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -51,6 +66,19 @@ export default function GalleryUpload({
   };
 
   const handleFiles = async (files: FileList) => {
+    // Check if can upload more
+    if (!canUploadMore) {
+      setError(`You've reached the maximum of ${tierMaxImages} images for your ${subscriptionTier} plan. Upgrade to add more.`);
+      return;
+    }
+
+    // Check if adding these files would exceed the limit
+    const remainingSlots = tierMaxImages - gallery.length;
+    if (files.length > remainingSlots) {
+      setError(`You can only upload ${remainingSlots} more image(s). Upgrade to ${subscriptionTier === 'free' ? 'Starter' : 'Pro'} for more space.`);
+      return;
+    }
+
     setUploading(true);
     setError('');
 
@@ -134,14 +162,14 @@ export default function GalleryUpload({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            disabled={uploading || isLoading}
-            className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium disabled:opacity-50"
+            disabled={uploading || isLoading || !canUploadMore}
+            className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {uploading ? 'Uploading...' : 'Click to upload or drag images'}
+            {uploading ? 'Uploading...' : canUploadMore ? 'Click to upload or drag images' : `Max ${tierMaxImages} images reached`}
           </button>
 
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            PNG, JPG, GIF up to 10MB each
+            PNG, JPG, GIF up to 10MB each • {gallery.length}/{tierMaxImages} images used
           </p>
         </div>
 

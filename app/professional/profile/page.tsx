@@ -11,10 +11,11 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslations } from '@/hooks/useTranslations';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faEye, faCheckCircle, faExclamationTriangle, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faCheckCircle, faExclamationTriangle, faSave, faTimes, faCrown } from '@fortawesome/free-solid-svg-icons';
 import ImageUpload from '@/components/ImageUpload';
 import GalleryUpload from '@/components/GalleryUpload';
 import Image from 'next/image';
+import { canUseGallery, getTierBadge, getUpgradeMessage, hasFeatureAccess } from '@/lib/utils/tier-access';
 
 interface ProfileData {
   _id: string;
@@ -57,6 +58,10 @@ export default function ProfilePage() {
   const [socialLinks, setSocialLinks] = useState<ProfileData['socialLinks']>({});
   const [savingSocial, setSavingSocial] = useState(false);
   const [socialError, setSocialError] = useState('');
+
+  const canShowGallery = profile ? canUseGallery(profile.subscriptionTier as any) : false;
+  const canShowSocialLinks = profile ? hasFeatureAccess(profile.subscriptionTier as any, 'socialLinks') : false;
+  const tierBadge = profile ? getTierBadge(profile.subscriptionTier as any) : null;
 
 
   useEffect(() => {
@@ -182,73 +187,173 @@ export default function ProfilePage() {
             </div>
 
             {/* Gallery Upload */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Gallery Images</h2>
-              <GalleryUpload
-                gallery={gallery}
-                onGalleryUpdated={handleGalleryUpdated}
-              />
-            </div>
+            {canShowGallery ? (
+              <div style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Gallery Images</h2>
+                <GalleryUpload
+                  gallery={gallery}
+                  onGalleryUpdated={handleGalleryUpdated}
+                  subscriptionTier={profile.subscriptionTier}
+                />
+              </div>
+            ) : (
+              <div style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Gallery Images</h2>
+                <div style={{ 
+                  padding: '3rem 2rem', 
+                  backgroundColor: '#fef3c7', 
+                  border: '2px dashed #f59e0b',
+                  borderRadius: '0.5rem',
+                  textAlign: 'center'
+                }}>
+                  <FontAwesomeIcon icon={faCrown} style={{ fontSize: '3rem', color: '#f59e0b', marginBottom: '1rem' }} />
+                  <p style={{ fontWeight: 600, color: '#92400e', marginBottom: '0.5rem' }}>
+                    {getUpgradeMessage('gallery', profile.subscriptionTier as any)}
+                  </p>
+                  <Link
+                    href="/checkout"
+                    style={{
+                      display: 'inline-block',
+                      marginTop: '1rem',
+                      padding: '0.75rem 1.5rem',
+                      backgroundColor: '#f59e0b',
+                      color: 'white',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Upgrade Now
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* Social Links Edit */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Social Links</h2>
-              {!editingSocial ? (
-                <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-                  {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
-                    socialLinks[key as keyof typeof socialLinks] ? (
-                      <a
+            {canShowSocialLinks ? (
+              <div style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Social Links</h2>
+                {!editingSocial ? (
+                  <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+                    {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
+                      socialLinks[key as keyof typeof socialLinks] ? (
+                        <a
+                          key={key}
+                          href={
+                            key === 'instagram' ? `https://instagram.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
+                            key === 'twitter' ? `https://twitter.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
+                            key === 'facebook' ? `https://facebook.com/${socialLinks[key as keyof typeof socialLinks]}` :
+                            key === 'youtube' ? `https://youtube.com/${socialLinks[key as keyof typeof socialLinks]}` :
+                            key === 'tiktok' ? `https://tiktok.com/@${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` : '#'
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ textDecoration: 'underline', color: '#2563eb', marginRight: 8 }}
+                        >
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                        </a>
+                      ) : null
+                    ))}
+                    <button onClick={() => setEditingSocial(true)} style={{ marginLeft: 8, background: '#f3f4f6', border: 'none', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>
+                      <FontAwesomeIcon icon={faEdit} /> Edit
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={e => { e.preventDefault(); handleSaveSocial(); }} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                    {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
+                      <input
                         key={key}
-                        href={
-                          key === 'instagram' ? `https://instagram.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
-                          key === 'twitter' ? `https://twitter.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
-                          key === 'facebook' ? `https://facebook.com/${socialLinks[key as keyof typeof socialLinks]}` :
-                          key === 'youtube' ? `https://youtube.com/${socialLinks[key as keyof typeof socialLinks]}` :
-                          key === 'tiktok' ? `https://tiktok.com/@${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` : '#'
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ textDecoration: 'underline', color: '#2563eb', marginRight: 8 }}
-                      >
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </a>
-                    ) : null
-                  ))}
-                  <button onClick={() => setEditingSocial(true)} style={{ marginLeft: 8, background: '#f3f4f6', border: 'none', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>
-                    <FontAwesomeIcon icon={faEdit} /> Edit
-                  </button>
+                        name={key}
+                        value={socialLinks[key as keyof typeof socialLinks] || ''}
+                        onChange={handleSocialChange}
+                        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                        style={{ padding: 6, border: '1px solid #ccc', borderRadius: 4, minWidth: 120 }}
+                        disabled={savingSocial}
+                      />
+                    ))}
+                    <button type="submit" disabled={savingSocial} style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
+                      <FontAwesomeIcon icon={faSave} /> Save
+                    </button>
+                    <button type="button" onClick={handleCancelSocial} disabled={savingSocial} style={{ background: '#f3f4f6', color: '#111', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
+                      <FontAwesomeIcon icon={faTimes} /> Cancel
+                    </button>
+                    {socialError && <span style={{ color: '#dc2626', marginLeft: 8 }}>{socialError}</span>}
+                  </form>
+                )}
+              </div>
+            ) : (
+              <div style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Social Links</h2>
+                <div style={{ 
+                  padding: '2rem', 
+                  backgroundColor: '#fef3c7', 
+                  border: '2px dashed #f59e0b',
+                  borderRadius: '0.5rem',
+                  textAlign: 'center'
+                }}>
+                  <FontAwesomeIcon icon={faCrown} style={{ fontSize: '2rem', color: '#f59e0b', marginBottom: '0.75rem' }} />
+                  <p style={{ fontWeight: 600, color: '#92400e', marginBottom: '0.5rem' }}>
+                    Upgrade to add social media links
+                  </p>
+                  <Link
+                    href="/checkout"
+                    style={{
+                      display: 'inline-block',
+                      marginTop: '0.75rem',
+                      padding: '0.5rem 1.25rem',
+                      backgroundColor: '#f59e0b',
+                      color: 'white',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Upgrade Now
+                  </Link>
                 </div>
-              ) : (
-                <form onSubmit={e => { e.preventDefault(); handleSaveSocial(); }} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-                  {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
-                    <input
-                      key={key}
-                      name={key}
-                      value={socialLinks[key as keyof typeof socialLinks] || ''}
-                      onChange={handleSocialChange}
-                      placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                      style={{ padding: 6, border: '1px solid #ccc', borderRadius: 4, minWidth: 120 }}
-                      disabled={savingSocial}
-                    />
-                  ))}
-                  <button type="submit" disabled={savingSocial} style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
-                    <FontAwesomeIcon icon={faSave} /> Save
-                  </button>
-                  <button type="button" onClick={handleCancelSocial} disabled={savingSocial} style={{ background: '#f3f4f6', color: '#111', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
-                    <FontAwesomeIcon icon={faTimes} /> Cancel
-                  </button>
-                  {socialError && <span style={{ color: '#dc2626', marginLeft: 8 }}>{socialError}</span>}
-                </form>
-              )}
-            </div>
+              </div>
+            )}
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-          My Profile
-        </h1>
-        <p style={{ color: '#6b7280' }}>
-          Manage your professional profile and public information
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+              My Profile
+            </h1>
+            <p style={{ color: '#6b7280' }}>
+              Manage your professional profile and public information
+            </p>
+          </div>
+          {tierBadge && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span className={`px-4 py-2 rounded-full font-semibold ${tierBadge.bgColor} ${tierBadge.color}`}>
+                {tierBadge.name} Plan
+              </span>
+              {profile.subscriptionTier === 'free' && (
+                <Link
+                  href="/checkout"
+                  style={{
+                    padding: '0.5rem 1rem',
+                    backgroundColor: '#f59e0b',
+                    color: 'white',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCrown} />
+                  Upgrade
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Action Buttons */}

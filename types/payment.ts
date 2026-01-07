@@ -13,7 +13,7 @@ export type PaymentStatus =
 
 export type PaymentProvider = 'stripe' | 'paypal';
 
-export type SubscriptionTier = 'free' | 'basic' | 'premium' | 'enterprise';
+export type SubscriptionTier = 'free' | 'starter' | 'pro';
 
 export interface PaymentIntent {
   id: string;
@@ -81,33 +81,24 @@ export const SUBSCRIPTION_PRICING: SubscriptionPricing[] = [
     price: 0,
     monthlyPrice: 0,
     yearlyPrice: 0,
-    features: ['Basic profile', '1 image', 'Listed in directory'],
+    features: ['Basic profile listing', '1 profile image', 'Name & description (250 chars)', 'Listed in directory'],
   },
   {
-    id: 'basic',
-    tier: 'basic',
-    name: 'Basic',
+    id: 'starter',
+    tier: 'starter',
+    name: 'Starter',
     price: 9.99,
     monthlyPrice: 9.99,
     yearlyPrice: 99.99,
-    features: ['Enhanced profile', '5 images', 'Featured badge', 'Contact info'],
+    features: ['Everything in Free', 'Dashboard access', 'Up to 5 gallery images', 'Contact info displayed', 'Social media links', 'Unlimited description', 'Email support'],
   },
   {
-    id: 'premium',
-    tier: 'premium',
-    name: 'Premium',
+    id: 'pro',
+    tier: 'pro',
+    name: 'Pro',
     price: 19.99,
     monthlyPrice: 19.99,
     yearlyPrice: 199.99,
-    features: ['Premium profile', 'Unlimited images', 'Top placement', 'Analytics', 'Priority support'],
-  },
-  {
-    id: 'enterprise',
-    tier: 'enterprise',
-    name: 'Enterprise',
-    price: 49.99,
-    monthlyPrice: 49.99,
-    yearlyPrice: 499.99,
-    features: ['Custom branding', 'API access', 'Dedicated support', 'Advanced analytics', 'Multiple locations'],
+    features: ['Everything in Starter', 'Unlimited gallery images', 'Featured badge', 'Analytics dashboard', 'Calendar management', 'Priority directory placement', 'Priority support'],
   },
 ];

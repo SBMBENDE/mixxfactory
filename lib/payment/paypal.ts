@@ -5,23 +5,28 @@
 
 import paypal from '@paypal/checkout-server-sdk';
 
-if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
-  throw new Error('PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET are required in environment variables');
+// Check if PayPal is configured (optional for Stripe-only setup)
+const isPayPalConfigured = !!(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
+
+if (!isPayPalConfigured) {
+  console.warn('[PayPal] Credentials not configured - PayPal payments will not be available');
 }
 
 // Configure PayPal environment (sandbox or live)
-const environment = process.env.NODE_ENV === 'production'
+const environment = isPayPalConfigured && process.env.NODE_ENV === 'production'
   ? new paypal.core.LiveEnvironment(
-      process.env.PAYPAL_CLIENT_ID,
-      process.env.PAYPAL_CLIENT_SECRET
+      process.env.PAYPAL_CLIENT_ID!,
+      process.env.PAYPAL_CLIENT_SECRET!
     )
-  : new paypal.core.SandboxEnvironment(
-      process.env.PAYPAL_CLIENT_ID,
-      process.env.PAYPAL_CLIENT_SECRET
-    );
+  : isPayPalConfigured 
+    ? new paypal.core.SandboxEnvironment(
+        process.env.PAYPAL_CLIENT_ID!,
+        process.env.PAYPAL_CLIENT_SECRET!
+      )
+    : null;
 
-// Initialize PayPal client
-export const paypalClient = new paypal.core.PayPalHttpClient(environment);
+// Initialize PayPal client (only if configured)
+export const paypalClient = environment ? new paypal.core.PayPalHttpClient(environment) : null;
 
 /**
  * Create a PayPal order
@@ -32,6 +37,10 @@ export async function createPayPalOrder(params: {
   description?: string;
   metadata?: Record<string, string>;
 }): Promise<any> {
+  if (!paypalClient) {
+    throw new Error('PayPal is not configured. Please add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET to environment variables.');
+  }
+
   try {
     const request = new paypal.orders.OrdersCreateRequest();
     request.prefer('return=representation');
@@ -68,6 +77,10 @@ export async function createPayPalOrder(params: {
  * Capture a PayPal order
  */
 export async function capturePayPalOrder(orderId: string): Promise<any> {
+  if (!paypalClient) {
+    throw new Error('PayPal is not configured.');
+  }
+
   try {
     const request = new paypal.orders.OrdersCaptureRequest(orderId);
     request.requestBody({});
@@ -84,6 +97,10 @@ export async function capturePayPalOrder(orderId: string): Promise<any> {
  * Get PayPal order details
  */
 export async function getPayPalOrder(orderId: string): Promise<any> {
+  if (!paypalClient) {
+    throw new Error('PayPal is not configured.');
+  }
+
   try {
     const request = new paypal.orders.OrdersGetRequest(orderId);
     const response = await paypalClient.execute(request);
@@ -103,6 +120,10 @@ export async function refundPayPalPayment(params: {
   currency?: string;
   note?: string;
 }): Promise<any> {
+  if (!paypalClient) {
+    throw new Error('PayPal is not configured.');
+  }
+
   try {
     const request = new paypal.payments.CapturesRefundRequest(params.captureId);
     
@@ -134,6 +155,11 @@ export async function verifyPayPalWebhook(params: {
   headers: Record<string, string>;
   body: any;
 }): Promise<boolean> {
+  if (!paypalClient) {
+    console.warn('[PayPal] Webhook verification skipped - PayPal not configured');
+    return false;
+  }
+
   try {
     const request = new paypal.notifications.VerifyWebhookSignature();
     request.requestBody({

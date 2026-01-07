@@ -23,6 +23,8 @@ function PaymentProcessContent() {
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [providerPaymentId, setProviderPaymentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,21 +40,35 @@ function PaymentProcessContent() {
         const response = await fetch('/api/payment/create-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Important: Send cookies
           body: JSON.stringify({ subscriptionTier: tier, provider }),
         });
 
         const data = await response.json();
 
         if (!response.ok) {
+          // If unauthorized, redirect to login
+          if (response.status === 401) {
+            router.push('/login?redirect=/checkout');
+            return;
+          }
           throw new Error(data.error || 'Failed to create payment');
         }
 
+        console.log('API Response:', data);
+
+        // Store payment IDs for confirmation
+        setPaymentId(data.data?.paymentId || null);
+        setProviderPaymentId(data.data?.providerPaymentId || null);
+
         if (provider === 'stripe') {
-          setClientSecret(data.clientSecret);
+          console.log('Stripe client secret received:', data.data?.clientSecret);
+          setClientSecret(data.data?.clientSecret || null);
         } else if (provider === 'paypal') {
-          setOrderId(data.orderId);
+          setOrderId(data.data?.orderId || null);
         }
 
+        console.log('Payment setup complete. Provider:', provider, 'ClientSecret exists:', !!data.data?.clientSecret);
         setLoading(false);
       } catch (err: any) {
         setError(err.message);
@@ -105,10 +121,25 @@ function PaymentProcessContent() {
             Upgrading to {tier} plan
           </p>
 
-          {provider === 'stripe' && clientSecret && (
-            <Elements stripe={stripePromise} options={{ clientSecret } as StripeElementsOptions}>
-              <StripeCheckoutForm clientSecret={clientSecret} />
-            </Elements>
+          {provider === 'stripe' && clientSecret && paymentId && providerPaymentId && (
+            <>
+              <div className="mb-4 text-sm text-gray-500">
+                Debug: Stripe Key = {process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? 'Present' : 'MISSING'}
+              </div>
+              <Elements stripe={stripePromise} options={{ clientSecret } as StripeElementsOptions}>
+                <StripeCheckoutForm 
+                  clientSecret={clientSecret} 
+                  paymentId={paymentId}
+                  providerPaymentId={providerPaymentId}
+                />
+              </Elements>
+            </>
+          )}
+
+          {provider === 'stripe' && !clientSecret && (
+            <div className="text-red-600">
+              No client secret available. Check console logs.
+            </div>
           )}
 
           {provider === 'paypal' && orderId && (
@@ -127,7 +158,15 @@ function PaymentProcessContent() {
   );
 }
 
-function StripeCheckoutForm({ clientSecret: _clientSecret }: { clientSecret: string }) {
+function StripeCheckoutForm({ 
+  clientSecret: _clientSecret, 
+  paymentId,
+  providerPaymentId 
+}: { 
+  clientSecret: string;
+  paymentId: string;
+  providerPaymentId: string;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -155,7 +194,28 @@ function StripeCheckoutForm({ clientSecret: _clientSecret }: { clientSecret: str
         setError(stripeError.message || 'Payment failed');
         setProcessing(false);
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        router.push('/payment/success');
+        // Confirm payment in database
+        try {
+          const confirmRes = await fetch('/api/payment/confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentId,
+              provider: 'stripe',
+              providerPaymentId,
+            }),
+          });
+
+          if (!confirmRes.ok) {
+            const confirmResult = await confirmRes.json();
+            throw new Error(confirmResult.error || 'Payment confirmation failed');
+          }
+
+          router.push('/payment/success');
+        } catch (confirmErr: any) {
+          setError(confirmErr.message);
+          setProcessing(false);
+        }
       }
     } catch (err: any) {
       setError(err.message);

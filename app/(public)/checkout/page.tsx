@@ -6,21 +6,50 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 import { SUBSCRIPTION_PRICING } from '@/types/payment';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const [selectedTier, setSelectedTier] = useState<string>('basic');
+  const { user, authStatus } = useAuth();
+  const [selectedTier, setSelectedTier] = useState<string>('starter');
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Check authentication
+  useEffect(() => {
+    if (authStatus === 'unauthenticated') {
+      // Redirect to login with return URL
+      router.push('/login?redirect=/checkout');
+    } else if (authStatus === 'authenticated') {
+      setCheckingAuth(false);
+    }
+  }, [authStatus, router]);
 
   const handlePaymentClick = (provider: 'stripe' | 'paypal') => {
+    if (!user) {
+      router.push('/login?redirect=/checkout');
+      return;
+    }
     setLoading(true);
     // Navigate to payment processing page with selected tier and provider
     router.push(`/payment/process?tier=${selectedTier}&provider=${provider}`);
   };
+
+  // Show loading while checking auth
+  if (checkingAuth || authStatus === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Filter out free tier for checkout
   const paidTiers = SUBSCRIPTION_PRICING.filter(tier => tier.id !== 'free');
@@ -38,7 +67,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {paidTiers.map((tier) => (
             <div
               key={tier.id}
@@ -49,7 +78,7 @@ export default function CheckoutPage() {
               }`}
               onClick={() => setSelectedTier(tier.id)}
             >
-              {tier.id === 'premium' && (
+              {tier.id === 'starter' && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <span className="bg-blue-500 text-white text-sm font-bold px-4 py-1 rounded-full">
                     POPULAR
@@ -63,7 +92,7 @@ export default function CheckoutPage() {
                 </h3>
                 <div className="flex items-center justify-center">
                   <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                    ${tier.price}
+                    €{tier.price}
                   </span>
                   <span className="text-gray-600 dark:text-gray-400 ml-2">/month</span>
                 </div>
