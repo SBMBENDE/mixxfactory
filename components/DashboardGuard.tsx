@@ -124,7 +124,7 @@ export function DashboardGuard({ children }: DashboardGuardProps) {
           </p>
           
           <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
-            You're currently on the <strong style={{ color: '#111' }}>{tier} plan</strong>.
+            You&apos;re currently on the <strong style={{ color: '#111' }}>{tier} plan</strong>.
           </p>
 
           <div style={{ 

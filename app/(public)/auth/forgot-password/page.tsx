@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
             If an account exists with <strong>{email}</strong>, you will receive a password reset link shortly.
           </p>
           <p style={{ color: '#6b7280', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-            Didn't receive an email? Check your spam folder or try again.
+            Didn&apos;t receive an email? Check your spam folder or try again.
           </p>
           <Link
             href="/auth/login"
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
             Forgot Password?
           </h1>
           <p style={{ color: '#6b7280' }}>
-            No worries! Enter your email and we'll send you a reset link.
+            No worries! Enter your email and we&apos;ll send you a reset link.
           </p>
         </div>
 
