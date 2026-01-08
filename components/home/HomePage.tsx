@@ -11,6 +11,7 @@ import NewsFlashBanner from '@/components/NewsFlashBanner';
 import Newsletter from '@/components/Newsletter';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
 import { StickySearchBar } from '@/components/StickySearchBar';
+import ReadyToFindCta from '@/components/home/ReadyToFindCta';
 
 interface HomePageProps {
   data: {
@@ -42,30 +43,8 @@ export default function HomePage({ data }: HomePageProps) {
         <FeaturedProfessionalsServer professionals={data.professionals} />
       )}
 
-      {/* CTA Section - Static Server Component */}
-      <section style={{
-        padding: '4rem 1rem',
-        backgroundColor: '#f3f4f6',
-        textAlign: 'center',
-      }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-          Ready to Find Your Perfect Professional?
-        </h2>
-        <a
-          href="/directory"
-          style={{
-            display: 'inline-block',
-            padding: '1rem 2rem',
-            backgroundColor: '#2563eb',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '0.5rem',
-            fontWeight: 'bold',
-          }}
-        >
-          {t.home?.browseCta || 'Browse All Professionals'}
-        </a>
-      </section>
+      {/* CTA Section - Client Component for translations */}
+      <ReadyToFindCta />
 
       {/* Numbers/Stats Section */}
       <section style={{
