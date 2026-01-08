@@ -81,11 +81,11 @@ export const getPopularCategories = cache(async () => {
       await connectDB();
     }
 
-    // Try to get categories marked as popular
+    // Try to get categories marked as popular (sorted by popularOrder)
     let categories = await CategoryModel.find({ popular: true })
-      .select('name slug icon description popular')
-      .sort({ name: 1 })
-      .limit(7)
+      .select('name slug icon description popular popularOrder')
+      .sort({ popularOrder: 1, name: 1 })
+      .limit(8)
       .lean()
       .exec();
 
@@ -94,7 +94,7 @@ export const getPopularCategories = cache(async () => {
       categories = await CategoryModel.find({})
         .select('name slug icon description popular')
         .sort({ name: 1 })
-        .limit(7)
+        .limit(8)
         .lean()
         .exec();
     }
