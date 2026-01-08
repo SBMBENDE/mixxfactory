@@ -85,6 +85,7 @@ export interface Professional {
   slug: string;
   category: string; // Category ID
   description: string;
+  descriptionFr?: string; // French translation of description
   email?: string;
   phone?: string;
   website?: string;

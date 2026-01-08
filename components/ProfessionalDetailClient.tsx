@@ -13,6 +13,8 @@ import { faEnvelope, faPhone, faGlobe, faMapPin, faTimes, faCrown } from '@forta
 import { faInstagram, faTwitter, faFacebook, faYoutube, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useLanguage } from '@/hooks/useLanguage';
+import { getLocalizedDescription, getLocalizedBio } from '@/utils/localization';
 import ReviewsList from './ReviewsList';
 import ReviewForm from './ReviewForm';
 import ImageGallery from './ImageGallery';
@@ -25,6 +27,7 @@ interface Professional {
   name: string;
   slug: string;
   description: string;
+  descriptionFr?: string;
   email?: string;
   phone?: string;
   website?: string;
@@ -63,10 +66,15 @@ interface Props {
 export default function ProfessionalDetailClient({ professional }: Props) {
   const { user } = useAuth();
   const t = useTranslations();
+  const { language } = useLanguage();
   const [isOwner, setIsOwner] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  
+  // Get localized content
+  const localizedDescription = getLocalizedDescription(professional, language);
+  const localizedBio = getLocalizedBio(professional as any, language);
   
   // Ensure categories is a Record<string, string> for type safety
   const categories: Record<string, string> = t.categories as Record<string, string>;
@@ -362,16 +370,16 @@ export default function ProfessionalDetailClient({ professional }: Props) {
         <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t.detail.about}</h2>
           <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#374151' }}>
-            {professional.description}
+            {localizedDescription}
           </p>
         </div>
 
         {/* Bio Section - if available */}
-        {professional.bio && (
+        {localizedBio && (
           <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Bio</h2>
             <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#374151', whiteSpace: 'pre-wrap' }}>
-              {professional.bio}
+              {localizedBio}
             </p>
           </div>
         )}

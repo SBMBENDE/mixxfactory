@@ -157,6 +157,10 @@ const professionalSchema = new Schema<IProfessionalDocument>(
       type: String,
       required: true,
     },
+    descriptionFr: {
+      type: String,
+      default: null,
+    },
     email: String,
     phone: String,
     website: String,
