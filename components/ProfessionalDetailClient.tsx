@@ -20,44 +20,7 @@ import ReviewForm from './ReviewForm';
 import ImageGallery from './ImageGallery';
 import { hasFeatureAccess } from '@/lib/utils/tier-access';
 import { AuthModal } from './AuthModal';
-
-interface Professional {
-  _id: string;
-  userId?: string;
-  name: string;
-  slug: string;
-  description: string;
-  descriptionFr?: string;
-  email?: string;
-  phone?: string;
-  website?: string;
-  images: string[];
-  gallery?: string[];
-  bio?: string;
-  verified?: boolean;
-  category?: {
-    _id: string;
-    name: string;
-  };
-  location?: {
-    city?: string;
-    region?: string;
-    country?: string;
-  };
-  socialLinks?: {
-    instagram?: string;
-    twitter?: string;
-    facebook?: string;
-    youtube?: string;
-    tiktok?: string;
-  };
-  featured?: boolean;
-  priceRange?: {
-    min?: number;
-    max?: number;
-  };
-  subscriptionTier?: string;
-}
+import type { Professional } from '@/types';
 
 interface Props {
   professional: Professional;
