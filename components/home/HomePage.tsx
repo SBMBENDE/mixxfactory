@@ -63,7 +63,7 @@ export default function HomePage({ data }: HomePageProps) {
             fontWeight: 'bold',
           }}
         >
-          Browse All Professionals
+          {t.home?.browseCta || 'Browse All Professionals'}
         </a>
       </section>
 

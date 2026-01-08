@@ -194,7 +194,7 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
                     fontWeight: '500',
                     fontSize: '0.875rem',
                   }}>
-                    View Profile
+                    {t.home?.viewProfile || 'View Profile'}
                     <FontAwesomeIcon icon={faArrowRight} style={{ width: '0.75rem', height: '0.75rem' }} />
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
             }}
             className="browse-btn"
           >
-            Browse All Professionals
+            {t.home?.browseCta || 'Browse All Professionals'}
           </Link>
         </div>
       </div>
