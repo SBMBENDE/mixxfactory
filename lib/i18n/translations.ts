@@ -658,9 +658,9 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Entreprises et talents africains dans le monde entier',
-      tagline: 'Entreprises et talents africains dans le monde entier',
-      subtitle: 'Accédez à des professionnels de confiance et à des entreprises africaines, des lieux et des événements près de chez vous — instantanément.',
+      title: 'Entreprises et Talents Africains dans le monde',
+      tagline: 'Entreprises et Talents Africains dans le monde',
+      subtitle: 'Accédez à des professionnels de confiance et à des entreprises africaines instantanément',
       discoverBtn: 'Explorer les professionnels',
       eventsBtn: 'Listez votre entreprise',
       registerBtn: 'S\'inscrire en tant que professionnel',
