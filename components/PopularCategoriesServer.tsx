@@ -72,12 +72,6 @@ export default function PopularCategoriesServer({ categories }: Props) {
           }}>
             {t.home.popularCategories}
           </h2>
-          <p style={{
-            color: '#6b7280',
-            fontSize: '0.95rem',
-          }}>
-            {t.home.loadingCategories}
-          </p>
         </div>
 
         {/* Horizontal scroll categories */}
