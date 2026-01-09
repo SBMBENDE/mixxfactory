@@ -51,7 +51,7 @@ export const translations = {
     home: {
       title: 'African Businesses & Talent Worldwide',
       tagline: 'African Businesses & Talent Worldwide',
-      subtitle: 'Access trusted professionals & African businesses, venues, and events near you — instantly.',
+      subtitle: 'Access trusted professionals, businesses & events near you — instantly',
       discoverBtn: 'Explore Professionals',
       eventsBtn: 'List Your Business',
       registerBtn: 'Register as Professional',
