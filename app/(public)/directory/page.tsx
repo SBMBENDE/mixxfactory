@@ -143,8 +143,9 @@ export default function DirectoryPage() {
   }, [searchTerm, selectedCategory]);
 
 
-  // Responsive grid columns for search/filter bar
   const [gridColumns, setGridColumns] = useState('auto 1fr auto');
+  const [showBackButton, setShowBackButton] = useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setGridColumns(window.innerWidth < 768 ? '1fr' : 'auto 1fr auto');
@@ -152,6 +153,25 @@ export default function DirectoryPage() {
     handleResize(); // Set on mount
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Show floating back button on mobile after scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth < 768) {
+        setShowBackButton(window.scrollY > 300);
+      } else {
+        setShowBackButton(false);
+      }
+    };
+    
+    handleScroll(); // Check on mount
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   return (
@@ -407,7 +427,60 @@ export default function DirectoryPage() {
           </div>
         )}
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+
+      {/* Floating Back to Home Button - Mobile Only */}
+      {showBackButton && (
+        <a
+          href="/"
+          style={{
+            position: 'fixed',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.875rem 1.5rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '2rem',
+            boxShadow: '0 10px 30px rgba(37, 99, 235, 0.4)',
+            fontWeight: '600',
+            fontSize: '0.95rem',
+            zIndex: 1000,
+            transition: 'all 0.3s ease',
+            animation: 'slideUp 0.3s ease-out',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#1d4ed8';
+            e.currentTarget.style.transform = 'translateX(-50%) translateY(-4px)';
+            e.currentTarget.style.boxShadow = '0 15px 40px rgba(37, 99, 235, 0.5)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#2563eb';
+            e.currentTarget.style.transform = 'translateX(-50%) translateY(0)';
+            e.currentTarget.style.boxShadow = '0 10px 30px rgba(37, 99, 235, 0.4)';
+          }}
+        >
+          <span style={{ fontSize: '1.2rem' }}>🏠</span>
+          Back to Home
+        </a>
+      )}
+
+      <style>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
 
       <AuthModal 
         isOpen={isAuthModalOpen} 
