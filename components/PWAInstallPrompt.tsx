@@ -86,7 +86,7 @@ export default function PWAInstallPrompt() {
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900 dark:text-white">
-              Install MixxFactory
+              Install Afrobizz
             </h3>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               Install our app for the best mobile experience with offline access

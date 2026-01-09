@@ -208,7 +208,7 @@ export default function VerifyEmailPage() {
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Need help?{' '}
             <a
-              href="mailto:support@mixxfactory.com"
+              href="mailto:support@afrobizz.com"
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
             >
               Contact support

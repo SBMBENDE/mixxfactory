@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
               1. Introduction
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              MixxFactory (&quot;we,&quot; &quot;us,&quot; &quot;our,&quot; or &quot;Company&quot;) operates the MixxFactory website and application. 
+              Afrobizz (&quot;we,&quot; &quot;us,&quot; &quot;our,&quot; or &quot;Company&quot;) operates the Afrobizz website and application. 
               This Privacy Policy explains how we collect, use, disclose, and otherwise handle your information when you visit our website 
               and use our services.
             </p>
@@ -131,7 +131,7 @@ export default function PrivacyPolicy() {
             </p>
             <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
               <p className="text-gray-800 dark:text-gray-200">
-                <strong>Email:</strong> privacy@mixxfactory.com<br />
+                <strong>Email:</strong> privacy@afrobizz.com<br />
                 <strong>Address:</strong> Contact us through our contact form
               </p>
             </div>

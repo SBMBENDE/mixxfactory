@@ -26,7 +26,7 @@ export default function CookiePolicy() {
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
               Cookies are small data files stored on your browser or device. They are widely used to make websites work more efficiently 
-              and to provide information to the owners of the site. We use cookies to enhance your experience on MixxFactory.
+              and to provide information to the owners of the site. We use cookies to enhance your experience on Afrobizz.
             </p>
           </section>
 
@@ -58,7 +58,7 @@ export default function CookiePolicy() {
                   Functional Cookies
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300">
-                  These cookies allow MixxFactory to remember your preferences and choices to provide a more personalized experience. 
+                  These cookies allow Afrobizz to remember your preferences and choices to provide a more personalized experience. 
                   For example, they remember your language preference and login information.
                 </p>
               </div>
@@ -119,7 +119,7 @@ export default function CookiePolicy() {
             </h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
               You have the right to choose whether or not to accept cookies. Most web browsers allow you to control cookies through settings. 
-              However, please note that disabling certain cookies may affect your ability to use MixxFactory fully.
+              However, please note that disabling certain cookies may affect your ability to use Afrobizz fully.
             </p>
             <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
               <p className="text-gray-800 dark:text-gray-200 text-sm">
@@ -135,7 +135,7 @@ export default function CookiePolicy() {
             </h2>
             <p className="text-gray-700 dark:text-gray-300">
               Some browsers include a Do Not Track feature. Currently, there is no industry standard for DNT signals. 
-              MixxFactory does not currently respond to DNT signals, but we provide cookie controls for user preferences.
+              Afrobizz does not currently respond to DNT signals, but we provide cookie controls for user preferences.
             </p>
           </section>
 
@@ -158,8 +158,8 @@ export default function CookiePolicy() {
             </p>
             <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
               <p className="text-gray-800 dark:text-gray-200">
-                <strong>Email:</strong> privacy@mixxfactory.com<br />
-                <strong>Contact Form:</strong> mixxfactory.com/contact
+                <strong>Email:</strong> privacy@afrobizz.com<br />
+                <strong>Contact Form:</strong> afrobizz.com/contact
               </p>
             </div>
           </section>

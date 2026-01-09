@@ -7,13 +7,13 @@ import { ClientLayout } from '@/components/ClientLayout';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MixxFactory - Discover Professionals & Venues',
-  description: 'Browse and discover DJs, event halls, stylists, restaurants, and more professionals',
+  title: 'Afrobizz - Connecting African Businesses & Talent',
+  description: 'Afrobizz — The professional platform connecting African businesses and talent worldwide',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'MixxFactory',
+    title: 'Afrobizz',
   },
   formatDetection: {
     telephone: true,

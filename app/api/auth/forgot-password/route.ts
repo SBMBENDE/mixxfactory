@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       const emailHTML = getResetPasswordEmailHTML(firstName, resetUrl);
       await sendEmail({
         to: email,
-        subject: 'Reset Your MixxFactory Password',
+        subject: 'Reset Your Afrobizz Password',
         html: emailHTML,
       });
       console.log(`[Auth] Password reset email sent to ${email}`);

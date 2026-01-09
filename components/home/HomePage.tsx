@@ -139,7 +139,7 @@ export default function HomePage({ data }: HomePageProps) {
           margin: '0 auto 2rem',
           lineHeight: '1.6',
         }}>
-          Join thousands of professionals on MixxFactory and grow your business. Reach new clients and expand your network today.
+          Join thousands of professionals on Afrobizz and grow your business. Reach new clients and expand your network today.
         </p>
         <a
           href="/admin/auth"

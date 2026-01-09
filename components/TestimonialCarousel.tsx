@@ -22,8 +22,8 @@ const testimonials: Testimonial[] = [
     role: { en: 'Event Organizer', fr: 'Organisatrice d\'événements' },
     image: 'https://res.cloudinary.com/dkd3k6eau/image/upload/v1766415917/Screenshot_2025-12-22_at_15.59.52_k3nvmy.png',
     content: {
-      en: 'MixxFactory made finding the perfect DJ for our wedding incredibly easy. The platform is intuitive and the professionals are top-notch!',
-      fr: 'MixxFactory a rendu la recherche du DJ parfait pour notre mariage incroyablement facile. La plateforme est intuitive et les professionnels sont de premier ordre !',
+      en: 'Afrobizz made finding the perfect DJ for our wedding incredibly easy. The platform is intuitive and the professionals are top-notch!',
+      fr: 'Afrobizz a rendu la recherche du DJ parfait pour notre mariage incroyablement facile. La plateforme est intuitive et les professionnels sont de premier ordre !',
     },
     rating: 5,
   },
@@ -44,8 +44,8 @@ const testimonials: Testimonial[] = [
     role: { en: 'Venue Owner', fr: 'Propriétaire de lieu' },
     image: 'https://res.cloudinary.com/dkd3k6eau/image/upload/v1766415917/Screenshot_2025-12-22_at_16.00.14_momykv.png',
     content: {
-      en: 'Our venue bookings have tripled since joining MixxFactory. The exposure and the quality of clients is simply amazing!',
-      fr: 'Nos réservations de salle ont triplé depuis que nous avons rejoint MixxFactory. L\'exposition et la qualité des clients sont tout simplement incroyables !',
+      en: 'Our venue bookings have tripled since joining Afrobizz. The exposure and the quality of clients is simply amazing!',
+      fr: 'Nos réservations de salle ont triplé depuis que nous avons rejoint Afrobizz. L\'exposition et la qualité des clients sont tout simplement incroyables !',
     },
     rating: 5,
   },

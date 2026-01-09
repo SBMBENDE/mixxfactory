@@ -84,7 +84,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
     if (navigator.share) {
       navigator.share({
         title: professional.name,
-        text: `Check out ${professional.name} on MixxFactory!`,
+        text: `Check out ${professional.name} on Afrobizz!`,
         url: url,
       }).catch(() => {
         // Fallback to copy to clipboard
@@ -813,7 +813,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                             {t.tierMessages?.freeVisitorTitle || 'Want to see more?'}
                           </p>
                           <p style={{ fontSize: '0.875rem', color: '#78350f', marginBottom: '1rem' }}>
-                            {t.tierMessages?.freeOwnerDesc || 'Premium professionals showcase their full gallery and get more exposure on MixxFactory.'}
+                            {t.tierMessages?.freeOwnerDesc || 'Premium professionals showcase their full gallery and get more exposure on Afrobizz.'}
                           </p>
                           <Link
                             href="/checkout"
@@ -865,7 +865,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                             {t.tierMessages?.freeVisitorTitle || 'Want to see more?'}
                           </p>
                           <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                            {t.tierMessages?.freeVisitorDesc || 'Premium professionals showcase their full gallery and get more exposure on MixxFactory.'}
+                            {t.tierMessages?.freeVisitorDesc || 'Premium professionals showcase their full gallery and get more exposure on Afrobizz.'}
                           </p>
                           <p style={{ fontSize: '0.8rem', color: '#d1d5db', marginTop: '0.5rem', fontStyle: 'italic' }}>
                             {t.tierMessages?.freeVisitorNote || 'Limited preview • This professional has chosen the Free plan with limited display'}

@@ -73,6 +73,18 @@ export async function POST(request: NextRequest) {
     });
 
     console.log('[API /api/auth/login] Generated new token for user:', email);
+    console.log('[API /api/auth/login] User role being returned:', role);
+
+    // Set cookie BEFORE creating response (Next.js 14+ requirement)
+    const cookieStore = await cookies();
+    cookieStore.set('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+    });
+    console.log('[API /api/auth/login] Cookie set via cookies() API');
 
     // Create response with auth cookie
     const response = NextResponse.json(
@@ -88,20 +100,8 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-
-    // Set cookie using BOTH methods for maximum compatibility
-    // Method 1: Using Next.js cookies() API
-    const cookieStore = await cookies();
-    cookieStore.set('auth_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: '/',
-    });
-    console.log('[API /api/auth/login] Cookie set via cookies() API');
     
-    // Method 2: Also set via response header for extra compatibility
+    // Also set via response header for extra compatibility
     const cookieHeader = setAuthCookieHeader(token);
     console.log('[API /api/auth/login] Setting cookie header via response');
     response.headers.append('Set-Cookie', cookieHeader);

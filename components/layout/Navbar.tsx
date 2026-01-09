@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslations } from '@/hooks/useTranslations';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faUser, faSignOut, faEarthAfrica } from '@fortawesome/free-solid-svg-icons';
 
 export const Navbar: React.FC = () => {
 
@@ -66,10 +66,8 @@ export const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
-              <span className="font-bold text-white text-xs">MF</span>
-            </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">MixxFactory</span>
+            <FontAwesomeIcon icon={faEarthAfrica} className="w-8 h-8 text-primary-600" />
+            <span className="font-bold text-xl text-gray-900 dark:text-white">Afrobizz</span>
           </Link>
 
           {/* Desktop Menu */}

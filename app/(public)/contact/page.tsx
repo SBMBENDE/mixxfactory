@@ -33,7 +33,7 @@ export default function ContactPage() {
     {
       icon: faEnvelope,
       title: t.contact.email,
-      value: 'support@mixxfactory.com',
+      value: 'support@afrobizz.com',
       color: '#7c3aed',
     },
     {

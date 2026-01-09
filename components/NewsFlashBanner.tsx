@@ -131,7 +131,14 @@ export default function NewsFlashBanner() {
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const response = await fetch('/api/news-flashes');
+        // Add cache-busting timestamp to force fresh data
+        const response = await fetch(`/api/news-flashes?t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          },
+        });
         const data = await response.json();
         console.log('Raw API response:', data);
         
@@ -150,6 +157,7 @@ export default function NewsFlashBanner() {
           setAnnouncements(announcements);
         } else {
           console.log('No announcements found');
+          setAnnouncements([]);
         }
       } catch (err) {
         console.error('Failed to fetch announcements:', err);
@@ -158,15 +166,20 @@ export default function NewsFlashBanner() {
       }
     };
 
+    // Initial fetch
     fetchAnnouncements();
 
+    // Poll for updates every 30 seconds for instant admin changes
+    const pollInterval = setInterval(fetchAnnouncements, 30000);
+
     // Auto-rotate announcements every 5 seconds if there are multiple
-    const interval = announcements.length > 1 ? setInterval(() => {
+    const rotateInterval = announcements.length > 1 ? setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % announcements.length);
     }, 5000) : null;
 
     return () => {
-      if (interval) clearInterval(interval);
+      clearInterval(pollInterval);
+      if (rotateInterval) clearInterval(rotateInterval);
     };
   }, [announcements.length]);
 

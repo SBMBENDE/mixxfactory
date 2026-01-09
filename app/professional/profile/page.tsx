@@ -558,7 +558,7 @@ export default function ProfilePage() {
               target="_blank"
               style={{ color: '#2563eb', textDecoration: 'underline' }}
             >
-              mixxfactory.com/professionals/{profile.slug}
+              afrobizz.com/professionals/{profile.slug}
             </a>
           </div>
         </div>

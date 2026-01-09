@@ -49,16 +49,16 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Discover Verified & Trusted\nProfessionals',
-      tagline: 'Find trusted experts and upcoming events near you.',
-      subtitle: 'Access trusted professionals, venues, and events near you — instantly.',
-      discoverBtn: 'Find a professional',
-      eventsBtn: 'Explore events',
+      title: 'African Businesses & Talent Worldwide',
+      tagline: 'African Businesses & Talent Worldwide',
+      subtitle: 'Access trusted professionals & African businesses, venues, and events near you — instantly.',
+      discoverBtn: 'Explore Professionals',
+      eventsBtn: 'List Your Business',
       registerBtn: 'Register as Professional',
       popularCategories: 'Popular Categories',
       topRatedProfessionals: 'Top-rated professionals',
       loadingCategories: 'Loading categories...',
-      brandName: 'MixxFactory',
+      brandName: 'Afrobizz',
       featuredTitle: 'Want to be featured?',
       featuredDesc: 'If you\'re a professional or venue owner, join our directory and reach thousands of potential customers.',
       getStarted: 'Get Started',
@@ -137,7 +137,7 @@ export const translations = {
       networkError: 'Network error. Please try again.',
       redirecting: 'Redirecting...',
       accountCreated: 'Account Created!',
-      joingMixxFactory: 'Join MixxFactory today',
+      joingMixxFactory: 'Join Afrobizz today',
       dontHaveAccount: "Don't have an account?",
       createAccountLink: 'Create an account',
       showPassword: 'Show password',
@@ -270,10 +270,10 @@ export const translations = {
     },
     // About page
     about: {
-      title: 'About MixxFactory',
+      title: 'About Afrobizz',
       subtitle: 'Connecting you with the best professionals and venues in your area',
       mission: 'Our Mission',
-      missionText: 'MixxFactory is dedicated to revolutionizing how people find and connect with professionals. Whether you\'re looking for a DJ for your event, a stylist for a special occasion, or a venue for your celebration, we make it effortless.',
+      missionText: 'Afrobizz is dedicated to revolutionizing how people find and connect with professionals. Whether you\'re looking for a DJ for your event, a stylist for a special occasion, or a venue for your celebration, we make it effortless.',
       missionText2: 'We believe that quality professional services should be accessible to everyone. Our platform brings together talented professionals from various industries, making it easier than ever to discover and book the services you need.',
       missionCard: 'Bringing Professionals & Clients Together',
       byNumbers: 'By The Numbers',
@@ -289,13 +289,13 @@ export const translations = {
       reliability: 'Reliability',
       reliabilityDesc: 'Available 24/7 to help you find exactly what you need, when you need it.',
       cta: 'Ready to Find Your Perfect Professional?',
-      ctaDesc: 'Join thousands of satisfied clients who have found exactly what they need through MixxFactory.',
+      ctaDesc: 'Join thousands of satisfied clients who have found exactly what they need through Afrobizz.',
       browseDir: 'Browse Directory',
     },
     // Testimonials
     testimonials: {
       title: 'What Our Clients Say',
-      subtitle: 'Join thousands of satisfied professionals and event organizers who trust MixxFactory',
+      subtitle: 'Join thousands of satisfied professionals and event organizers who trust Afrobizz',
       satisfaction: 'Client Satisfaction Rate',
       bookings: 'Successful Bookings',
       rating: 'Average Rating',
@@ -336,10 +336,10 @@ export const translations = {
       faqA1: 'Browse our directory, find the professional you need, and use the contact information on their profile to reach out directly.',
       faqQ2: 'What payment methods do you accept?',
       faqA2: 'Payments are handled directly between you and the professional. We recommend using secure payment methods.',
-      faqQ3: 'How can I become a professional on MixxFactory?',
+      faqQ3: 'How can I become a professional on Afrobizz?',
       faqA3: 'Register an account, select "Professional" as your account type, and complete your profile with your services and rates.',
-      faqQ4: 'Is MixxFactory available on mobile?',
-      faqA4: 'Yes! MixxFactory is a progressive web app and works seamlessly on all devices including mobile phones.',
+      faqQ4: 'Is Afrobizz available on mobile?',
+      faqA4: 'Yes! Afrobizz is a progressive web app and works seamlessly on all devices including mobile phones.',
       // Event FAQs
       faqQ5: 'How do I create and promote an event?',
       faqA5: 'Navigate to "Promote Event" from your dashboard, fill in event details, select a pricing tier (Free, Featured, or Boost), and publish. Each tier offers different visibility and features.',
@@ -476,7 +476,7 @@ export const translations = {
       pricing: 'Pricing',
       premiumListings: 'Premium Listings',
       featuredEvents: 'Featured Events',
-      advertise: 'Advertise on MixxFactory',
+      advertise: 'Advertise on Afrobizz',
       allRightsReserved: 'All rights reserved.',
       sitemap: 'Sitemap',
       accessibility: 'Accessibility',
@@ -595,7 +595,7 @@ export const translations = {
     tierMessages: {
       // Free tier - Owner
       freeOwnerTitle: 'Want to showcase your full gallery?',
-      freeOwnerDesc: 'Premium professionals showcase their full gallery and get more exposure on MixxFactory.',
+      freeOwnerDesc: 'Premium professionals showcase their full gallery and get more exposure on Afrobizz.',
       freeOwnerButton: '👑 Unlock Premium Features',
       // Starter tier - Owner
       starterOwnerTitle: '🚀 Want Unlimited Gallery?',
@@ -606,7 +606,7 @@ export const translations = {
       starterGalleryOwnerDesc: 'Upgrade to Pro for unlimited gallery images and maximum exposure!',
       // Free tier - Visitor
       freeVisitorTitle: 'Want to see more?',
-      freeVisitorDesc: 'Premium professionals showcase their full gallery and get more exposure on MixxFactory.',
+      freeVisitorDesc: 'Premium professionals showcase their full gallery and get more exposure on Afrobizz.',
       freeVisitorNote: 'Limited preview • This professional has chosen the Free plan with limited display',
       // Starter tier - Visitor
       starterVisitorTitle: 'More images available',
@@ -658,16 +658,16 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Découvrez les Professionnels\nde Confiance Vérifiés',
-      tagline: 'Des Professionnels Vérifiés',
-      subtitle: 'Découvrez des professionnels de confiance, des lieux et des événements — instantanément.',
-      discoverBtn: 'Trouver un professionnel',
-      eventsBtn: 'Explorer les événements',
+      title: 'Entreprises et talents africains dans le monde entier',
+      tagline: 'Entreprises et talents africains dans le monde entier',
+      subtitle: 'Accédez à des professionnels de confiance et à des entreprises africaines, des lieux et des événements près de chez vous — instantanément.',
+      discoverBtn: 'Explorer les professionnels',
+      eventsBtn: 'Listez votre entreprise',
       registerBtn: 'S\'inscrire en tant que professionnel',
       popularCategories: 'Catégories populaires',
       topRatedProfessionals: 'Des Professionnels les mieux notés',
       loadingCategories: 'Chargement des catégories...',
-      brandName: 'MixxFactory',
+      brandName: 'Afrobizz',
       featuredTitle: 'À la une',
       featuredDesc: 'Si vous êtes un professionnel ou propriétaire de lieu, rejoignez notre annuaire et atteignez des milliers de clients potentiels.',
       getStarted: 'Commencer',
@@ -796,7 +796,7 @@ export const translations = {
       networkError: 'Erreur réseau. Veuillez réessayer.',
       redirecting: 'Redirection...',
       accountCreated: 'Compte créé !',
-      joingMixxFactory: 'Rejoignez MixxFactory aujourd\'hui',
+      joingMixxFactory: 'Rejoignez Afrobizz aujourd\'hui',
       dontHaveAccount: 'Vous n\'avez pas de compte ?',
       createAccountLink: 'Créer un compte',
       showPassword: 'Afficher le mot de passe',
@@ -882,10 +882,10 @@ export const translations = {
     },
     // About page
     about: {
-      title: 'À propos de MixxFactory',
+      title: 'À propos de Afrobizz',
       subtitle: 'Connectez-vous aux meilleurs professionnels et aux lieux d\'exception de votre région',
       mission: 'Notre mission',
-      missionText: 'MixxFactory est dédié à révolutionner la façon dont les gens trouvent et se connectent avec des professionnels. Que vous cherchiez un DJ pour votre événement, un coiffeur pour une occasion spéciale, ou un lieu pour votre célébration, nous le rendons sans effort.',
+      missionText: 'Afrobizz est dédié à révolutionner la façon dont les gens trouvent et se connectent avec des professionnels. Que vous cherchiez un DJ pour votre événement, un coiffeur pour une occasion spéciale, ou un lieu pour votre célébration, nous le rendons sans effort.',
       missionText2: 'Nous croyons que les services professionnels de qualité doivent être accessibles à tous. Notre plateforme réunit des professionnels talentueux de diverses industries, ce qui rend plus facile que jamais de découvrir et de réserver les services dont vous avez besoin.',
       missionCard: 'Rapprocher les professionnels et les clients',
       byNumbers: 'Par les chiffres',
@@ -901,13 +901,13 @@ export const translations = {
       reliability: 'Fiabilité',
       reliabilityDesc: 'Disponible 24h/24 pour vous aider à trouver exactement ce dont vous avez besoin, quand vous en avez besoin.',
       cta: 'Prêt à trouver votre professionnel parfait ?',
-      ctaDesc: 'Rejoignez des milliers de clients satisfaits qui ont trouvé exactement ce dont ils avaient besoin via MixxFactory.',
+      ctaDesc: 'Rejoignez des milliers de clients satisfaits qui ont trouvé exactement ce dont ils avaient besoin via Afrobizz.',
       browseDir: 'Parcourir l\'annuaire',
     },
     // Testimonials
     testimonials: {
       title: 'Témoignages',
-      subtitle: 'Rejoignez des milliers de professionnels et d\'organisateurs d\'événements satisfaits qui font confiance à MixxFactory',
+      subtitle: 'Rejoignez des milliers de professionnels et d\'organisateurs d\'événements satisfaits qui font confiance à Afrobizz',
       satisfaction: 'Taux de satisfaction des clients',
       bookings: 'Réservations réussies',
       rating: 'Note moyenne',
@@ -948,10 +948,10 @@ export const translations = {
       faqA1: 'Parcourez notre annuaire, trouvez le professionnel dont vous avez besoin et utilisez les informations de contact sur son profil pour le joindre.',
       faqQ2: 'Quelles méthodes de paiement acceptez-vous ?',
       faqA2: 'Les paiements sont gérés directement entre vous et le professionnel. Nous recommandons d\'utiliser des méthodes de paiement sécurisées.',
-      faqQ3: 'Comment puis-je devenir professionnel sur MixxFactory ?',
+      faqQ3: 'Comment puis-je devenir professionnel sur Afrobizz ?',
       faqA3: 'Créez un compte, sélectionnez "Professionnel" comme type de compte et complétez votre profil avec vos services et tarifs.',
-      faqQ4: 'MixxFactory est-il disponible sur mobile ?',
-      faqA4: 'Oui ! MixxFactory est une application Web progressive et fonctionne sans problème sur tous les appareils, y compris les téléphones mobiles.',
+      faqQ4: 'Afrobizz est-il disponible sur mobile ?',
+      faqA4: 'Oui ! Afrobizz est une application Web progressive et fonctionne sans problème sur tous les appareils, y compris les téléphones mobiles.',
       // Event FAQs
       faqQ5: 'Comment puis-je créer et promouvoir un événement ?',
       faqA5: 'Accédez à "Promouvoir un événement" depuis votre tableau de bord, remplissez les détails de l\'événement, sélectionnez un plan tarifaire (Gratuit, En vedette ou Boost) et publiez.',
@@ -1087,7 +1087,7 @@ export const translations = {
       pricing: 'Tarification',
       premiumListings: 'Annonces Premium',
       featuredEvents: 'Événements en Vedette',
-      advertise: 'Annoncez sur MixxFactory',
+      advertise: 'Annoncez sur Afrobizz',
       allRightsReserved: 'Tous les droits réservés.',
       sitemap: 'Plan du site',
       accessibility: 'Accessibilité',
@@ -1207,7 +1207,7 @@ export const translations = {
     tierMessages: {
       // Free tier - Owner
       freeOwnerTitle: 'Voulez-vous présenter votre galerie complète ?',
-      freeOwnerDesc: 'Les professionnels Premium présentent leur galerie complète et obtiennent plus de visibilité sur MixxFactory.',
+      freeOwnerDesc: 'Les professionnels Premium présentent leur galerie complète et obtiennent plus de visibilité sur Afrobizz.',
       freeOwnerButton: '👑 Débloquer les Fonctionnalités Premium',
       // Starter tier - Owner
       starterOwnerTitle: '🚀 Voulez-vous une Galerie Illimitée ?',
@@ -1218,7 +1218,7 @@ export const translations = {
       starterGalleryOwnerDesc: 'Passez à Pro pour des images de galerie illimitées et une exposition maximale !',
       // Free tier - Visitor
       freeVisitorTitle: 'Envie d\'en voir plus ?',
-      freeVisitorDesc: 'Les professionnels Premium présentent leur galerie complète et obtiennent plus de visibilité sur MixxFactory.',
+      freeVisitorDesc: 'Les professionnels Premium présentent leur galerie complète et obtiennent plus de visibilité sur Afrobizz.',
       freeVisitorNote: 'Aperçu limité • Ce professionnel a choisi le forfait Gratuit avec affichage limité',
       // Starter tier - Visitor
       starterVisitorTitle: 'Plus d\'images disponibles',

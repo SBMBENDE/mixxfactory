@@ -1,7 +1,7 @@
 {
-  "name": "mixx-factory",
+  "name": "afrobizz",
   "version": "1.0.0",
-  "description": "Progressive Web App for discovering professionals and venues",
+  "description": "Afrobizz — The professional platform connecting African businesses and talent worldwide",
   "private": true,
   "scripts": {
     "dev": "next dev",

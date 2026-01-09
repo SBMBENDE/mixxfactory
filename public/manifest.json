@@ -1,7 +1,7 @@
 {
-  "name": "MixxFactory - Discover Professionals & Venues",
-  "short_name": "MixxFactory",
-  "description": "Browse and discover DJs, event halls, stylists, restaurants, and more professionals",
+  "name": "Afrobizz - Connecting African Businesses & Talent",
+  "short_name": "Afrobizz",
+  "description": "Connecting African businesses and talent worldwide - DJs, event halls, stylists, restaurants, and more professionals",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

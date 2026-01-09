@@ -112,7 +112,7 @@ export default function Hero() {
             </a>
 
             <a
-              href="/events"
+              href="/auth/register"
               style={{
                 padding: isMobile ? '1rem' : '1.125rem 1.5rem',
                 backgroundColor: 'transparent',

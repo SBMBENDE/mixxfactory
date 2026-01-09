@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       const emailHTML = getVerificationEmailHTML(firstName, verificationUrl);
       await sendEmail({
         to: email,
-        subject: 'Verify Your MixxFactory Email',
+        subject: 'Verify Your Afrobizz Email',
         html: emailHTML,
       });
       console.log(`[Auth] Verification email resent to ${email}`);

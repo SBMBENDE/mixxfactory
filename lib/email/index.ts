@@ -36,12 +36,12 @@ export async function sendWelcomeEmail(
       <body>
         <div class="container">
           <div class="header">
-            <h1>Welcome to MixxFactory! 🎉</h1>
+            <h1>Welcome to Afrobizz! 🎉</h1>
           </div>
           <div class="content">
             <p>Hi ${name},</p>
             
-            <p>Thank you for joining MixxFactory! We're excited to have you as a professional in our community.</p>
+            <p>Thank you for joining Afrobizz! We're excited to have you as a professional in our community.</p>
             
             <div class="section">
               <h2>Getting Started</h2>
@@ -56,15 +56,15 @@ export async function sendWelcomeEmail(
             
             <div class="section">
               <h2>Need Help?</h2>
-              <p>Check out our help center or contact our support team at support@mixxfactory.com</p>
+              <p>Check out our help center or contact our support team at support@afrobizz.com</p>
             </div>
             
             <div class="section">
-              <p>Best regards,<br>The MixxFactory Team</p>
+              <p>Best regards,<br>The Afrobizz Team</p>
             </div>
           </div>
           <div class="footer">
-            <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+            <p>&copy; 2025 Afrobizz. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -73,7 +73,7 @@ export async function sendWelcomeEmail(
 
   await sendEmail({
     to: email,
-    subject: 'Welcome to MixxFactory! 🎉',
+    subject: 'Welcome to Afrobizz! 🎉',
     html,
   });
 }
@@ -111,7 +111,7 @@ export async function sendNewsletterConfirmationEmail(
           <div class="content">
             <p>Hi ${name},</p>
             
-            <p>Thank you for subscribing to the MixxFactory newsletter! You're now part of our community.</p>
+            <p>Thank you for subscribing to the Afrobizz newsletter! You're now part of our community.</p>
             
             <div class="section">
               <h2>What to Expect</h2>
@@ -129,12 +129,12 @@ export async function sendNewsletterConfirmationEmail(
             </div>
             
             <div class="section">
-              <p>Thank you for being part of MixxFactory!</p>
-              <p>Best regards,<br>The MixxFactory Team</p>
+              <p>Thank you for being part of Afrobizz!</p>
+              <p>Best regards,<br>The Afrobizz Team</p>
             </div>
           </div>
           <div class="footer">
-            <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+            <p>&copy; 2025 Afrobizz. All rights reserved.</p>
             <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #667eea; text-decoration: none;">Unsubscribe</a></p>
           </div>
         </div>

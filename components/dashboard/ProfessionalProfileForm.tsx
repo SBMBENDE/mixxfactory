@@ -12,7 +12,7 @@ export default function ProfessionalProfileForm() {
         </div>
         <div className="flex-1">
           <label className="block text-sm font-medium mb-1">Email</label>
-          <input type="email" className="w-full input input-bordered" placeholder="you@email.com" defaultValue="jane@mixxfactory.com" />
+          <input type="email" className="w-full input input-bordered" placeholder="you@email.com" defaultValue="jane@afrobizz.com" />
         </div>
       </div>
       <div>

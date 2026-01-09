@@ -30,7 +30,7 @@ function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-64 h-full bg-gray-900 text-white py-8 px-4 border-r border-gray-800">
       <div className="mb-8">
-        <span className="text-2xl font-bold tracking-tight">MixxFactory</span>
+        <span className="text-2xl font-bold tracking-tight">Afrobizz</span>
       </div>
       <nav className="flex-1">
         <ul className="space-y-2">

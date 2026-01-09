@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
           professionalId: validatedData.professionalId || '',
           ...validatedData.metadata,
         },
-        description: `${validatedData.subscriptionTier} subscription - MixxFactory`,
+        description: `${validatedData.subscriptionTier} subscription - Afrobizz`,
       });
 
       providerPaymentId = stripeIntent.id;
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       const paypalOrder = await createPayPalOrder({
         amount: amount, // PayPal uses actual dollar amount
         currency: validatedData.currency,
-        description: `${validatedData.subscriptionTier} subscription - MixxFactory`,
+        description: `${validatedData.subscriptionTier} subscription - Afrobizz`,
         metadata: {
           userId: decoded.userId,
           subscriptionTier: validatedData.subscriptionTier,

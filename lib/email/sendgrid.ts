@@ -44,7 +44,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
       subject: options.subject,
       text: options.text || options.html,
       html: options.html,
-      replyTo: 'support@mixxfactory.com',
+      replyTo: 'support@afrobizz.com',
     };
 
     console.log(`[Email] API Key length: ${process.env.SENDGRID_API_KEY.length}`);
@@ -161,7 +161,7 @@ export function getPasswordResetEmailHTML(
             </div>
             <div class="content">
               <p>Hello ${firstName || 'there'},</p>
-              <p>We received a request to reset your password for your MixxFactory account.</p>
+              <p>We received a request to reset your password for your Afrobizz account.</p>
               <p>Click the button below to reset your password:</p>
               <div style="text-align: center;">
                 <a href="${resetUrl}" class="button">Reset Password</a>
@@ -177,9 +177,9 @@ export function getPasswordResetEmailHTML(
               <p>If you didn't request this, you can safely ignore this email. Your password will remain unchanged.</p>
             </div>
             <div class="footer">
-              <p>This is an automated email from MixxFactory.</p>
-              <p>Need help? Contact us at support@mixxfactory.com</p>
-              <p>&copy; ${new Date().getFullYear()} MixxFactory. All rights reserved.</p>
+              <p>This is an automated email from Afrobizz.</p>
+              <p>Need help? Contact us at support@afrobizz.com</p>
+              <p>&copy; ${new Date().getFullYear()} Afrobizz. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -286,7 +286,7 @@ export function getVerificationEmailHTML(
         <div class="container">
           <div class="email-wrapper">
             <div class="header">
-              <h1>🎉 Welcome to MixxFactory!</h1>
+              <h1>🎉 Welcome to Afrobizz!</h1>
             </div>
             <div class="content">
               <p>Hi ${firstName},</p>
@@ -302,13 +302,13 @@ export function getVerificationEmailHTML(
               </div>
               <p>If you didn't create this account, please ignore this email.</p>
               <p>
-                Need help? Contact us at <a href="mailto:support@mixxfactory.com">support@mixxfactory.com</a>
+                Need help? Contact us at <a href="mailto:support@afrobizz.com">support@afrobizz.com</a>
               </p>
             </div>
             <div class="footer">
-              <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+              <p>&copy; 2025 Afrobizz. All rights reserved.</p>
               <p>
-                <a href="https://mixxfactory.com" style="color: #667eea; text-decoration: none;">Visit our website</a>
+                <a href="https://afrobizz.com" style="color: #667eea; text-decoration: none;">Visit our website</a>
               </p>
             </div>
           </div>
@@ -443,13 +443,13 @@ export function getResetPasswordEmailHTML(
               </div>
               <p>For your security, never share this link with anyone.</p>
               <p>
-                Questions? Contact us at <a href="mailto:support@mixxfactory.com">support@mixxfactory.com</a>
+                Questions? Contact us at <a href="mailto:support@afrobizz.com">support@afrobizz.com</a>
               </p>
             </div>
             <div class="footer">
-              <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+              <p>&copy; 2025 Afrobizz. All rights reserved.</p>
               <p>
-                <a href="https://mixxfactory.com" style="color: #667eea; text-decoration: none;">Visit our website</a>
+                <a href="https://afrobizz.com" style="color: #667eea; text-decoration: none;">Visit our website</a>
               </p>
             </div>
           </div>
@@ -547,7 +547,7 @@ export function getWelcomeEmailHTML(firstName: string): string {
             </div>
             <div class="content">
               <p>Your account is all set up and ready to go!</p>
-              <p>Here's what you can do with MixxFactory:</p>
+              <p>Here's what you can do with Afrobizz:</p>
               <div class="features">
                 <div class="feature-item">✨ Discover talented professionals in your area</div>
                 <div class="feature-item">💬 Read reviews and ratings from other users</div>
@@ -556,14 +556,14 @@ export function getWelcomeEmailHTML(firstName: string): string {
                 <div class="feature-item">👤 Manage your account preferences</div>
               </div>
               <p>
-                <a href="https://mixxfactory.com" class="button">Explore Now</a>
+                <a href="https://afrobizz.com" class="button">Explore Now</a>
               </p>
               <p>
-                If you have any questions, feel free to reach out to us at <a href="mailto:support@mixxfactory.com">support@mixxfactory.com</a>
+                If you have any questions, feel free to reach out to us at <a href="mailto:support@afrobizz.com">support@afrobizz.com</a>
               </p>
             </div>
             <div class="footer">
-              <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+              <p>&copy; 2025 Afrobizz. All rights reserved.</p>
             </div>
           </div>
         </div>

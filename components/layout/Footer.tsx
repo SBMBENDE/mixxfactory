@@ -16,7 +16,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
           {/* About Section - Full width on mobile, 1 col on desktop */}
           <div className="col-span-2 md:col-span-1">
-            <h3 className="text-lg font-bold mb-4 text-white">MixxFactory</h3>
+            <h3 className="text-lg font-bold mb-4 text-white">Afrobizz</h3>
             <p className="text-sm text-gray-400 mb-6">
               {t.footer?.description || 'Connecting professionals and venues with event organizers worldwide.'}
             </p>
@@ -121,7 +121,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/promote-event" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
-                  {t.footer?.advertise || 'Advertise on MixxFactory'}
+                  {t.footer?.advertise || 'Advertise on Afrobizz'}
                 </Link>
               </li>
             </ul>
@@ -163,7 +163,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-sm text-gray-400">
-            © {currentYear} MixxFactory. {t.footer?.allRightsReserved || 'All rights reserved.'}
+            © {currentYear} Afrobizz. {t.footer?.allRightsReserved || 'All rights reserved.'}
           </p>
           
           {/* Bottom Links - Mobile Hidden */}

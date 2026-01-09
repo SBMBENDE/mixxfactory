@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       console.log('[Auth] Sending email via SendGrid...');
       await sendEmail({
         to: email,
-        subject: 'Verify Your MixxFactory Email',
+        subject: 'Verify Your Afrobizz Email',
         html: emailHTML,
       });
       console.log(`✅ [Auth] Verification email sent to ${email}`);
