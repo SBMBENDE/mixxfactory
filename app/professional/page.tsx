@@ -36,11 +36,6 @@ export default function ProfessionalDashboard() {
         if (res.ok) {
           const data = await res.json();
           setProfileData(data.data);
-          
-          // On mobile, redirect to profile page
-          if (window.innerWidth < 768) {
-            router.push('/professional/profile');
-          }
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error);
