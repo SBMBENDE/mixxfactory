@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
-import { ProfessionalModel } from '@/lib/db/models';
+import { ProfessionalModel, SOSSupportModel, UserModel } from '@/lib/db/models';
 import { verifyAuth } from '@/lib/auth/verify';
 import { z } from 'zod';
 
@@ -43,11 +43,11 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
-    // Find professional profile
+    // Find professional profile and populate user email
     const professional = await ProfessionalModel.findOne({ 
       userId 
     })
-      .select('name email subscriptionTier _id')
+      .select('name email subscriptionTier _id userId')
       .lean()
       .exec();
 
@@ -56,6 +56,13 @@ export async function POST(req: NextRequest) {
         { success: false, error: 'Professional profile not found' },
         { status: 404 }
       );
+    }
+
+    // Get email from User model if not in Professional profile
+    let professionalEmail = professional.email;
+    if (!professionalEmail && professional.userId) {
+      const user = await UserModel.findById(professional.userId).select('email').lean();
+      professionalEmail = user?.email;
     }
 
     // Parse and validate request body
@@ -100,7 +107,7 @@ Response Time: ${tier === 'PRO' ? '24 hours' : '48 hours'}
 
 PROFESSIONAL DETAILS:
 Name: ${professional.name}
-Email: ${professional.email}
+Email: ${professionalEmail || 'No email found'}
 Account ID: ${professional._id}
 Subscription: ${tier}
 
@@ -123,22 +130,34 @@ Submitted: ${new Date().toLocaleString('en-US', {
 })}
     `.trim();
 
-    // In production, integrate with email service (SendGrid, Resend, etc.)
-    // For now, log to console and save to database (optional)
+    // Save to database for admin dashboard
+    const sosTicket = await SOSSupportModel.create({
+      professionalId: professional._id,
+      professionalName: professional.name,
+      professionalEmail: professionalEmail || 'No email found',
+      subscriptionTier: professional.subscriptionTier || 'free',
+      reason,
+      message,
+      priority: tier === 'PRO' ? 'high' : 'normal',
+      status: 'new',
+    });
+
     console.log('\n=== SOS HELP REQUEST ===');
+    console.log('Ticket ID:', sosTicket._id);
     console.log('Subject:', emailSubject);
-    console.log('Body:', emailBody);
+    console.log('Priority:', priority);
     console.log('========================\n');
 
     // TODO: Send actual email to admin
     // await sendEmail({
-    //   to: process.env.ADMIN_SUPPORT_EMAIL,
+    //   to: process.env.ADMIN_SUPPORT_EMAIL || 'admin@afrobizz.com',
     //   subject: emailSubject,
     //   text: emailBody,
     // });
 
     return NextResponse.json({
       success: true,
+      ticketId: sosTicket._id.toString(),
       message: tier === 'PRO' 
         ? 'Your request has been sent. Our team will respond within 24 hours.'
         : 'Your request has been sent. Our team will respond within 48 hours.',

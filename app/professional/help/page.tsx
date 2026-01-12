@@ -22,6 +22,18 @@ interface ProfileData {
   subscriptionTier: string;
 }
 
+interface Ticket {
+  _id: string;
+  reason: string;
+  message: string;
+  status: 'new' | 'in-progress' | 'resolved' | 'closed';
+  priority: 'normal' | 'high';
+  adminNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string;
+}
+
 type ReasonType = 
   | 'account-access'
   | 'payment-issue'
@@ -31,6 +43,7 @@ type ReasonType =
 
 export default function SOSHelpPage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -44,6 +57,7 @@ export default function SOSHelpPage() {
 
   useEffect(() => {
     fetchProfile();
+    fetchTickets();
   }, []);
 
   const fetchProfile = async () => {
@@ -62,6 +76,19 @@ export default function SOSHelpPage() {
       console.error('Error fetching profile:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch('/api/professional/sos-tickets');
+      const data = await res.json();
+
+      if (data.success) {
+        setTickets(data.tickets || []);
+      }
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
     }
   };
 
@@ -85,7 +112,9 @@ export default function SOSHelpPage() {
       return;
     }
 
-    setSubmitting(true);
+    se  // Refresh tickets to show the new one
+        fetchTickets();
+      tSubmitting(true);
 
     try {
       const res = await fetch('/api/professional/sos-help', {
@@ -206,6 +235,71 @@ export default function SOSHelpPage() {
           </div>
         </div>
       </div>
+
+      {/* Recent Tickets Status */}
+      {tickets.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Your Recent Tickets
+          </h2>
+          <div className="space-y-3">
+            {tickets.map((ticket) => {
+              const statusConfig = {
+                new: { color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', label: 'New' },
+                'in-progress': { color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300', label: 'In Progress' },
+                resolved: { color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300', label: 'Resolved' },
+                closed: { color: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300', label: 'Closed' },
+              };
+
+              const reasonLabels: Record<string, string> = {
+                'account-access': "Can't access account",
+                'payment-issue': 'Payment/subscription issue',
+                'profile-blocked': 'Profile not visible',
+                'booking-calendar': 'Booking/calendar issue',
+                'other-urgent': 'Other urgent issue',
+              };
+
+              const config = statusConfig[ticket.status];
+              const date = new Date(ticket.createdAt).toLocaleDateString();
+
+              return (
+                <div key={ticket._id} className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${config.color}`}>
+                        {config.label}
+                      </span>
+                      {ticket.priority === 'high' && (
+                        <span className="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded text-xs font-semibold">
+                          HIGH PRIORITY
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {reasonLabels[ticket.reason] || ticket.reason}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Submitted {date}
+                    </p>
+                    {ticket.status === 'in-progress' && (
+                      <p className="text-sm text-blue-600 dark:text-blue-400 mt-2 flex items-center gap-2">
+                        <FontAwesomeIcon icon={faClock} className="text-xs" />
+                        Our team is working on your issue
+                      </p>
+                    )}
+                    {ticket.status === 'resolved' && ticket.adminNotes && (
+                      <div className="mt-2 p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600">
+                        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Resolution:</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{ticket.adminNotes}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Info Banner */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">

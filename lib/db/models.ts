@@ -468,6 +468,82 @@ export const InquiryModel =
   (mongoose.models.Inquiry as Model<IInquiryDocument>) ||
   mongoose.model<IInquiryDocument>('Inquiry', inquirySchema);
 
+// ============ SOS SUPPORT TICKET MODEL ============
+interface ISOSSupportDocument extends Document {
+  professionalId: mongoose.Types.ObjectId;
+  professionalName: string;
+  professionalEmail: string;
+  subscriptionTier: 'free' | 'starter' | 'pro';
+  reason: 'account-access' | 'payment-issue' | 'profile-blocked' | 'booking-calendar' | 'other-urgent';
+  message: string;
+  status: 'new' | 'in-progress' | 'resolved' | 'closed';
+  priority: 'normal' | 'high';
+  adminNotes?: string;
+  resolvedBy?: string;
+  resolvedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const sosSupportSchema = new Schema<ISOSSupportDocument>(
+  {
+    professionalId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Professional',
+      required: true,
+      index: true,
+    },
+    professionalName: {
+      type: String,
+      required: true,
+    },
+    professionalEmail: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    subscriptionTier: {
+      type: String,
+      enum: ['free', 'starter', 'pro'],
+      required: true,
+      index: true,
+    },
+    reason: {
+      type: String,
+      enum: ['account-access', 'payment-issue', 'profile-blocked', 'booking-calendar', 'other-urgent'],
+      required: true,
+      index: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['new', 'in-progress', 'resolved', 'closed'],
+      default: 'new',
+      index: true,
+    },
+    priority: {
+      type: String,
+      enum: ['normal', 'high'],
+      default: 'normal',
+      index: true,
+    },
+    adminNotes: String,
+    resolvedBy: String,
+    resolvedAt: Date,
+  },
+  { timestamps: true }
+);
+
+sosSupportSchema.index({ status: 1, priority: -1, createdAt: -1 });
+sosSupportSchema.index({ professionalId: 1, createdAt: -1 });
+
+export const SOSSupportModel =
+  (mongoose.models.SOSSupport as Model<ISOSSupportDocument>) ||
+  mongoose.model<ISOSSupportDocument>('SOSSupport', sosSupportSchema);
+
 // ============ ANALYTICS MODEL ============
 interface IAnalyticsDocument extends Document {
   professionalId: mongoose.Types.ObjectId;

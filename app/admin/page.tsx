@@ -17,6 +17,7 @@ const quickLinks = [
   { label: 'Manage Categories', href: '/admin/categories' },
   { label: 'Manage Reviews', href: '/admin/reviews' },
   { label: 'View Bookings', href: '/admin/bookings' },
+  { label: 'SOS Support Tickets', href: '/admin/sos-support' },
 ];
 
 const recentActivity = [
