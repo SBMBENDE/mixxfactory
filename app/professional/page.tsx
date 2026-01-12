@@ -15,7 +15,6 @@ import {
   faStar, 
   faChartLine, 
   faUsers,
-  faCalendarCheck,
   faCrown,
   faShieldAlt
 } from '@fortawesome/free-solid-svg-icons';
