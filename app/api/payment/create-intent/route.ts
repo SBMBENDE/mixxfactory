@@ -15,7 +15,7 @@ import { SUBSCRIPTION_PRICING } from '@/types/payment';
 
 const createIntentSchema = z.object({
   amount: z.number().positive().optional(),
-  currency: z.string().length(3).optional().default('usd'),
+  currency: z.string().length(3).optional().default('eur'),
   provider: z.enum(['stripe', 'paypal']),
   subscriptionTier: z.enum(['free', 'starter', 'pro']),
   professionalId: z.string().optional(),
@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Create Stripe payment intent (amount in cents)
+      // Create Stripe payment intent
       const stripeIntent = await createStripePaymentIntent({
-        amount: Math.round(amount * 100), // Convert to cents
+        amount: amount, // Stripe helper will convert to cents
         currency: validatedData.currency,
         customerId: customer.id,
         metadata: {

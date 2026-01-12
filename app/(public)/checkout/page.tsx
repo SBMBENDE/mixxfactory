@@ -14,8 +14,11 @@ import { useAuth } from '@/components/AuthProvider';
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const redirectUrl = searchParams.get('redirect') || '';
+  const tierFromUrl = searchParams.get('tier');
   const { user, authStatus } = useAuth();
-  const [selectedTier, setSelectedTier] = useState<string>('starter');
+  const [selectedTier, setSelectedTier] = useState<string>(tierFromUrl || 'starter');
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
@@ -35,8 +38,10 @@ export default function CheckoutPage() {
       return;
     }
     setLoading(true);
-    // Navigate to payment processing page with selected tier and provider
-    router.push(`/payment/process?tier=${selectedTier}&provider=${provider}`);
+    // Navigate to payment processing page with selected tier, provider, and redirect
+    const params = new URLSearchParams({ tier: selectedTier, provider });
+    if (redirectUrl) params.set('redirect', redirectUrl);
+    router.push(`/payment/process?${params.toString()}`);
   };
 
   // Show loading while checking auth

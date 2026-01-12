@@ -25,7 +25,7 @@ const PaymentSchema = new Schema<Payment>(
     currency: {
       type: String,
       required: true,
-      default: 'usd',
+      default: 'eur',
       uppercase: true,
     },
     status: {

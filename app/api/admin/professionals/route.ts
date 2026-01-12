@@ -89,6 +89,17 @@ export async function POST(request: NextRequest) {
     }
     console.log('✅ Slug is unique');
 
+    // Get user's subscription tier to inherit it
+    let userSubscriptionTier = 'free';
+    if (userId) {
+      const { UserModel } = await import('@/lib/db/models');
+      const userDoc = await UserModel.findById(userId);
+      if (userDoc) {
+        userSubscriptionTier = userDoc.subscriptionTier || 'free';
+        console.log(`🎟️ Inheriting user subscription tier: ${userSubscriptionTier}`);
+      }
+    }
+
     const professional = new ProfessionalModel({
       userId: userId,
       name,
@@ -106,6 +117,7 @@ export async function POST(request: NextRequest) {
       reviewCount: reviewCount || 0,
       socialLinks: socialLinks || {},
       priceRange: priceRange || {},
+      subscriptionTier: userSubscriptionTier, // Inherit from user
     });
 
     console.log('💾 Saving professional to database...');

@@ -20,6 +20,7 @@ function PaymentProcessContent() {
   const searchParams = useSearchParams();
   const tier = searchParams.get('tier');
   const provider = searchParams.get('provider') as 'stripe' | 'paypal';
+  const redirectUrl = searchParams.get('redirect');
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
@@ -131,6 +132,7 @@ function PaymentProcessContent() {
                   clientSecret={clientSecret} 
                   paymentId={paymentId}
                   providerPaymentId={providerPaymentId}
+                  redirectUrl={redirectUrl}
                 />
               </Elements>
             </>
@@ -142,14 +144,18 @@ function PaymentProcessContent() {
             </div>
           )}
 
-          {provider === 'paypal' && orderId && (
+          {provider === 'paypal' && orderId && paymentId && (
             <PayPalScriptProvider
               options={{
                 clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
-                currency: 'USD',
+                currency: 'EUR',
               }}
             >
-              <PayPalCheckout orderId={orderId} />
+              {(() => {
+                // Store redirectUrl in global scope for PayPal callback
+                if (redirectUrl) (window as any).paymentRedirectUrl = redirectUrl;
+                return <PayPalCheckout orderId={orderId} paymentId={paymentId} />;
+              })()}
             </PayPalScriptProvider>
           )}
         </div>
@@ -161,11 +167,13 @@ function PaymentProcessContent() {
 function StripeCheckoutForm({ 
   clientSecret: _clientSecret, 
   paymentId,
-  providerPaymentId 
+  providerPaymentId,
+  redirectUrl
 }: { 
   clientSecret: string;
   paymentId: string;
   providerPaymentId: string;
+  redirectUrl: string | null;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -182,10 +190,14 @@ function StripeCheckoutForm({
     setError(null);
 
     try {
+      const returnUrl = redirectUrl 
+        ? `${window.location.origin}/payment/success?redirect=${encodeURIComponent(redirectUrl)}`
+        : `${window.location.origin}/payment/success`;
+      
       const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/payment/success`,
+          return_url: returnUrl,
         },
         redirect: 'if_required',
       });
@@ -211,7 +223,10 @@ function StripeCheckoutForm({
             throw new Error(confirmResult.error || 'Payment confirmation failed');
           }
 
-          router.push('/payment/success');
+          const successUrl = redirectUrl 
+            ? `/payment/success?redirect=${encodeURIComponent(redirectUrl)}` 
+            : '/payment/success';
+          router.push(successUrl);
         } catch (confirmErr: any) {
           setError(confirmErr.message);
           setProcessing(false);
@@ -251,7 +266,7 @@ function StripeCheckoutForm({
   );
 }
 
-function PayPalCheckout({ orderId }: { orderId: string }) {
+function PayPalCheckout({ orderId, paymentId }: { orderId: string; paymentId: string }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
@@ -261,8 +276,9 @@ function PayPalCheckout({ orderId }: { orderId: string }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          paymentId: paymentId,
           provider: 'paypal',
-          orderId: data.orderID,
+          providerPaymentId: data.orderID,
         }),
       });
 
@@ -272,7 +288,10 @@ function PayPalCheckout({ orderId }: { orderId: string }) {
         throw new Error(result.error || 'Payment confirmation failed');
       }
 
-      router.push('/payment/success');
+      const successUrl = (window as any).paymentRedirectUrl 
+        ? `/payment/success?redirect=${encodeURIComponent((window as any).paymentRedirectUrl)}` 
+        : '/payment/success';
+      router.push(successUrl);
     } catch (err: any) {
       setError(err.message);
     }

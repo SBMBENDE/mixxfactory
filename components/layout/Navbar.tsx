@@ -73,13 +73,13 @@ export const Navbar: React.FC = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <Link href="/directory" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
-              🔍 {t.nav.directory}
+              {t.nav.directory}
             </Link>
             <Link href="/events" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
-              🎉 {t.nav.events}
+              {t.nav.events}
             </Link>
             <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
-              📝 Blog
+              Blog
             </Link>
             <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition">
               {t.nav.about}
@@ -89,12 +89,12 @@ export const Navbar: React.FC = () => {
             </Link>
             {user?.role === 'admin' && (
               <Link href="/admin" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-semibold transition">
-                📊 {t.nav.dashboard}
+                {t.nav.dashboard}
               </Link>
             )}
             {isAuthenticated && user?.role === 'professional' && (
               <Link href="/professional" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 font-semibold transition">
-                💼 {t.nav.professionalDashboard || 'My Dashboard'}
+                {t.nav.professionalDashboard || 'My Dashboard'}
               </Link>
             )}
           </div>

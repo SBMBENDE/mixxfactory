@@ -44,7 +44,7 @@ export async function createStripePaymentIntent(params: {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(params.amount * 100), // Convert to cents
-      currency: params.currency || 'usd',
+      currency: params.currency || 'eur',
       customer: params.customerId,
       metadata: params.metadata || {},
       description: params.description,

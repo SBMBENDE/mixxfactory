@@ -49,7 +49,7 @@ export async function createPayPalOrder(params: {
       purchase_units: [
         {
           amount: {
-            currency_code: params.currency?.toUpperCase() || 'USD',
+            currency_code: params.currency?.toUpperCase() || 'EUR',
             value: params.amount.toFixed(2),
           },
           description: params.description || 'Afrobizz Subscription',
@@ -131,7 +131,7 @@ export async function refundPayPalPayment(params: {
     if (params.amount) {
       requestBody.amount = {
         value: params.amount.toFixed(2),
-        currency_code: params.currency?.toUpperCase() || 'USD',
+        currency_code: params.currency?.toUpperCase() || 'EUR',
       };
     }
     if (params.note) {
