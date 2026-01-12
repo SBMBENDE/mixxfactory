@@ -26,6 +26,14 @@ export default async function ProfessionalPage({ params }: Props) {
 
     const professionalData = professional.toObject ? professional.toObject() : JSON.parse(JSON.stringify(professional));
 
+    // Convert availability Map to plain object if it exists
+    if (professionalData.availability && professionalData.availability instanceof Map) {
+      professionalData.availability = Object.fromEntries(professionalData.availability);
+    } else if (professionalData.availability && typeof professionalData.availability === 'object' && '$type' in professionalData.availability) {
+      // Handle Mongoose Map serialization
+      professionalData.availability = {};
+    }
+
     return <ProfessionalDetailClient professional={professionalData} />;
   } catch (error) {
     console.error('Error loading professional:', error);

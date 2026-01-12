@@ -47,6 +47,16 @@ export async function GET(request: NextRequest) {
       subscriptionTier, // Ensure we use the latest tier
     };
 
+    // Convert availability Map to plain object if it exists
+    if (profileData.availability) {
+      if (profileData.availability instanceof Map) {
+        profileData.availability = Object.fromEntries(profileData.availability);
+      } else if (typeof profileData.availability === 'object' && '$type' in profileData.availability) {
+        // Handle Mongoose Map that didn't convert properly
+        profileData.availability = {};
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: profileData,

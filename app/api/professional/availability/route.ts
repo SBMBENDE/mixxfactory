@@ -59,10 +59,20 @@ export async function PUT(req: NextRequest) {
     professional.availability = availability;
     await professional.save();
 
+    // Convert Map to plain object for response
+    let savedAvailability = {};
+    if (professional.availability) {
+      if (professional.availability instanceof Map) {
+        savedAvailability = Object.fromEntries(professional.availability);
+      } else if (typeof professional.availability === 'object') {
+        savedAvailability = professional.availability;
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Availability updated successfully',
-      data: { availability: professional.availability },
+      data: { availability: savedAvailability },
     });
   } catch (error) {
     console.error('Error updating availability:', error);
@@ -95,10 +105,20 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Convert Map to plain object
+    let availability = {};
+    if (professional.availability) {
+      if (professional.availability instanceof Map) {
+        availability = Object.fromEntries(professional.availability);
+      } else if (typeof professional.availability === 'object') {
+        availability = professional.availability;
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
-        availability: professional.availability || {},
+        availability,
         subscriptionTier: professional.subscriptionTier,
       },
     });
