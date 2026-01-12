@@ -91,44 +91,17 @@ export async function POST(req: NextRequest) {
       'other-urgent': 'Other Urgent Issue',
     };
 
-    // Prepare email content
+    // Prepare email content (for future email integration)
     const tier = (professional.subscriptionTier || 'free').toUpperCase();
     const priority = tier === 'PRO' ? 'HIGH' : 'NORMAL';
-    const emailSubject = `[SOS] ${tier} user – ${reasonLabels[reason]}`;
     
-    const emailBody = `
-SOS SUPPORT REQUEST
-
-Priority: ${priority}
-Tier: ${tier}
-Response Time: ${tier === 'PRO' ? '24 hours' : '48 hours'}
-
----
-
-PROFESSIONAL DETAILS:
-Name: ${professional.name}
-Email: ${professionalEmail || 'No email found'}
-Account ID: ${professional._id}
-Subscription: ${tier}
-
----
-
-ISSUE CATEGORY:
-${reasonLabels[reason]}
-
----
-
-MESSAGE:
-${message}
-
----
-
-Submitted: ${new Date().toLocaleString('en-US', { 
-  timeZone: 'UTC',
-  dateStyle: 'full',
-  timeStyle: 'long'
-})}
-    `.trim();
+    // TODO: Send actual email to admin
+    // const emailSubject = `[SOS] ${tier} user – ${reasonLabels[reason]}`;
+    // await sendEmail({
+    //   to: process.env.ADMIN_SUPPORT_EMAIL || 'admin@afrobizz.com',
+    //   subject: emailSubject,
+    //   text: emailBody,
+    // });
 
     // Save to database for admin dashboard
     const sosTicket = await SOSSupportModel.create({
@@ -144,14 +117,14 @@ Submitted: ${new Date().toLocaleString('en-US', {
 
     console.log('\n=== SOS HELP REQUEST ===');
     console.log('Ticket ID:', sosTicket._id);
-    console.log('Subject:', emailSubject);
     console.log('Priority:', priority);
+    console.log('Tier:', tier);
     console.log('========================\n');
 
     // TODO: Send actual email to admin
     // await sendEmail({
     //   to: process.env.ADMIN_SUPPORT_EMAIL || 'admin@afrobizz.com',
-    //   subject: emailSubject,
+    //   subject: `[SOS] ${tier} user – ${reasonLabels[reason]}`,
     //   text: emailBody,
     // });
 
