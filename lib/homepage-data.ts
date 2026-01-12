@@ -36,7 +36,7 @@ export const getFeaturedProfessionals = cache(async () => {
 
     // Get featured + active professionals
     let professionals = await ProfessionalModel.find({ featured: true, active: true })
-      .select('name slug images gallery rating reviewCount category createdAt featured active')
+      .select('name slug images gallery rating reviewCount category createdAt featured active availability subscriptionTier')
       .sort({ createdAt: -1 })
       .limit(4)
       .lean()
@@ -46,7 +46,7 @@ export const getFeaturedProfessionals = cache(async () => {
     if (!professionals || professionals.length === 0) {
       console.log('[PROFESSIONALS] No featured found, falling back to top-rated');
       professionals = await ProfessionalModel.find({ active: true })
-        .select('name slug images gallery rating reviewCount category createdAt featured active')
+        .select('name slug images gallery rating reviewCount category createdAt featured active availability subscriptionTier')
         .sort({ rating: -1, reviewCount: -1, createdAt: -1 })
         .limit(4)
         .lean()
@@ -56,12 +56,24 @@ export const getFeaturedProfessionals = cache(async () => {
     const queryTime = Date.now() - queryStart;
     console.log(`[PROFESSIONALS] Fetched ${professionals?.length || 0} professionals in ${queryTime}ms`);
 
-    // Transform: convert ObjectId to string
-    return professionals.map((p: any) => ({
-      ...p,
-      _id: p._id?.toString(),
-      category: p.category?.toString?.() || p.category,
-    })) || [];
+    // Transform: convert ObjectId to string and Map to Object
+    return professionals.map((p: any) => {
+      let availability = p.availability;
+      
+      // Convert Map to plain object
+      if (availability instanceof Map) {
+        availability = Object.fromEntries(availability);
+      } else if (typeof availability === 'object' && availability !== null && '$type' in availability) {
+        availability = {}; // Mongoose serialization artifact
+      }
+
+      return {
+        ...p,
+        _id: p._id?.toString(),
+        category: p.category?.toString?.() || p.category,
+        availability,
+      };
+    }) || [];
   } catch (error) {
     console.error('[PROFESSIONALS] Error:', error instanceof Error ? error.message : error);
     return [];

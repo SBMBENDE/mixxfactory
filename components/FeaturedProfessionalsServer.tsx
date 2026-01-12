@@ -23,6 +23,8 @@ interface Professional {
   rating: number;
   reviewCount: number;
   category?: string;
+  availability?: Record<string, boolean>;
+  subscriptionTier?: string;
 }
 
 interface Props {
@@ -34,6 +36,15 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
   if (!professionals || professionals.length === 0) {
     return null;
   }
+
+  // Helper function to check if professional is available today
+  const isAvailableToday = (professional: Professional): boolean => {
+    if (!professional.availability || professional.subscriptionTier !== 'pro') {
+      return false;
+    }
+    const today = new Date().toISOString().split('T')[0];
+    return professional.availability[today] === true;
+  };
 
   // Split into sections: Featured (max 8), Top Rated (max 8)
   const featuredPros = professionals.filter(p => p.featured).slice(0, 8);
@@ -97,21 +108,39 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
 
         {/* Content */}
         <div style={{ padding: '1rem' }}>
-          {/* Featured Badge */}
-          {professional.featured && (
-            <span style={{
-              display: 'inline-block',
-              backgroundColor: '#fef3c7',
-              color: '#92400e',
-              padding: '0.25rem 0.5rem',
-              borderRadius: '0.25rem',
-              fontSize: '0.75rem',
-              fontWeight: '600',
-              marginBottom: '0.5rem',
-            }}>
-              ⭐ FEATURED
-            </span>
-          )}
+          {/* Badges Row */}
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+            {/* Featured Badge */}
+            {professional.featured && (
+              <span style={{
+                display: 'inline-block',
+                backgroundColor: '#fef3c7',
+                color: '#92400e',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '0.25rem',
+                fontSize: '0.75rem',
+                fontWeight: '600',
+              }}>
+                ⭐ FEATURED
+              </span>
+            )}
+
+            {/* Availability Badge - Only for Pro users with availability data */}
+            {professional.subscriptionTier === 'pro' && professional.availability && Object.keys(professional.availability).length > 0 && (
+              <span style={{
+                display: 'inline-block',
+                backgroundColor: isAvailableToday(professional) ? '#d1fae5' : '#f3f4f6',
+                color: isAvailableToday(professional) ? '#065f46' : '#6b7280',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '0.25rem',
+                fontSize: '0.75rem',
+                fontWeight: '600',
+                border: `1px solid ${isAvailableToday(professional) ? '#10b981' : '#d1d5db'}`,
+              }}>
+                {isAvailableToday(professional) ? '✓ AVAILABLE' : '○ UNAVAILABLE'}
+              </span>
+            )}
+          </div>
 
           {/* Name */}
           <h3 style={{
