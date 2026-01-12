@@ -58,7 +58,9 @@ export default function LoginPage() {
         window.location.replace('/admin');
       } else if (userRole === 'professional') {
         console.log('🟢 Professional detected - Redirecting to /professional');
-        window.location.replace('/professional');
+        // On mobile, go to profile page directly
+        const isMobile = window.innerWidth < 768;
+        window.location.replace(isMobile ? '/professional/profile' : '/professional');
       } else {
         console.log('🟡 Regular user detected - Redirecting to /directory');
         window.location.replace('/directory');

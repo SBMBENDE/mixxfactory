@@ -14,6 +14,7 @@ interface GalleryUploadProps {
   isLoading?: boolean;
   subscriptionTier?: string;
   maxImages?: number;
+  professionalId: string;
 }
 
 export default function GalleryUpload({
@@ -22,11 +23,13 @@ export default function GalleryUpload({
   isLoading = false,
   subscriptionTier = 'free',
   maxImages,
+  professionalId,
 }: GalleryUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const cloudinaryCloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
   // Calculate max images based on tier
   const getMaxImages = () => {
@@ -79,32 +82,58 @@ export default function GalleryUpload({
       return;
     }
 
+    if (!cloudinaryCloudName) {
+      setError('Cloudinary not configured. Add NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME to .env.local');
+      return;
+    }
+
     setUploading(true);
     setError('');
 
     try {
-      const formData = new FormData();
+      const uploadedUrls: string[] = [];
+
       for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'mixxfactory');
+
+        // Upload to Cloudinary
+        const cloudinaryResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        if (!cloudinaryResponse.ok) {
+          const errorText = await cloudinaryResponse.text();
+          console.error('Cloudinary error:', errorText);
+          throw new Error(`Failed to upload ${file.name} to Cloudinary`);
+        }
+
+        const cloudinaryData = await cloudinaryResponse.json();
+        uploadedUrls.push(cloudinaryData.secure_url);
       }
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      const updatedGallery = [...gallery, ...uploadedUrls];
+      
+      // Save to database
+      const response = await fetch(`/api/admin/professionals/${professionalId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ gallery: updatedGallery }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to upload images');
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to save gallery');
       }
 
-      const data = await response.json();
-      if (data.success) {
-        const newUrls = data.urls || [];
-        const updatedGallery = [...gallery, ...newUrls];
-        onGalleryUpdated(updatedGallery);
-      } else {
-        setError(data.message || 'Upload failed');
-      }
+      onGalleryUpdated(updatedGallery);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload error');
     } finally {
@@ -115,70 +144,110 @@ export default function GalleryUpload({
     }
   };
 
-  const handleRemove = (index: number) => {
+  const handleRemove = async (index: number) => {
     const updated = gallery.filter((_, i) => i !== index);
-    onGalleryUpdated(updated);
+    
+    try {
+      // Save to database
+      const response = await fetch(`/api/admin/professionals/${professionalId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ gallery: updated }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update gallery');
+      }
+
+      onGalleryUpdated(updated);
+    } catch (err) {
+      console.error('Failed to remove image:', err);
+      setError(err instanceof Error ? err.message : 'Failed to remove image');
+    }
   };
 
-  const handleMoveUp = (index: number) => {
+  const handleMoveUp = async (index: number) => {
     if (index === 0) return;
     const updated = [...gallery];
     [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
-    onGalleryUpdated(updated);
+    
+    try {
+      const response = await fetch(`/api/admin/professionals/${professionalId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ gallery: updated }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update gallery');
+      }
+
+      onGalleryUpdated(updated);
+    } catch (err) {
+      console.error('Failed to reorder:', err);
+      setError(err instanceof Error ? err.message : 'Failed to reorder');
+    }
   };
 
-  const handleMoveDown = (index: number) => {
+  const handleMoveDown = async (index: number) => {
     if (index === gallery.length - 1) return;
     const updated = [...gallery];
     [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
-    onGalleryUpdated(updated);
+    
+    try {
+      const response = await fetch(`/api/admin/professionals/${professionalId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ gallery: updated }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update gallery');
+      }
+
+      onGalleryUpdated(updated);
+    } catch (err) {
+      console.error('Failed to reorder:', err);
+      setError(err instanceof Error ? err.message : 'Failed to reorder');
+    }
   };
 
   return (
     <div className="space-y-4">
-      <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6">
-        {/* Upload Area */}
-        <div
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-          className={`cursor-pointer p-4 rounded-lg text-center transition-colors ${
-            dragActive
-              ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-400'
-              : 'bg-gray-50 dark:bg-gray-800'
-          }`}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleChange}
-            className="hidden"
-            disabled={uploading || isLoading}
-          />
+      <input
+        ref={inputRef}
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={handleChange}
+        className="hidden"
+        disabled={uploading || isLoading}
+      />
 
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading || isLoading || !canUploadMore}
-            className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {uploading ? 'Uploading...' : canUploadMore ? 'Click to upload or drag images' : `Max ${tierMaxImages} images reached`}
-          </button>
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        disabled={uploading || isLoading || !canUploadMore}
+        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg transition-colors"
+      >
+        {uploading ? 'Uploading...' : canUploadMore ? 'Upload Gallery Images' : `Max ${tierMaxImages} images`}
+      </button>
 
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            PNG, JPG, GIF up to 10MB each • {gallery.length}/{tierMaxImages} images used
-          </p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {gallery.length}/{tierMaxImages} images used
+      </p>
+
+      {error && (
+        <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-200 rounded-lg text-sm">
+          {error}
         </div>
-
-        {error && (
-          <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-200 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Gallery Grid */}
       {gallery.length > 0 && (
@@ -245,10 +314,6 @@ export default function GalleryUpload({
               </div>
             ))}
           </div>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
-            Hover over images to reorder or delete. Maximum 10 images recommended.
-          </p>
         </div>
       )}
     </div>

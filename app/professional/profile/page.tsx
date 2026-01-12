@@ -15,7 +15,7 @@ import { faEdit, faEye, faCheckCircle, faExclamationTriangle, faSave, faTimes, f
 import ImageUpload from '@/components/ImageUpload';
 import GalleryUpload from '@/components/GalleryUpload';
 import Image from 'next/image';
-import { canUseGallery, getTierBadge, getUpgradeMessage, hasFeatureAccess } from '@/lib/utils/tier-access';
+import { canUseGallery, getTierBadge, hasFeatureAccess } from '@/lib/utils/tier-access';
 
 interface ProfileData {
   _id: string;
@@ -115,7 +115,8 @@ export default function ProfilePage() {
   // Handle image upload (profile images)
   const handleImagesAdded = (newImages: string[]) => {
     if (!profile) return;
-    setProfile({ ...profile, images: [...(profile.images || []), ...newImages] });
+    // Replace the profile image with the new one
+    setProfile({ ...profile, images: newImages });
   };
 
   // Handle gallery update
@@ -161,160 +162,6 @@ export default function ProfilePage() {
 
   return (
     <div>
-            {/* Profile Image Upload */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Profile Images</h2>
-              {profile && (
-                <ImageUpload
-                  professionalId={profile._id}
-                  onImagesAdded={handleImagesAdded}
-                />
-              )}
-              <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
-                {profile?.images?.map((img, idx) => (
-                  <Image
-                    key={img}
-                    src={img}
-                    alt={`Profile ${idx + 1}`}
-                    width={80}
-                    height={80}
-                    style={{ objectFit: 'cover', borderRadius: 8, border: '1px solid #eee' }}
-                    sizes="80px"
-                    priority={idx === 0}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Gallery Upload */}
-            {canShowGallery ? (
-              <div style={{ marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Gallery Images</h2>
-                <GalleryUpload
-                  gallery={gallery}
-                  onGalleryUpdated={handleGalleryUpdated}
-                  subscriptionTier={profile.subscriptionTier}
-                />
-              </div>
-            ) : (
-              <div style={{ marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Gallery Images</h2>
-                <div style={{ 
-                  padding: '3rem 2rem', 
-                  backgroundColor: '#fef3c7', 
-                  border: '2px dashed #f59e0b',
-                  borderRadius: '0.5rem',
-                  textAlign: 'center'
-                }}>
-                  <FontAwesomeIcon icon={faCrown} style={{ fontSize: '3rem', color: '#f59e0b', marginBottom: '1rem' }} />
-                  <p style={{ fontWeight: 600, color: '#92400e', marginBottom: '0.5rem' }}>
-                    {getUpgradeMessage('gallery', profile.subscriptionTier as any)}
-                  </p>
-                  <Link
-                    href="/checkout"
-                    style={{
-                      display: 'inline-block',
-                      marginTop: '1rem',
-                      padding: '0.75rem 1.5rem',
-                      backgroundColor: '#f59e0b',
-                      color: 'white',
-                      borderRadius: '0.375rem',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Upgrade Now
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {/* Social Links Edit */}
-            {canShowSocialLinks ? (
-              <div style={{ marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Social Links</h2>
-                {!editingSocial ? (
-                  <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-                    {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
-                      socialLinks[key as keyof typeof socialLinks] ? (
-                        <a
-                          key={key}
-                          href={
-                            key === 'instagram' ? `https://instagram.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
-                            key === 'twitter' ? `https://twitter.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
-                            key === 'facebook' ? `https://facebook.com/${socialLinks[key as keyof typeof socialLinks]}` :
-                            key === 'youtube' ? `https://youtube.com/${socialLinks[key as keyof typeof socialLinks]}` :
-                            key === 'tiktok' ? `https://tiktok.com/@${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` : '#'
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ textDecoration: 'underline', color: '#2563eb', marginRight: 8 }}
-                        >
-                          {key.charAt(0).toUpperCase() + key.slice(1)}
-                        </a>
-                      ) : null
-                    ))}
-                    <button onClick={() => setEditingSocial(true)} style={{ marginLeft: 8, background: '#f3f4f6', border: 'none', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>
-                      <FontAwesomeIcon icon={faEdit} /> Edit
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={e => { e.preventDefault(); handleSaveSocial(); }} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-                    {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
-                      <input
-                        key={key}
-                        name={key}
-                        value={socialLinks[key as keyof typeof socialLinks] || ''}
-                        onChange={handleSocialChange}
-                        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                        style={{ padding: 6, border: '1px solid #ccc', borderRadius: 4, minWidth: 120 }}
-                        disabled={savingSocial}
-                      />
-                    ))}
-                    <button type="submit" disabled={savingSocial} style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
-                      <FontAwesomeIcon icon={faSave} /> Save
-                    </button>
-                    <button type="button" onClick={handleCancelSocial} disabled={savingSocial} style={{ background: '#f3f4f6', color: '#111', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
-                      <FontAwesomeIcon icon={faTimes} /> Cancel
-                    </button>
-                    {socialError && <span style={{ color: '#dc2626', marginLeft: 8 }}>{socialError}</span>}
-                  </form>
-                )}
-              </div>
-            ) : (
-              <div style={{ marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Social Links</h2>
-                <div style={{ 
-                  padding: '2rem', 
-                  backgroundColor: '#fef3c7', 
-                  border: '2px dashed #f59e0b',
-                  borderRadius: '0.5rem',
-                  textAlign: 'center'
-                }}>
-                  <FontAwesomeIcon icon={faCrown} style={{ fontSize: '2rem', color: '#f59e0b', marginBottom: '0.75rem' }} />
-                  <p style={{ fontWeight: 600, color: '#92400e', marginBottom: '0.5rem' }}>
-                    Upgrade to add social media links
-                  </p>
-                  <Link
-                    href="/checkout"
-                    style={{
-                      display: 'inline-block',
-                      marginTop: '0.75rem',
-                      padding: '0.5rem 1.25rem',
-                      backgroundColor: '#f59e0b',
-                      color: 'white',
-                      borderRadius: '0.375rem',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Upgrade Now
-                  </Link>
-                </div>
-              </div>
-            )}
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
@@ -479,14 +326,14 @@ export default function ProfilePage() {
         </h2>
         
         <div style={{ display: 'grid', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Name:</span>
-            <span>{profile.name}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Name:</span>
+            <span style={{ wordBreak: 'break-word' }}>{profile.name}</span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Category:</span>
-            <span>{
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Category:</span>
+            <span style={{ wordBreak: 'break-word' }}>{
               (() => {
                 // Use translation mapping if available
                 // Prefer slug if available, fallback to name
@@ -505,32 +352,32 @@ export default function ProfilePage() {
             }</span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Location:</span>
-            <span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Location:</span>
+            <span style={{ wordBreak: 'break-word' }}>
               {profile.location?.city && profile.location?.country
                 ? `${profile.location.city}, ${profile.location.country}`
                 : 'Not specified'}
             </span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Email:</span>
-            <span>{profile.email || 'Not specified'}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Email:</span>
+            <span style={{ wordBreak: 'break-all' }}>{profile.email || 'Not specified'}</span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Phone:</span>
-            <span>{profile.phone || 'Not specified'}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Phone:</span>
+            <span style={{ wordBreak: 'break-word' }}>{profile.phone || 'Not specified'}</span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Website:</span>
-            <span>{profile.website || 'Not specified'}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Website:</span>
+            <span style={{ wordBreak: 'break-all' }}>{profile.website || 'Not specified'}</span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Verified:</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Verified:</span>
             <span>
               {profile.verified ? (
                 <span style={{ color: '#15803d', fontWeight: '500' }}>
@@ -544,25 +391,244 @@ export default function ProfilePage() {
             </span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Subscription:</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Subscription:</span>
             <span style={{ textTransform: 'capitalize', fontWeight: '500' }}>
               {profile.subscriptionTier}
             </span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>Profile URL:</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '0.375rem' }}>
+            <span style={{ fontWeight: '600', color: '#6b7280', fontSize: '0.875rem' }}>Profile URL:</span>
             <a
               href={`/professionals/${profile.slug}`}
               target="_blank"
-              style={{ color: '#2563eb', textDecoration: 'underline' }}
+              style={{ color: '#2563eb', textDecoration: 'underline', wordBreak: 'break-all' }}
             >
               afrobizz.com/professionals/{profile.slug}
             </a>
           </div>
         </div>
       </div>
+
+      {/* Profile Image Section */}
+      <div
+        style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          padding: '1.5rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          marginTop: '2rem',
+        }}
+      >
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          Profile Image
+        </h2>
+        <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+          Your main profile image (recommended: square format)
+        </p>
+        
+        {/* Display Current Profile Image */}
+        <div style={{ marginBottom: '1rem' }}>
+          {profile?.images && profile.images.length > 0 ? (
+            <Image
+              src={profile.images[0]}
+              alt="Profile"
+              width={150}
+              height={150}
+              style={{ objectFit: 'cover', borderRadius: 8, border: '2px solid #e5e7eb' }}
+              sizes="150px"
+              priority
+            />
+          ) : (
+            <div style={{
+              width: 150,
+              height: 150,
+              backgroundColor: '#f3f4f6',
+              borderRadius: 8,
+              border: '2px dashed #d1d5db',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#9ca3af',
+              fontSize: '0.875rem',
+            }}>
+              No image
+            </div>
+          )}
+        </div>
+
+        {/* Upload Component */}
+        {profile && (
+          <ImageUpload
+            professionalId={profile.slug}
+            onImagesAdded={handleImagesAdded}
+            replaceMode={true}
+          />
+        )}
+      </div>
+
+      {/* Pro Gallery Section */}
+      <div
+        style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          padding: '1.5rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          marginTop: '2rem',
+        }}
+      >
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          Pro Gallery
+        </h2>
+        <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+          Showcase your work, events, or space
+        </p>
+
+        {canShowGallery ? (
+          <GalleryUpload
+            gallery={gallery}
+            onGalleryUpdated={handleGalleryUpdated}
+            subscriptionTier={profile.subscriptionTier}
+            professionalId={profile.slug}
+          />
+        ) : (
+          <div style={{ 
+            padding: '2rem', 
+            backgroundColor: '#fef3c7', 
+            border: '2px dashed #f59e0b',
+            borderRadius: '0.5rem',
+            textAlign: 'center'
+          }}>
+            <FontAwesomeIcon icon={faCrown} style={{ fontSize: '2.5rem', color: '#f59e0b', marginBottom: '1rem' }} />
+            <p style={{ fontWeight: 600, color: '#92400e', marginBottom: '0.5rem', fontSize: '1rem' }}>
+              Upgrade to Starter or Pro to add gallery images
+            </p>
+            <Link
+              href="/checkout"
+              style={{
+                display: 'inline-block',
+                marginTop: '1rem',
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                textDecoration: 'none',
+              }}
+            >
+              Upgrade Now
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Social Links Section */}
+      {canShowSocialLinks ? (
+        <div
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            padding: '1.5rem',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            marginTop: '2rem',
+          }}
+        >
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+            Social Links
+          </h2>
+          {!editingSocial ? (
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+              {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
+                socialLinks[key as keyof typeof socialLinks] ? (
+                  <a
+                    key={key}
+                    href={
+                      key === 'instagram' ? `https://instagram.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
+                      key === 'twitter' ? `https://twitter.com/${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` :
+                      key === 'facebook' ? `https://facebook.com/${socialLinks[key as keyof typeof socialLinks]}` :
+                      key === 'youtube' ? `https://youtube.com/${socialLinks[key as keyof typeof socialLinks]}` :
+                      key === 'tiktok' ? `https://tiktok.com/@${socialLinks[key as keyof typeof socialLinks]?.replace('@', '')}` : '#'
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'underline', color: '#2563eb', marginRight: 8 }}
+                  >
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </a>
+                ) : null
+              ))}
+              <button onClick={() => setEditingSocial(true)} style={{ marginLeft: 8, background: '#f3f4f6', border: 'none', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>
+                <FontAwesomeIcon icon={faEdit} /> Edit
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={e => { e.preventDefault(); handleSaveSocial(); }} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+              {['instagram', 'twitter', 'facebook', 'youtube', 'tiktok'].map((key) => (
+                <input
+                  key={key}
+                  name={key}
+                  value={socialLinks[key as keyof typeof socialLinks] || ''}
+                  onChange={handleSocialChange}
+                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                  style={{ padding: 6, border: '1px solid #ccc', borderRadius: 4, minWidth: 120 }}
+                  disabled={savingSocial}
+                />
+              ))}
+              <button type="submit" disabled={savingSocial} style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
+                <FontAwesomeIcon icon={faSave} /> Save
+              </button>
+              <button type="button" onClick={handleCancelSocial} disabled={savingSocial} style={{ background: '#f3f4f6', color: '#111', border: 'none', borderRadius: 4, padding: '6px 14px', fontWeight: 500, cursor: 'pointer' }}>
+                <FontAwesomeIcon icon={faTimes} /> Cancel
+              </button>
+              {socialError && <span style={{ color: '#dc2626', marginLeft: 8 }}>{socialError}</span>}
+            </form>
+          )}
+        </div>
+      ) : (
+        <div
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            padding: '1.5rem',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            marginTop: '2rem',
+          }}
+        >
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+            Social Links
+          </h2>
+          <div style={{ 
+            padding: '2rem', 
+            backgroundColor: '#fef3c7', 
+            border: '2px dashed #f59e0b',
+            borderRadius: '0.5rem',
+            textAlign: 'center'
+          }}>
+            <FontAwesomeIcon icon={faCrown} style={{ fontSize: '2rem', color: '#f59e0b', marginBottom: '0.75rem' }} />
+            <p style={{ fontWeight: 600, color: '#92400e', marginBottom: '0.5rem' }}>
+              Upgrade to add social media links
+            </p>
+            <Link
+              href="/checkout"
+              style={{
+                display: 'inline-block',
+                marginTop: '0.75rem',
+                padding: '0.5rem 1.25rem',
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                textDecoration: 'none',
+              }}
+            >
+              Upgrade Now
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
