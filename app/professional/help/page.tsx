@@ -112,9 +112,7 @@ export default function SOSHelpPage() {
       return;
     }
 
-    se  // Refresh tickets to show the new one
-        fetchTickets();
-      tSubmitting(true);
+    setSubmitting(true);
 
     try {
       const res = await fetch('/api/professional/sos-help', {
@@ -129,6 +127,8 @@ export default function SOSHelpPage() {
         setSubmitted(true);
         setReason('');
         setMessage('');
+        // Refresh tickets to show the new one
+        fetchTickets();
       } else {
         setError(data.error || 'Failed to submit request. Please try again.');
       }
