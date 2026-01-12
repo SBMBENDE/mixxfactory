@@ -62,6 +62,11 @@ export default function ProfessionalDashboard() {
     ? profileData?.category?.name || 'Professional'
     : profileData?.category || 'Professional';
   
+  // Check if first-time user (account created within last 24 hours)
+  const isNewUser = profileData?.createdAt 
+    ? (new Date().getTime() - new Date(profileData.createdAt).getTime()) < (24 * 60 * 60 * 1000)
+    : false;
+  
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       {/* Welcome Header */}
@@ -69,10 +74,16 @@ export default function ProfessionalDashboard() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Welcome back, {profileData?.name || 'Professional'}! 👋
+              {isNewUser 
+                ? `Welcome to Afrobizz, ${profileData?.name || 'Professional'}! 🎉` 
+                : `Welcome back, ${profileData?.name || 'Professional'}! 👋`
+              }
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300">
-              Your professional presence on Afrobizz
+              {isNewUser 
+                ? "Let's get started with your professional journey" 
+                : "Your professional presence on Afrobizz"
+              }
             </p>
           </div>
           {isPro && (
