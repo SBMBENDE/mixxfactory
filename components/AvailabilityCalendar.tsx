@@ -227,7 +227,7 @@ export default function AvailabilityCalendar({
                 Upgrade to Pro to Manage Availability
               </h4>
               <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
-                Let clients know when you're available with an interactive calendar. 
+                Let clients know when you&apos;re available with an interactive calendar. 
                 Boost bookings by showing your open dates.
               </p>
               <a

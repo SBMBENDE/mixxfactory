@@ -175,7 +175,7 @@ export default function CalendarPage() {
                   Increase Bookings
                 </h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Clients can see when you're available at a glance
+                  Clients can see when you&apos;re available at a glance
                 </p>
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function CalendarPage() {
                   Look Professional
                 </h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Show you're organized and easy to work with
+                  Show you&apos;re organized and easy to work with
                 </p>
               </div>
             </div>
@@ -217,7 +217,7 @@ export default function CalendarPage() {
                   Stand Out
                 </h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Most competitors don't offer this level of transparency
+                  Most competitors don&apos;t offer this level of transparency
                 </p>
               </div>
             </div>

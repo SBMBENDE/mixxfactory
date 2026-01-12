@@ -29,7 +29,7 @@ export default function ProfessionalSidebar() {
             aria-current={active ? "page" : undefined}
           >
             <span className="text-lg md:text-xl mb-0.5">{item.icon}</span>
-            <span className="hidden md:inline flex items-center gap-1">
+            <span className="hidden md:inline-flex items-center gap-1">
               {item.label}
               {item.proBadge && (
                 <span className="inline-block text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full font-semibold">
