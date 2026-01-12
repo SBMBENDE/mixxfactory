@@ -73,10 +73,14 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    // Fetch data
+    // Fetch data - if querying by slug (for edit), return all fields
+    const selectFields = slug 
+      ? '' // Return all fields for edit page
+      : '_id name slug images gallery rating reviewCount description location category featured active userId createdAt';
+    
     const [professionals, total] = await Promise.all([
       ProfessionalModel.find(filter)
-        .select('_id name slug images gallery rating reviewCount description location category featured active userId createdAt')
+        .select(selectFields)
         .sort(sortMap[sort])
         .skip(skip)
         .limit(limit)
