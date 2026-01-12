@@ -82,24 +82,21 @@ export async function POST(req: NextRequest) {
 
     const { reason, message } = validationResult.data;
 
-    // Map reason codes to readable labels
-    const reasonLabels: Record<string, string> = {
-      'account-access': 'Account Access Issue',
-      'payment-issue': 'Payment or Subscription Issue',
-      'profile-blocked': 'Profile Not Visible / Blocked',
-      'booking-calendar': 'Booking or Calendar Issue',
-      'other-urgent': 'Other Urgent Issue',
-    };
-
-    // Prepare email content (for future email integration)
+    // Prepare ticket data
     const tier = (professional.subscriptionTier || 'free').toUpperCase();
     const priority = tier === 'PRO' ? 'HIGH' : 'NORMAL';
     
-    // TODO: Send actual email to admin
-    // const emailSubject = `[SOS] ${tier} user – ${reasonLabels[reason]}`;
+    // TODO: Send email notification to admin
+    // const reasonLabels: Record<string, string> = {
+    //   'account-access': 'Account Access Issue',
+    //   'payment-issue': 'Payment or Subscription Issue',
+    //   'profile-blocked': 'Profile Not Visible / Blocked',
+    //   'booking-calendar': 'Booking or Calendar Issue',
+    //   'other-urgent': 'Other Urgent Issue',
+    // };
     // await sendEmail({
     //   to: process.env.ADMIN_SUPPORT_EMAIL || 'admin@afrobizz.com',
-    //   subject: emailSubject,
+    //   subject: `[SOS] ${tier} user – ${reasonLabels[reason]}`,
     //   text: emailBody,
     // });
 
