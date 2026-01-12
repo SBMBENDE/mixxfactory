@@ -143,6 +143,7 @@ function EditProfessionalForm({
           gallery={form.gallery || []}
           onGalleryUpdated={(gallery) => setForm((f) => ({ ...f, gallery }))}
           isLoading={loading}
+          professionalId={professional._id || professional.slug || ''}
         />
       </div>
 
