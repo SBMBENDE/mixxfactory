@@ -19,9 +19,9 @@ export async function PATCH(
 ) {
   try {
     // Verify admin authentication
-    const adminPayload = await verifyAdminAuth(request);
-    if (!adminPayload) {
-      return NextResponse.json(
+    const authResult = await verifyAdminAuth(request);
+    if (!authResult.isValid || !authResult.payload) {
+      return authResult.error || NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
@@ -42,7 +42,7 @@ export async function PATCH(
     }
 
     if (status === 'resolved') {
-      updateData.resolvedBy = adminPayload.email;
+      updateData.resolvedBy = authResult.payload.email || 'admin@afrobizz.com';
       updateData.resolvedAt = new Date();
     }
 

@@ -17,9 +17,9 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     // Verify admin authentication
-    const adminPayload = await verifyAdminAuth(request);
-    if (!adminPayload) {
-      return NextResponse.json(
+    const authResult = await verifyAdminAuth(request);
+    if (!authResult.isValid || !authResult.payload) {
+      return authResult.error || NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
