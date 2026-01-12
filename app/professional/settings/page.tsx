@@ -286,7 +286,7 @@ export default function SettingsPage() {
                     name="visibility"
                     value="public"
                     checked={profileForm.profileVisibility === 'public'}
-                    onChange={(e) => setProfileForm({ ...profileForm, profileVisibility: 'public' })}
+                    onChange={() => setProfileForm({ ...profileForm, profileVisibility: 'public' })}
                     className="w-4 h-4 text-blue-600"
                   />
                   <div>
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                     name="visibility"
                     value="hidden"
                     checked={profileForm.profileVisibility === 'hidden'}
-                    onChange={(e) => setProfileForm({ ...profileForm, profileVisibility: 'hidden' })}
+                    onChange={() => setProfileForm({ ...profileForm, profileVisibility: 'hidden' })}
                     className="w-4 h-4 text-blue-600"
                   />
                   <div>
