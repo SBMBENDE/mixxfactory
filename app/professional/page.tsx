@@ -62,7 +62,10 @@ export default function ProfessionalDashboard() {
 
   const tier = profileData?.subscriptionTier || 'free';
   const isPro = tier === 'pro';
-  const category = profileData?.category || 'Professional';
+  // Handle category - it might be an object or a string
+  const categoryName = typeof profileData?.category === 'object' 
+    ? profileData?.category?.name || 'Professional'
+    : profileData?.category || 'Professional';
   
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -100,7 +103,7 @@ export default function ProfessionalDashboard() {
         <div className="space-y-4">
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
             Your profile is currently <strong className="text-blue-600 dark:text-blue-400">visible to users</strong> searching for{' '}
-            <strong>{category}</strong> services in <strong>France & Africa Diaspora</strong>.{' '}
+            <strong>{categoryName}</strong> services in <strong>France & Africa Diaspora</strong>.{' '}
             {!isPro && (
               <>
                 Free listings receive limited exposure in search results.{' '}
