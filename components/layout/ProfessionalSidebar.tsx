@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/professional", label: "Home", icon: "🏠" },
   { href: "/professional/profile", label: "Profile", icon: "👤" },
+  { href: "/professional/calendar", label: "Calendar", icon: "📅", proBadge: true },
   { href: "/professional/jobs", label: "Jobs", icon: "💼" },
   { href: "/professional/messages", label: "Messages", icon: "💬" },
-  { href: "/professional/schedule", label: "Schedule", icon: "📅" },
+  { href: "/professional/schedule", label: "Schedule", icon: "🗓️" },
   { href: "/professional/earnings", label: "Earnings", icon: "💰" },
   { href: "/professional/reviews", label: "Reviews", icon: "⭐" },
   { href: "/professional/settings", label: "Settings", icon: "⚙️" },
@@ -24,11 +25,18 @@ export default function ProfessionalSidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex-1 md:flex-none md:w-full flex flex-col items-center justify-center py-2 md:py-3 md:px-4 text-xs md:text-base font-medium transition-colors duration-150 ${active ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-300"}`}
+            className={`flex-1 md:flex-none md:w-full flex flex-col items-center justify-center py-2 md:py-3 md:px-4 text-xs md:text-base font-medium transition-colors duration-150 relative ${active ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-300"}`}
             aria-current={active ? "page" : undefined}
           >
             <span className="text-lg md:text-xl mb-0.5">{item.icon}</span>
-            <span className="hidden md:inline">{item.label}</span>
+            <span className="hidden md:inline flex items-center gap-1">
+              {item.label}
+              {item.proBadge && (
+                <span className="inline-block text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full font-semibold">
+                  PRO
+                </span>
+              )}
+            </span>
           </Link>
         );
       })}

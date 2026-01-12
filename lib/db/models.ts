@@ -267,6 +267,12 @@ const professionalSchema = new Schema<IProfessionalDocument>(
       enum: ['pending', 'verified', 'rejected'],
       default: 'pending',
     },
+    // Availability Calendar (Pro-only feature)
+    availability: {
+      type: Map,
+      of: Boolean,
+      default: new Map(),
+    },
   },
   { timestamps: true }
 );

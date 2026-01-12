@@ -18,6 +18,7 @@ import { getLocalizedDescription, getLocalizedBio } from '@/utils/localization';
 import ReviewsList from './ReviewsList';
 import ReviewForm from './ReviewForm';
 import ImageGallery from './ImageGallery';
+import AvailabilityCalendar from './AvailabilityCalendar';
 import { hasFeatureAccess } from '@/lib/utils/tier-access';
 import { AuthModal } from './AuthModal';
 import type { Professional } from '@/types';
@@ -886,6 +887,17 @@ export default function ProfessionalDetailClient({ professional }: Props) {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Availability Calendar Section - Pro only */}
+        {professional.subscriptionTier === 'pro' && professional.availability && Object.keys(professional.availability).length > 0 && (
+          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
+            <AvailabilityCalendar
+              availability={professional.availability}
+              readOnly={true}
+              subscriptionTier={professional.subscriptionTier}
+            />
           </div>
         )}
 

@@ -118,6 +118,7 @@ export interface Professional {
   };
   verificationDocuments?: string[];
   verificationStatus?: 'pending' | 'verified' | 'rejected';
+  availability?: Record<string, boolean>; // Calendar availability { '2026-01-15': true, ... }
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,60 +1,112 @@
+/**
+ * API route for updating professional availability calendar
+ * PUT /api/professional/availability
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db/connection';
-import { AvailabilityModel } from '@/lib/db/models';
 import { verifyAuth } from '@/lib/auth/verify';
+import { connectDB } from '@/lib/db/connection';
+import { ProfessionalModel } from '@/lib/db/models';
 
 export const dynamic = 'force-dynamic';
 
-// GET: Get current availability
-export async function GET(request: NextRequest) {
+export async function PUT(req: NextRequest) {
   try {
-    const auth = await verifyAuth(request);
+    // Verify authentication
+    const auth = await verifyAuth(req);
     if (!auth?.payload) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
-    const userId = auth.payload.userId;
-    await connectDB();
-    const professionalId = await getProfessionalIdForUser(userId);
-    if (!professionalId) {
-      return NextResponse.json({ success: false, error: 'Professional profile not found' }, { status: 404 });
-    }
-    const availability = await AvailabilityModel.findOne({ professionalId }).lean();
-    return NextResponse.json({ success: true, data: availability });
-  } catch (error) {
-    console.error('Availability GET error:', error);
-    return NextResponse.json({ success: false, error: 'Failed to load availability' }, { status: 500 });
-  }
-}
 
-// POST: Set/update availability
-export async function POST(request: NextRequest) {
-  try {
-    const auth = await verifyAuth(request);
-    if (!auth?.payload) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    }
     const userId = auth.payload.userId;
-    await connectDB();
-    const professionalId = await getProfessionalIdForUser(userId);
-    if (!professionalId) {
-      return NextResponse.json({ success: false, error: 'Professional profile not found' }, { status: 404 });
+    const { availability } = await req.json();
+
+    if (!availability || typeof availability !== 'object') {
+      return NextResponse.json(
+        { success: false, error: 'Invalid availability data' },
+        { status: 400 }
+      );
     }
-    const body = await request.json();
-    const updated = await AvailabilityModel.findOneAndUpdate(
-      { professionalId },
-      { ...body, professionalId },
-      { upsert: true, new: true }
+
+    await connectDB();
+
+    // Find professional by userId
+    const professional = await ProfessionalModel.findOne({ userId });
+
+    if (!professional) {
+      return NextResponse.json(
+        { success: false, error: 'Professional profile not found' },
+        { status: 404 }
+      );
+    }
+
+    // Check if user has Pro subscription
+    if (professional.subscriptionTier !== 'pro') {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Availability calendar is a Pro-only feature. Please upgrade to Pro.',
+          requiresUpgrade: true
+        },
+        { status: 403 }
+      );
+    }
+
+    // Update availability
+    professional.availability = availability;
+    await professional.save();
+
+    return NextResponse.json({
+      success: true,
+      message: 'Availability updated successfully',
+      data: { availability: professional.availability },
+    });
+  } catch (error) {
+    console.error('Error updating availability:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update availability' },
+      { status: 500 }
     );
-    return NextResponse.json({ success: true, data: updated });
-  } catch (error) {
-    console.error('Availability POST error:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update availability' }, { status: 500 });
   }
 }
 
-// Helper: get professionalId for user
-async function getProfessionalIdForUser(userId: string) {
-  const { ProfessionalModel } = await import('@/lib/db/models');
-  const prof = await ProfessionalModel.findOne({ userId }).select('_id');
-  return prof?._id;
+// GET availability for a professional
+export async function GET(req: NextRequest) {
+  try {
+    const auth = await verifyAuth(req);
+    if (!auth?.payload) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
+
+    const professional = await ProfessionalModel.findOne({ userId: auth.payload.userId });
+
+    if (!professional) {
+      return NextResponse.json(
+        { success: false, error: 'Professional profile not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        availability: professional.availability || {},
+        subscriptionTier: professional.subscriptionTier,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching availability:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch availability' },
+      { status: 500 }
+    );
+  }
 }
