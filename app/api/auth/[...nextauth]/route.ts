@@ -102,7 +102,7 @@ const authOptions: NextAuthOptions = {
     },
 
     // Sign-in callback - Handle OAuth user creation
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === 'google' || account?.provider === 'facebook') {
         await connectDBWithTimeout();
         
