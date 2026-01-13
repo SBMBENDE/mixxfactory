@@ -42,6 +42,7 @@
     "node-fetch": "^2.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^5.5.0",
     "stripe": "^20.1.0",
     "tailwind-merge": "2.2.0",
     "tsconfig-paths": "^4.2.0",
