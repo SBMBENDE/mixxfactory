@@ -4,8 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/auth-options';
+import { getToken } from 'next-auth/jwt';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { generateToken } from '@/lib/auth/jwt';
@@ -17,16 +16,20 @@ export async function POST(request: NextRequest) {
   try {
     console.log('[OAuth Callback API] Starting bridge process...');
     
-    // Get NextAuth session
-    const session = await getServerSession(authOptions);
-    
-    console.log('[OAuth Callback API] NextAuth session:', {
-      hasSession: !!session,
-      email: session?.user?.email,
+    // Get NextAuth JWT token from cookie instead of session
+    const token = await getToken({ 
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
     });
     
-    if (!session || !session.user?.email) {
-      console.error('[OAuth Callback API] No session or email found');
+    console.log('[OAuth Callback API] NextAuth token:', {
+      hasToken: !!token,
+      email: token?.email,
+      provider: token?.provider,
+    });
+    
+    if (!token || !token.email) {
+      console.error('[OAuth Callback API] No token or email found');
       return NextResponse.json(
         { success: false, error: 'No OAuth session found' },
         { status: 401 }
@@ -38,10 +41,10 @@ export async function POST(request: NextRequest) {
     console.log('[OAuth Callback API] Connected to database');
 
     // Find user
-    const user = await UserModel.findOne({ email: session.user.email });
+    const user = await UserModel.findOne({ email: token.email });
     
     console.log('[OAuth Callback API] User lookup:', {
-      email: session.user.email,
+      email: token.email,
       found: !!user,
       userId: user?._id.toString(),
     });
