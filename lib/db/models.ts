@@ -679,15 +679,18 @@ export const BlogPostModel =
 interface IUserDocument extends Document {
   email: string;
   password?: string; // Optional for OAuth users
-  firstName: string;
-  lastName: string;
+  name?: string; // Full name for OAuth users
+  firstName?: string;
+  lastName?: string;
   phone?: string;
   profilePicture?: string;
   accountType: 'user' | 'professional' | 'admin';
   
-  // OAuth
-  oauthProvider?: 'google' | 'facebook';
-  oauthId?: string;
+  // OAuth fields
+  authProvider?: 'google' | 'facebook' | 'credentials';
+  authProviderId?: string;
+  oauthProvider?: 'google' | 'facebook'; // Deprecated - use authProvider
+  oauthId?: string; // Deprecated - use authProviderId
   
   // Profile Completion
   profileCompletion: {
@@ -746,11 +749,17 @@ const userSchema = new Schema<IUserDocument>(
       minlength: 8,
       select: false, // Don't include password in queries by default
     },
+    name: {
+      type: String,
+      trim: true,
+    },
     firstName: {
       type: String,
+      trim: true,
     },
     lastName: {
       type: String,
+      trim: true,
     },
     phone: String,
     profilePicture: String,
@@ -761,7 +770,15 @@ const userSchema = new Schema<IUserDocument>(
       index: true,
     },
     
-    // OAuth
+    // OAuth fields (new)
+    authProvider: {
+      type: String,
+      enum: ['google', 'facebook', 'credentials'],
+      default: 'credentials',
+    },
+    authProviderId: String,
+    
+    // OAuth fields (deprecated - kept for backward compatibility)
     oauthProvider: {
       type: String,
       enum: ['google', 'facebook'],
