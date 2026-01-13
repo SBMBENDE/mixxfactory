@@ -26,7 +26,7 @@ export default function SocialLoginButtons({
     try {
       setError(null);
       setIsGoogleLoading(true);
-      await signIn('google', { callbackUrl });
+      await signIn('google', { callbackUrl: '/api/auth/oauth-callback' });
     } catch (err) {
       console.error('Google sign-in error:', err);
       setError('Failed to sign in with Google. Please try again.');
@@ -38,7 +38,7 @@ export default function SocialLoginButtons({
     try {
       setError(null);
       setIsFacebookLoading(true);
-      await signIn('facebook', { callbackUrl });
+      await signIn('facebook', { callbackUrl: '/api/auth/oauth-callback' });
     } catch (err) {
       console.error('Facebook sign-in error:', err);
       setError('Failed to sign in with Facebook. Please try again.');

@@ -1,0 +1,68 @@
+/**
+ * OAuth Callback Handler
+ * Bridges NextAuth OAuth with custom JWT auth system
+ */
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { connectDBWithTimeout } from '@/lib/db/connection';
+import { UserModel } from '@/lib/db/models';
+import { generateToken } from '@/lib/auth/jwt';
+import { createSession, getDeviceInfoFromRequest } from '@/lib/auth/session';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
+  try {
+    // Get NextAuth session
+    const session = await getServerSession(authOptions);
+    
+    if (!session || !session.user?.email) {
+      return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
+    }
+
+    // Connect to database
+    await connectDBWithTimeout();
+
+    // Find or create user
+    const user = await UserModel.findOne({ email: session.user.email });
+    
+    if (!user) {
+      return NextResponse.redirect(new URL('/auth/login?error=user_not_found', request.url));
+    }
+
+    // Create session for this device
+    const deviceInfo = getDeviceInfoFromRequest(request);
+    const sessionId = await createSession(
+      user._id.toString(),
+      deviceInfo.userAgent,
+      request.headers.get('accept-language') || undefined,
+      deviceInfo.ipAddress
+    );
+
+    // Generate custom JWT token
+    const token = generateToken({
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.accountType,
+      sessionId,
+    });
+
+    // Create response and set auth cookie
+    const response = NextResponse.redirect(new URL('/professional', request.url));
+    
+    response.cookies.set('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/',
+    });
+
+    return response;
+  } catch (error) {
+    console.error('[OAuth Callback] Error:', error);
+    return NextResponse.redirect(new URL('/auth/login?error=oauth_error', request.url));
+  }
+}
