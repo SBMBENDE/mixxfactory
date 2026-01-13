@@ -10,12 +10,10 @@ import { useState } from 'react';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 
 interface SocialLoginButtonsProps {
-  callbackUrl?: string;
   mode?: 'login' | 'register';
 }
 
 export default function SocialLoginButtons({ 
-  callbackUrl = '/professional', 
   mode = 'login' 
 }: SocialLoginButtonsProps) {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);

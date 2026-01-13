@@ -84,7 +84,7 @@ export default function LoginPage() {
           <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>{t.auth.signIn}</p>
 
           {/* Social Login Buttons */}
-          <SocialLoginButtons mode="login" callbackUrl="/professional" />
+          <SocialLoginButtons mode="login" />
 
           <form onSubmit={handleLogin}>
             {error && (

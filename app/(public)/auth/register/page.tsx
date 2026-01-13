@@ -103,7 +103,7 @@ export default function RegisterPage() {
           <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>{t.auth.joingMixxFactory}</p>
 
           {/* Social Login Buttons */}
-          <SocialLoginButtons mode="register" callbackUrl="/professional" />
+          <SocialLoginButtons mode="register" />
 
           <form onSubmit={handleRegister}>
             {error && (
