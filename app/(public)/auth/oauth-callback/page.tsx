@@ -17,14 +17,21 @@ export default function OAuthCallbackPage() {
   useEffect(() => {
     const bridgeAuth = async () => {
       if (status === 'loading') {
+        console.log('[OAuth Bridge] Loading session...');
         return; // Still loading session
       }
 
       if (status === 'unauthenticated' || !session) {
+        console.error('[OAuth Bridge] No session found, redirecting to login');
         // No session, redirect to login
         router.push('/auth/login?error=oauth_failed');
         return;
       }
+
+      console.log('[OAuth Bridge] Session found:', {
+        email: session.user?.email,
+        name: session.user?.name,
+      });
 
       try {
         // Call API to convert NextAuth session to custom auth_token
@@ -39,21 +46,27 @@ export default function OAuthCallbackPage() {
           }),
         });
 
+        console.log('[OAuth Bridge] API response status:', response.status);
+
         if (!response.ok) {
-          throw new Error('Failed to create auth session');
+          const errorData = await response.json();
+          console.error('[OAuth Bridge] API error:', errorData);
+          throw new Error(errorData.error || 'Failed to create auth session');
         }
 
         const data = await response.json();
+        console.log('[OAuth Bridge] API response:', data);
 
         if (data.success) {
-          // Redirect to professional dashboard
-          router.push('/professional');
+          console.log('[OAuth Bridge] Success! Redirecting to /professional');
+          // Use window.location for full page reload to pick up new cookie
+          window.location.href = '/professional';
         } else {
           setError(data.error || 'Authentication failed');
         }
       } catch (err) {
         console.error('[OAuth Bridge] Error:', err);
-        setError('Failed to complete authentication');
+        setError(err instanceof Error ? err.message : 'Failed to complete authentication');
       }
     };
 
