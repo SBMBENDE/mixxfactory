@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     console.log('[OAuth Callback API] Session created:', sessionId);
 
     // Generate custom JWT token
-    const token = generateToken({
+    const authToken = generateToken({
       userId: user._id.toString(),
       email: user.email,
       role: user.accountType,
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     // Create response with auth cookie
     const response = NextResponse.json({ success: true });
     
-    response.cookies.set('auth_token', token, {
+    response.cookies.set('auth_token', authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
