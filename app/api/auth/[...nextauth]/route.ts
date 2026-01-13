@@ -79,7 +79,7 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.userId = user.id;
         token.role = user.role || 'professional';
-        token.emailVerified = user.emailVerified || false;
+        token.emailVerified = !!user.emailVerified;
       }
       
       // Store OAuth provider info
