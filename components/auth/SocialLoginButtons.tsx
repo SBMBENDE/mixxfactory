@@ -24,7 +24,15 @@ export default function SocialLoginButtons({
     try {
       setError(null);
       setIsGoogleLoading(true);
-      await signIn('google', { callbackUrl: '/api/auth/oauth-callback' });
+      // Redirect to oauth-callback after successful Google signin
+      const result = await signIn('google', { 
+        callbackUrl: '/auth/oauth-callback',
+        redirect: true 
+      });
+      if (result?.error) {
+        setError('Failed to sign in with Google. Please try again.');
+        setIsGoogleLoading(false);
+      }
     } catch (err) {
       console.error('Google sign-in error:', err);
       setError('Failed to sign in with Google. Please try again.');
@@ -36,7 +44,15 @@ export default function SocialLoginButtons({
     try {
       setError(null);
       setIsFacebookLoading(true);
-      await signIn('facebook', { callbackUrl: '/api/auth/oauth-callback' });
+      // Redirect to oauth-callback after successful Facebook signin
+      const result = await signIn('facebook', { 
+        callbackUrl: '/auth/oauth-callback',
+        redirect: true 
+      });
+      if (result?.error) {
+        setError('Failed to sign in with Facebook. Please try again.');
+        setIsFacebookLoading(false);
+      }
     } catch (err) {
       console.error('Facebook sign-in error:', err);
       setError('Failed to sign in with Facebook. Please try again.');

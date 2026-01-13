@@ -13,23 +13,29 @@ import { createSession, getDeviceInfoFromRequest } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     // Get NextAuth session
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user?.email) {
-      return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
+      return NextResponse.json(
+        { success: false, error: 'No OAuth session found' },
+        { status: 401 }
+      );
     }
 
     // Connect to database
     await connectDBWithTimeout();
 
-    // Find or create user
+    // Find user
     const user = await UserModel.findOne({ email: session.user.email });
     
     if (!user) {
-      return NextResponse.redirect(new URL('/auth/login?error=user_not_found', request.url));
+      return NextResponse.json(
+        { success: false, error: 'User not found' },
+        { status: 404 }
+      );
     }
 
     // Create session for this device
@@ -49,8 +55,8 @@ export async function GET(request: NextRequest) {
       sessionId,
     });
 
-    // Create response and set auth cookie
-    const response = NextResponse.redirect(new URL('/professional', request.url));
+    // Create response with auth cookie
+    const response = NextResponse.json({ success: true });
     
     response.cookies.set('auth_token', token, {
       httpOnly: true,
@@ -63,6 +69,9 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (error) {
     console.error('[OAuth Callback] Error:', error);
-    return NextResponse.redirect(new URL('/auth/login?error=oauth_error', request.url));
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

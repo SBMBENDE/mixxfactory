@@ -107,11 +107,11 @@ export const authOptions: NextAuthOptions = {
         await connectDBWithTimeout();
         
         // Check if user exists
-        const existingUser = await UserModel.findOne({ email: user.email });
+        let existingUser = await UserModel.findOne({ email: user.email });
         
         if (!existingUser) {
           // Create new user for OAuth signup
-          await UserModel.create({
+          existingUser = await UserModel.create({
             email: user.email,
             name: user.name || user.email?.split('@')[0],
             emailVerified: true, // OAuth emails are pre-verified
@@ -126,6 +126,10 @@ export const authOptions: NextAuthOptions = {
           existingUser.emailVerified = true;
           await existingUser.save();
         }
+        
+        // Store userId in user object for JWT callback
+        user.id = existingUser._id.toString();
+        user.role = existingUser.accountType;
       }
       
       return true;
