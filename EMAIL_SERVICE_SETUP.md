@@ -32,14 +32,14 @@ This guide shows how to set up email sending for password recovery and email ver
 ### Step 2: Create API Key
 1. Go to **Settings** > **API Keys**
 2. Click **Create API Key**
-3. Name it: `MixxFactory`
+3. Name it: `Afrobizz`
 4. Give it "Mail Send" access
 5. Copy the API key (you won't see it again!)
 
 ### Step 3: Verify Sender Email
 1. Go to **Settings** > **Sender Authentication** > **Single Sender Verification**
 2. Click **Create New Sender**
-3. Enter your email (e.g., `noreply@mixxfactory.com`)
+3. Enter your email (e.g., `noreply@afrobizz.com`)
 4. Verify the confirmation email
 5. Use this sender email in your code
 
@@ -116,7 +116,7 @@ export function getVerificationEmailHTML(
       <body>
         <div class="container">
           <div class="header">
-            <h1>Welcome to MixxFactory! 🎉</h1>
+            <h1>Welcome to Afrobizz! 🎉</h1>
           </div>
           <div class="content">
             <p>Hi ${firstName},</p>
@@ -130,7 +130,7 @@ export function getVerificationEmailHTML(
             <p>If you didn't create this account, please ignore this email.</p>
           </div>
           <div class="footer">
-            <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+            <p>&copy; 2025 Afrobizz. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -176,7 +176,7 @@ export function getResetPasswordEmailHTML(
             <p>If you didn't request this, please ignore this email. Your password is still safe.</p>
           </div>
           <div class="footer">
-            <p>&copy; 2025 MixxFactory. All rights reserved.</p>
+            <p>&copy; 2025 Afrobizz. All rights reserved.</p>
           </div>
         </div>
       </body>
