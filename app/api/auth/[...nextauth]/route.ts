@@ -75,7 +75,7 @@ const authOptions: NextAuthOptions = {
 
   callbacks: {
     // JWT callback - Add custom fields to token
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.userId = user.id;
         token.role = user.role || 'professional';
