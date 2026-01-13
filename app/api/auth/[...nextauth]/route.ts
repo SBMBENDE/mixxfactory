@@ -13,7 +13,7 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { comparePassword } from '@/lib/auth/password';
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   
   providers: [
