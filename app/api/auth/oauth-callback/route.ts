@@ -91,8 +91,16 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     console.error('[OAuth Callback API] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : '';
+    console.error('[OAuth Callback API] Error details:', { errorMessage, errorStack });
+    
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { 
+        success: false, 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     );
   }
