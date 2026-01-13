@@ -7,14 +7,13 @@ import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from '@/lib/auth/mongodb-client';
 import { connectDBWithTimeout } from '@/lib/db/connection';
 import { UserModel } from '@/lib/db/models';
 import { comparePassword } from '@/lib/auth/password';
 
 export const authOptions: NextAuthOptions = {
-  adapter: MongoDBAdapter(clientPromise),
+  // Don't use MongoDBAdapter - we manage users ourselves
+  // adapter: MongoDBAdapter(clientPromise),
   
   providers: [
     // Google OAuth Provider
