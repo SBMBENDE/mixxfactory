@@ -43,3 +43,5 @@ lerna-debug.log*
 Thumbs.db
 .vercel
 .env*.local
+*.oauth.txt
+oauth-creds.txt
