@@ -70,6 +70,8 @@ export const translations = {
       activeProfessionals: 'Active Professionals',
       happyClients: 'Happy Clients',
       serviceCategories: 'Service Categories',
+      featuredProfessionals: 'Featured Professionals',
+      premiumVerifiedProfessionals: 'Premium verified professionals',
     },
     // Directory
     directory: {
@@ -679,6 +681,8 @@ export const translations = {
       activeProfessionals: 'Professionnels actifs',
       happyClients: 'Clients satisfaits',
       serviceCategories: 'Catégories de services',
+      featuredProfessionals: 'Professionnels en vedette',
+      premiumVerifiedProfessionals: 'Professionnels premium vérifiés',
     },
     // Directory
     directory: {

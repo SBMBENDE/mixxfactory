@@ -1,4 +1,3 @@
-
 /**
  * FeaturedProfessionals Client Component
  * Mobile-first with horizontal scroll, desktop grid
@@ -208,10 +207,10 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
                 marginBottom: '0.5rem',
                 color: '#1f2937',
               }}>
-                ⭐ Featured Professionals
+                {t.home?.featuredProfessionals || 'Featured Professionals'}
               </h2>
               <p style={{ color: '#6b7280', fontSize: '0.95rem' }}>
-                Premium verified professionals
+                {t.home?.premiumVerifiedProfessionals || 'Premium verified professionals'}
               </p>
             </div>
 

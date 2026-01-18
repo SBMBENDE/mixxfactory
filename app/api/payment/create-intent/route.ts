@@ -85,14 +85,15 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Create Stripe payment intent
+      // Create Stripe payment intent with robust metadata
       const stripeIntent = await createStripePaymentIntent({
         amount: amount, // Stripe helper will convert to cents
         currency: validatedData.currency,
         customerId: customer.id,
         metadata: {
           userId: decoded.userId,
-          subscriptionTier: validatedData.subscriptionTier,
+          email: decoded.email,
+          tier: validatedData.subscriptionTier,
           professionalId: validatedData.professionalId || '',
           ...validatedData.metadata,
         },

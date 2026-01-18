@@ -44,31 +44,95 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     // Handle different event types
+
     switch (event.type) {
       case 'payment_intent.succeeded': {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        await handlePaymentSucceeded(paymentIntent);
+        const intent = event.data.object as Stripe.PaymentIntent;
+        const { email, userId, tier } = intent.metadata || {};
+        console.log('[Webhook] payment_intent.succeeded metadata:', { email, userId, tier });
+
+        // Always upsert payment
+        const upsertResult = await PaymentModel.findOneAndUpdate(
+          { providerPaymentId: intent.id },
+          {
+            provider: 'stripe',
+            providerPaymentId: intent.id,
+            email,
+            userId,
+            status: 'succeeded',
+            subscriptionTier: tier || 'pro',
+          },
+          { upsert: true, new: true }
+        );
+        console.log('[Webhook] Payment upsert result:', upsertResult?._id);
+
+        // Always attempt upgrade
+        const { upgradeUser } = await import('@/lib/billing/upgradeUser');
+        try {
+          console.log('[Webhook] Calling upgradeUser...');
+          await upgradeUser({ userId, email, tier: tier || 'pro' });
+          console.log('[Webhook] upgradeUser completed');
+        } catch (err) {
+          console.error('[Stripe Webhook] Upgrade error:', err);
+        }
         break;
       }
-
       case 'payment_intent.payment_failed': {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        await handlePaymentFailed(paymentIntent);
+        const intent = event.data.object as Stripe.PaymentIntent;
+        const { email, userId } = intent.metadata || {};
+        await PaymentModel.findOneAndUpdate(
+          { providerPaymentId: intent.id },
+          {
+            provider: 'stripe',
+            providerPaymentId: intent.id,
+            email,
+            userId,
+            status: 'failed',
+            failureReason: intent.last_payment_error?.message || 'Payment failed',
+          },
+          { upsert: true, new: true }
+        );
         break;
       }
-
       case 'payment_intent.canceled': {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        await handlePaymentCanceled(paymentIntent);
+        const intent = event.data.object as Stripe.PaymentIntent;
+        const { email, userId } = intent.metadata || {};
+        await PaymentModel.findOneAndUpdate(
+          { providerPaymentId: intent.id },
+          {
+            provider: 'stripe',
+            providerPaymentId: intent.id,
+            email,
+            userId,
+            status: 'canceled',
+          },
+          { upsert: true, new: true }
+        );
         break;
       }
-
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
-        await handleRefund(charge);
+        const paymentIntentId = charge.payment_intent;
+        // Try to get metadata from payment
+        const payment = await PaymentModel.findOne({ providerPaymentId: paymentIntentId });
+        const { email, userId } = payment || {};
+        await PaymentModel.findOneAndUpdate(
+          { providerPaymentId: paymentIntentId },
+          {
+            status: 'refunded',
+            refundReason: 'Refunded by admin or user request',
+          },
+          { upsert: true, new: true }
+        );
+        // Downgrade user
+        const { upgradeUser } = await import('@/lib/billing/upgradeUser');
+        try {
+          await upgradeUser({ userId, email, tier: 'free' });
+        } catch (err) {
+          console.error('[Stripe Webhook] Downgrade error:', err);
+        }
         break;
       }
-
       default:
         console.log(`[Stripe Webhook] Unhandled event type: ${event.type}`);
     }
