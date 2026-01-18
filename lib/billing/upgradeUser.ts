@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { UserModel, ProfessionalModel } from '@/lib/db/models';
 
 export async function upgradeUser({
