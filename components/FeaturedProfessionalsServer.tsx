@@ -16,6 +16,7 @@ interface Professional {
   _id: string;
   name: string;
   slug: string;
+  email: string;
   images?: string[];
   gallery?: string[];
   featured: boolean;
@@ -52,7 +53,13 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 8);
 
-  const renderProfessionalCard = (professional: Professional) => (
+  const renderProfessionalCard = (professional: Professional) => {
+    // TEMP DEBUG: Log professional object for specific emails
+    if (["info@digicorepro.com", "chefsuzypassion@gmail.com", "mbende2000@hotmail.com"].includes(professional.email)) {
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Professional Data:", professional);
+    }
+    return (
     <Link
       key={professional._id}
       href={`/professionals/${professional.slug}`}
@@ -189,6 +196,7 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
       </div>
     </Link>
   );
+  };
 
   return (
     <section style={{
