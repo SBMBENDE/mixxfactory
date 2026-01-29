@@ -13,6 +13,7 @@ interface ContactMessage {
 }
 
 
+export default function ContactMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
