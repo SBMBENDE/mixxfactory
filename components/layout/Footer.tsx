@@ -36,7 +36,7 @@ export function Footer() {
               </a>
               
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/afrobizz_official/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-orange-500 transition-colors flex items-center justify-center text-gray-300 hover:text-white"
