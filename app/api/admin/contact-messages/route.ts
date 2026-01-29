@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ContactModel } from '@/lib/db/models';
 import { getServerSession } from 'next-auth';
