@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ContactModel } from '@/lib/db/models';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/options';
+import { authOptions } from '@/lib/auth/auth-options';
 
 export const dynamic = 'force-dynamic';
 
