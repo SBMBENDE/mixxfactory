@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   // Only allow admin users (JWT-based)
   const user = await verifyAuth(request);
-  if (!user || user.role !== 'admin') {
+  if (!user || user.payload.role !== 'admin') {
     return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   }
 
