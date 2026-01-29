@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/auth/auth-options';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // Only allow admin users
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== 'admin') {
