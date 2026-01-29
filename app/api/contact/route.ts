@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
       // Don't fail the request if email notification fails
       // The contact message was already saved successfully
     }
+    return NextResponse.json(
       {
         success: true,
         message: 'Contact message submitted successfully. We will get back to you soon!',
