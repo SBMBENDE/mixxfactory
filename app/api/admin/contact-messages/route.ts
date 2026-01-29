@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/connection';
 import { ContactModel } from '@/lib/db/models';
 import { verifyAuth } from '@/lib/auth/verify';
@@ -6,7 +6,7 @@ import { verifyAuth } from '@/lib/auth/verify';
 export const dynamic = 'force-dynamic';
 
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   // Only allow admin users (JWT-based)
   const user = await verifyAuth(request);
   if (!user || user.role !== 'admin') {
