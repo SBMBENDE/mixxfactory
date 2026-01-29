@@ -24,7 +24,7 @@ export function Footer() {
             {/* Social Icons */}
             <div className="flex gap-4">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61587204603186"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-orange-500 transition-colors flex items-center justify-center text-gray-300 hover:text-white"

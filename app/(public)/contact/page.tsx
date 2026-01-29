@@ -33,7 +33,7 @@ export default function ContactPage() {
     {
       icon: faEnvelope,
       title: t.contact.email,
-      value: 'support@afrobizz.com',
+      value: 'contact@afrobizz.com',
       color: '#7c3aed',
     },
     {
