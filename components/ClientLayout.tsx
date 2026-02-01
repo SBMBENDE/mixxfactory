@@ -12,6 +12,8 @@ import { Footer } from '@/components/layout/Footer';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { useGlobal401Handler } from '@/hooks/useGlobal401Handler';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
+import { useServiceWorkerUpdate } from '@/hooks/useServiceWorkerUpdate';
+import UpdateBanner from '@/components/layout/UpdateBanner';
 
 function Global401Handler() {
   useGlobal401Handler();
@@ -19,6 +21,7 @@ function Global401Handler() {
 }
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
+  const updateAvailable = useServiceWorkerUpdate();
   return (
     <NextAuthProvider>
       <AuthProvider>
@@ -28,6 +31,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           <main>{children}</main>
           <Footer />
           <PWAInstallPrompt />
+          {updateAvailable && (
+            <UpdateBanner onRefresh={() => window.location.reload()} />
+          )}
         </LanguageProvider>
       </AuthProvider>
     </NextAuthProvider>
