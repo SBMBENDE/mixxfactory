@@ -11,11 +11,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const routeSegmentConfig = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 function bufferToStream(buffer: Buffer) {
   const readable = new Readable();
