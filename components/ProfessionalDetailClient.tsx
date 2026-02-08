@@ -7,7 +7,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { AppImage } from './AppImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPhone, faGlobe, faMapPin, faTimes, faCrown } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faTwitter, faFacebook, faYoutube, faTiktok } from '@fortawesome/free-brands-svg-icons';
