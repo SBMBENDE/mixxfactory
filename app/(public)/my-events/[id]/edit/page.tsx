@@ -770,7 +770,7 @@ export default function EditEventPage() {
                 className="w-full rounded"
                 style={{ maxWidth: '300px', height: 'auto', borderRadius: '0.375rem' }}
                 objectFit="cover"
-                priority={false}
+                priority={true}
               />
             )}
           </div>
@@ -794,7 +794,7 @@ export default function EditEventPage() {
                 className="w-full rounded"
                 style={{ maxWidth: '100%', height: 'auto', borderRadius: '0.375rem' }}
                 objectFit="cover"
-                priority={false}
+                priority={true}
               />
             )}
           </div>
