@@ -8,23 +8,26 @@ import { ProfessionalModel } from '@/lib/db/models';
 import ProfessionalDetailClient from '@/components/ProfessionalDetailClient';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export default async function ProfessionalPage({ params }: Props) {
   try {
     await connectDB();
+    
+    const { slug } = await params;
 
     const professional = await ProfessionalModel.findOne({
-      slug: params.slug,
+      slug: slug,
       active: true,
-    }).populate('category');
+    }).populate('category').lean();
 
     if (!professional) {
       notFound();
     }
 
-    const professionalData = professional.toObject ? professional.toObject() : JSON.parse(JSON.stringify(professional));
+    // Convert ObjectIds to strings for client component
+    const professionalData = JSON.parse(JSON.stringify(professional));
 
     // Convert availability Map to plain object if it exists
     if (professionalData.availability && professionalData.availability instanceof Map) {
