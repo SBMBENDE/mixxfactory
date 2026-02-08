@@ -15,7 +15,7 @@ export default async function AdminAccessPage({
   const key = params.key;
 
   // Check if the provided key matches
-  if (key === process.env.ADMIN_ACCESS_KEY) {
+  if (key && key === process.env.ADMIN_ACCESS_KEY) {
     // Set the admin cookie
     const cookieStore = await cookies();
     cookieStore.set('afrobizz_admin', key, {

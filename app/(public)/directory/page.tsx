@@ -11,9 +11,6 @@ import { CategorySelect } from '@/components/ui/CategorySelect';
  * - Suspense prevents blocking initial page load
  */
 
-// ISR: Revalidate every 5 minutes (300 seconds)
-export const revalidate = 300;
-
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AuthModal } from '@/components/AuthModal';
