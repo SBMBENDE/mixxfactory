@@ -768,7 +768,7 @@ export default function EditEventPage() {
                 width={300}
                 height={400}
                 className="w-full rounded"
-                style={{ maxWidth: '300px', borderRadius: '0.375rem' }}
+                style={{ maxWidth: '300px', height: 'auto', borderRadius: '0.375rem' }}
                 objectFit="cover"
                 priority={false}
               />
@@ -792,7 +792,7 @@ export default function EditEventPage() {
                 width={600}
                 height={200}
                 className="w-full rounded"
-                style={{ maxWidth: '100%', borderRadius: '0.375rem' }}
+                style={{ maxWidth: '100%', height: 'auto', borderRadius: '0.375rem' }}
                 objectFit="cover"
                 priority={false}
               />
