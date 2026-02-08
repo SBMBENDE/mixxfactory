@@ -107,6 +107,7 @@ export default function ImageGallery({
                 src={imageUrl}
                 alt={`${title} image ${index + 1}`}
                 fill
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 className="object-cover hover:scale-105 transition-transform"
                 onClick={() => {
                   setCurrentImageIndex(index);
@@ -188,6 +189,7 @@ export default function ImageGallery({
                 src={localImages[currentImageIndex]}
                 alt={`${title} image ${currentImageIndex + 1}`}
                 fill
+                sizes="(max-width: 1280px) 100vw, 1280px"
                 className="object-contain"
                 priority
               />
