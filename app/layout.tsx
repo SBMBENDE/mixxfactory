@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     date: true,
   },
   icons: [
-    { rel: 'icon', url: '/icons/icon-192.png' },
-    { rel: 'apple-touch-icon', url: '/icons/icon-192.png' },
+    { rel: 'icon', url: '/afrobizz logo.png' },
+    { rel: 'apple-touch-icon', url: '/afrobizz logo.png' },
   ],
 };
 
@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         <meta name="theme-color" content="#0ea5e9" />
       </head>
