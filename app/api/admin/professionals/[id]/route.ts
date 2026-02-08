@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const auth = await verifyAdminAuth(request);
@@ -29,7 +29,7 @@ export async function GET(
 
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     const professional = await ProfessionalModel.findById(id).populate('category');
 
@@ -46,12 +46,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Check if admin or authenticated user
@@ -107,7 +107,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const auth = await verifyAdminAuth(request);
@@ -117,7 +117,7 @@ export async function DELETE(
 
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     // Find and delete the professional
     const professional = await ProfessionalModel.findByIdAndDelete(id);

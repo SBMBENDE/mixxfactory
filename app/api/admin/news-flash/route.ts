@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     startDate: parsed.data.startDate ?? new Date(),
     endDate: parsed.data.endDate ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     priority: parsed.data.priority ?? 0,
-    link: parsed.data.link ?? null,
+    link: parsed.data.link ?? undefined,
   });
   return NextResponse.json({ news: created });
 }

@@ -6,10 +6,10 @@ import { verifyAuth } from '@/lib/auth/verify';
 export const dynamic = 'force-dynamic';
 
 // POST: Create a new booking (client)
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
-    const professionalId = params.id;
+    const professionalId = (await params).id;
     const body = await request.json();
     const { service, start, end } = body;
     // Optionally require auth for client

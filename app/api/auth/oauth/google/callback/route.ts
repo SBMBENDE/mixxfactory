@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
         email: userProfile.email,
         firstName: userProfile.given_name || userProfile.name?.split(' ')[0] || 'User',
         lastName: userProfile.family_name || userProfile.name?.split(' ').slice(1).join(' ') || '',
-        profilePicture: userProfile.picture || null,
+        profilePicture: userProfile.picture || undefined,
         oauthProvider: 'google',
         oauthId: userProfile.sub,
         emailVerified: userProfile.email_verified || false,

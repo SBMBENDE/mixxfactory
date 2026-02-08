@@ -19,12 +19,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     const category = await CategoryModel.findById(id).lean();
 
@@ -41,7 +41,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const auth = await verifyAdminAuth(request);
@@ -51,7 +51,7 @@ export async function PUT(
 
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const validationResult = updateCategorySchema.safeParse(body);
@@ -87,7 +87,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const auth = await verifyAdminAuth(request);
@@ -97,7 +97,7 @@ export async function DELETE(
 
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     const category = await CategoryModel.findByIdAndDelete(id);
 

@@ -11,7 +11,7 @@ import { extractMediaFromUrl } from '@/lib/utils/mediaExtractor';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -44,7 +44,7 @@ export async function POST(
 
     // Update professional with new media
     const professional = await ProfessionalModel.findByIdAndUpdate(
-      params.id,
+      (await params).id,
       { $push: { media: { $each: validatedMedia } } },
       { new: true }
     );
@@ -72,7 +72,7 @@ export async function POST(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -105,7 +105,7 @@ export async function PUT(
 
     // Replace entire media array
     const professional = await ProfessionalModel.findByIdAndUpdate(
-      params.id,
+      (await params).id,
       { media: validatedMedia },
       { new: true }
     );
@@ -133,7 +133,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -156,7 +156,7 @@ export async function DELETE(
 
     // Remove specific media URL
     const professional = await ProfessionalModel.findByIdAndUpdate(
-      params.id,
+      (await params).id,
       { $pull: { media: url } },
       { new: true }
     );

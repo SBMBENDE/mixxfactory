@@ -13,12 +13,12 @@ export const revalidate = 3600;
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDBWithTimeout();
 
-    const { slug } = params;
+    const { slug } = await params;
 
     const post = await BlogPostModel.findOne({
       slug,

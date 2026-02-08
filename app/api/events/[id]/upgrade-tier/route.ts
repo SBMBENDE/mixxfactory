@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -26,7 +26,7 @@ export async function POST(
     }
 
     const userId = auth.payload.userId;
-    const eventId = params.id;
+    const eventId = (await params).id;
     const body = await req.json();
     const { newTier } = body;
 

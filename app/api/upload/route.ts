@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 // @ts-ignore
 import { v2 as cloudinary } from 'cloudinary';

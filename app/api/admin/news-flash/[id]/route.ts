@@ -18,18 +18,18 @@ const newsFlashSchema = z.object({
 
 // GET: Get a single news flash
 // GET: Get a single news flash (admin only)
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await verifyAdminAuth(req);
   if (!auth.isValid) return auth.error;
   await connectDB();
-  const news = await NewsFlashModel.findById(params.id);
+  const news = await NewsFlashModel.findById((await params).id);
   if (!news) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ news });
 }
 
 // PUT: Edit a news flash
 // PUT: Edit a news flash (admin only)
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await verifyAdminAuth(req);
   if (!auth.isValid) return auth.error;
   await connectDB();
@@ -46,25 +46,25 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     priority: parsed.data.priority ?? 0,
     link: parsed.data.link ?? null,
   };
-  const updated = await NewsFlashModel.findByIdAndUpdate(params.id, updateData, { new: true });
+  const updated = await NewsFlashModel.findByIdAndUpdate((await params).id, updateData, { new: true });
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ news: updated });
 }
 
 // DELETE: Delete a news flash
 // DELETE: Delete a news flash (admin only)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await verifyAdminAuth(req);
   if (!auth.isValid) return auth.error;
   await connectDB();
-  const deleted = await NewsFlashModel.findByIdAndDelete(params.id);
+  const deleted = await NewsFlashModel.findByIdAndDelete((await params).id);
   if (!deleted) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ success: true });
 }
 
 // PATCH: Publish/unpublish
 // PATCH: Publish/unpublish (admin only)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await verifyAdminAuth(req);
   if (!auth.isValid) return auth.error;
   await connectDB();
@@ -72,7 +72,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (typeof published !== 'boolean') {
     return NextResponse.json({ error: 'Missing or invalid published' }, { status: 400 });
   }
-  const updated = await NewsFlashModel.findByIdAndUpdate(params.id, { published }, { new: true });
+  const updated = await NewsFlashModel.findByIdAndUpdate((await params).id, { published }, { new: true });
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ news: updated });
 }

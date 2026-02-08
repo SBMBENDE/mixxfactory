@@ -15,7 +15,7 @@ import { sendEmail } from '@/lib/email';
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -47,7 +47,7 @@ export async function PATCH(
     }
 
     const updatedTicket = await SOSSupportModel.findByIdAndUpdate(
-      params.id,
+      (await params).id,
       updateData,
       { new: true }
     ).lean();

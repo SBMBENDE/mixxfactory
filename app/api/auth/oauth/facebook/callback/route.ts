@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
         email: userProfile.email,
         firstName,
         lastName,
-        profilePicture,
+        profilePicture: profilePicture ?? undefined,
         oauthProvider: 'facebook',
         oauthId: userProfile.id,
         emailVerified: true, // Facebook doesn't require email verification

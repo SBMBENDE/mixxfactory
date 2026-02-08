@@ -11,7 +11,7 @@ export async function GET() {
   try {
     await connectDB();
 
-    const dbName = global.mongooseCache?.conn?.connection.db.databaseName || 'unknown';
+    const dbName = global.mongooseCache?.conn?.connection?.db?.databaseName || 'unknown';
     const uri = process.env.MONGODB_URI || 'NOT SET';
     
     // Mask the password in the URI for display

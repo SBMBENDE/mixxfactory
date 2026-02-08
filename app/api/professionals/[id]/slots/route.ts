@@ -5,10 +5,10 @@ import { BookingModel, AvailabilityModel, BlockedTimeModel } from '@/lib/db/mode
 export const dynamic = 'force-dynamic';
 
 // GET: Compute available slots for a professional on a given date
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
-    const professionalId = params.id;
+    const professionalId = (await params).id;
     const url = new URL(request.url);
     const dateStr = url.searchParams.get('date'); // YYYY-MM-DD
     const durationMinutes = parseInt(url.searchParams.get('duration') || '60');

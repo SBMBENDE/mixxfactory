@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -35,7 +35,7 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
-    const userId = params.id;
+    const userId = (await params).id;
 
     // Prevent admin from deleting themselves
     if (userId === payload.userId) {

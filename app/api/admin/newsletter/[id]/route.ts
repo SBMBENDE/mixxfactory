@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -23,7 +23,7 @@ export async function DELETE(
 
     await connectDBWithTimeout();
 
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return errorResponse('Subscriber ID is required', 400);

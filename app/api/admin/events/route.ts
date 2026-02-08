@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     featured: parsed.data.featured ?? false,
     promotionTier: parsed.data.promotionTier ?? 'free',
     promotionStartDate: parsed.data.promotionStartDate ?? new Date(),
-    promotionExpiryDate: parsed.data.promotionExpiryDate ?? null,
+    promotionExpiryDate: parsed.data.promotionExpiryDate ?? undefined,
   });
   return NextResponse.json({ event: created });
 }

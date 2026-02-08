@@ -6,11 +6,11 @@ const updateProfessionalSchema = z.object({
 });
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDBWithTimeout();
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     const parsed = updateProfessionalSchema.safeParse(body);
     if (!parsed.success) {
@@ -44,12 +44,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   _: unknown,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDBWithTimeout();
 
-    const { id } = params;
+    const { id } = await params;
 
     const professional = await ProfessionalModel.findById(id).populate('category').lean();
 
