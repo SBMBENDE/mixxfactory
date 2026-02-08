@@ -12,11 +12,12 @@ export function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // Allow Next.js internals & coming soon page
+  // Allow Next.js internals, coming soon page & admin access page
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
-    pathname === '/coming-soon'
+    pathname === '/coming-soon' ||
+    pathname === '/admin-access'
   ) {
     return NextResponse.next();
   }

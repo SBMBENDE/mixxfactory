@@ -1,9 +1,10 @@
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ComingSoon() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-black relative">
       <Image
         src="https://res.cloudinary.com/dkd3k6eau/image/upload/v1770166865/afrobizz_logo_vfrnli.png"
         alt="Afrobizz Coming Soon"
@@ -14,6 +15,14 @@ export default function ComingSoon() {
       />
       <h1 className="text-white text-3xl font-bold mb-4 tracking-widest">COMING SOON</h1>
       <p className="text-gray-300 text-lg">Afrobizz is launching soon. Stay tuned!</p>
+      
+      {/* Admin access link */}
+      <Link 
+        href="/admin-access" 
+        className="absolute bottom-4 right-4 text-gray-600 hover:text-gray-400 text-xs transition-colors"
+      >
+        Admin
+      </Link>
     </div>
   );
 }
