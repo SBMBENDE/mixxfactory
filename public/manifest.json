@@ -26,25 +26,25 @@
   ],
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/afrobizz logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/afrobizz logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-maskable-192.png",
+      "src": "/afrobizz logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/icon-maskable-512.png",
+      "src": "/afrobizz logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -59,7 +59,7 @@
       "url": "/directory",
       "icons": [
         {
-          "src": "/icons/icon-192.png",
+          "src": "/afrobizz logo.png",
           "sizes": "192x192"
         }
       ]
@@ -71,7 +71,7 @@
       "url": "/auth/login",
       "icons": [
         {
-          "src": "/icons/icon-192.png",
+          "src": "/afrobizz logo.png",
           "sizes": "192x192"
         }
       ]
