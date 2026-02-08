@@ -7,6 +7,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
+  // Temporarily disabled - allow all access
+  return NextResponse.next();
+  
+  /* Coming Soon page logic - disabled for development
   const isAdmin =
     req.cookies.get('afrobizz_admin')?.value === process.env.ADMIN_ACCESS_KEY;
 
@@ -28,6 +32,7 @@ export function middleware(req: NextRequest) {
   }
 
   return NextResponse.next();
+  */
 }
 
 export const config = {
