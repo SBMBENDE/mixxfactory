@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
     }
     // Fetch all bookings, blocks, and availability
     const [bookings, blocks, availability] = await Promise.all([
-      BookingModel.find({ professionalId }).lean(),
-      BlockedTimeModel.find({ professionalId }).lean(),
-      AvailabilityModel.findOne({ professionalId }).lean(),
+      BookingModel.find({ professionalId: professionalId.toString() }).lean(),
+      BlockedTimeModel.find({ professionalId: professionalId.toString() }).lean(),
+      AvailabilityModel.findOne({ professionalId: professionalId.toString() }).lean(),
     ]);
     return NextResponse.json({ success: true, data: { bookings, blocks, availability } });
   } catch (error) {

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const body = await request.json();
     const { service, start, end } = body;
     // Optionally require auth for client
-    let clientId = null;
+    let clientId: string | undefined;
     try {
       const auth = await verifyAuth(request);
       if (auth?.payload) clientId = auth.payload.userId;

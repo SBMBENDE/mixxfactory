@@ -14,7 +14,7 @@ import Stripe from 'stripe';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
-    const headersList = headers();
+    const headersList = await headers();
     const signature = headersList.get('stripe-signature');
 
     if (!signature) {
@@ -116,7 +116,8 @@ export async function POST(request: NextRequest) {
       }
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
-        const paymentIntentId = charge.payment_intent;
+        const paymentIntentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id;
+        if (!paymentIntentId) break;
         // Try to get metadata from payment
         const payment = await PaymentModel.findOne({ providerPaymentId: paymentIntentId });
         // Type guard for email

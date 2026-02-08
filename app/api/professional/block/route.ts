@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     if (!professionalId) {
       return NextResponse.json({ success: false, error: 'Professional profile not found' }, { status: 404 });
     }
-    const blocks = await BlockedTimeModel.find({ professionalId }).lean();
+    const blocks = await BlockedTimeModel.find({ professionalId: professionalId.toString() }).lean();
     return NextResponse.json({ success: true, data: blocks });
   } catch (error) {
     console.error('BlockedTime GET error:', error);
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Professional profile not found' }, { status: 404 });
     }
     const body = await request.json();
-    const block = await BlockedTimeModel.create({ ...body, professionalId });
+    const block = await BlockedTimeModel.create({ ...body, professionalId: professionalId.toString() });
     return NextResponse.json({ success: true, data: block });
   } catch (error) {
     console.error('BlockedTime POST error:', error);

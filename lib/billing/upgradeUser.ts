@@ -34,7 +34,7 @@ export async function upgradeUser({
   console.log('[upgradeUser] User update result:', userUpdate);
 
   const profUpdate = await ProfessionalModel.updateOne(
-    { userId: user._id },
+    { userId: user._id.toString() },
     { subscriptionTier: tier }
   );
   console.log('[upgradeUser] Professional update result:', profUpdate);

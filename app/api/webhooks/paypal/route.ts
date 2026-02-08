@@ -16,7 +16,7 @@ const PAYPAL_WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID || '';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const headersList = headers();
+    const headersList = await headers();
 
     // Get PayPal headers
     const paypalHeaders: Record<string, string> = {

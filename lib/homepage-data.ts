@@ -112,7 +112,10 @@ export const getPopularCategories = cache(async () => {
     }
 
     console.log(`[CATEGORIES] Fetched ${categories?.length || 0} categories`);
-    return categories || [];
+    return categories?.map(c => ({
+      ...c,
+      _id: c._id?.toString(),
+    })) || [];
   } catch (error) {
     console.error('[CATEGORIES] Error:', error instanceof Error ? error.message : error);
     return [];

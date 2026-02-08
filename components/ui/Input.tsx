@@ -2,16 +2,16 @@
  * Reusable Input component
  */
 
-import React from 'react';
 import clsx from 'clsx';
+import { forwardRef, InputHTMLAttributes } from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, className, ...props }, ref) => (
     <div className="w-full">
       {label && (

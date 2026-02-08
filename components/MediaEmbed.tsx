@@ -4,7 +4,6 @@
 
 'use client';
 
-import React from 'react';
 import { extractMediaFromUrl } from '@/lib/utils/mediaExtractor';
 
 interface MediaEmbedProps {

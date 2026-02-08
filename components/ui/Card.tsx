@@ -2,15 +2,15 @@
  * Reusable Card component
  */
 
-import React from 'react';
 import clsx from 'clsx';
+import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
   hoverable?: boolean;
 }
 
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, hoverable = false, children, ...props }, ref) => (
     <div
       ref={ref}
@@ -28,11 +28,11 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
 
 Card.displayName = 'Card';
 
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
 }
 
-export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
+export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...props }, ref) => (
     <div ref={ref} className={clsx('mb-4 pb-4 border-b border-gray-100 dark:border-gray-800', className)} {...props}>
       {children}
@@ -42,11 +42,11 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 
 CardHeader.displayName = 'CardHeader';
 
-interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface CardBodyProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
 }
 
-export const CardBody = React.forwardRef<HTMLDivElement, CardBodyProps>(
+export const CardBody = forwardRef<HTMLDivElement, CardBodyProps>(
   ({ className, children, ...props }, ref) => (
     <div ref={ref} className={clsx('', className)} {...props}>
       {children}
@@ -56,11 +56,11 @@ export const CardBody = React.forwardRef<HTMLDivElement, CardBodyProps>(
 
 CardBody.displayName = 'CardBody';
 
-interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
 }
 
-export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
+export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, children, ...props }, ref) => (
     <div ref={ref} className={clsx('mt-4 pt-4 border-t border-gray-100 dark:border-gray-800', className)} {...props}>
       {children}
