@@ -116,6 +116,25 @@ export default function EditEventPage() {
   const [success, setSuccess] = useState('');
   const [posterPreview, setPosterPreview] = useState('');
   const [bannerPreview, setBannerPreview] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
+
+    const data = await response.json();
+    return data.url;
+  };
 
   // Fetch event data
   useEffect(() => {
@@ -203,23 +222,27 @@ export default function EditEventPage() {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, imageType: 'poster' | 'banner') => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, imageType: 'poster' | 'banner') => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
+      setUploadingImage(true);
+      try {
+        const cloudinaryUrl = await uploadImageToCloudinary(file);
         setFormData(prev => ({
           ...prev,
-          [imageType === 'poster' ? 'posterImage' : 'bannerImage']: base64,
+          [imageType === 'poster' ? 'posterImage' : 'bannerImage']: cloudinaryUrl,
         }));
         if (imageType === 'poster') {
-          setPosterPreview(base64);
+          setPosterPreview(cloudinaryUrl);
         } else {
-          setBannerPreview(base64);
+          setBannerPreview(cloudinaryUrl);
         }
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        setError(`Failed to upload ${imageType} image. Please try again.`);
+        console.error(`${imageType} image upload error:`, error);
+      } finally {
+        setUploadingImage(false);
+      }
     }
   };
 
@@ -630,13 +653,14 @@ export default function EditEventPage() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
+                onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
+                    setUploadingImage(true);
+                    try {
+                      const cloudinaryUrl = await uploadImageToCloudinary(file);
                       const newImage = {
-                        url: reader.result as string,
+                        url: cloudinaryUrl,
                         caption: '',
                         order: formData.images.length,
                       };
@@ -644,18 +668,29 @@ export default function EditEventPage() {
                         ...prev,
                         images: [...prev.images, newImage],
                       }));
-                    };
-                    reader.readAsDataURL(file);
+                    } catch (error) {
+                      setError('Failed to upload image. Please try again.');
+                      console.error('Image upload error:', error);
+                    } finally {
+                      setUploadingImage(false);
+                    }
                   }
                 }}
+                disabled={uploadingImage}
                 style={{
                   width: '100%',
                   padding: '0.75rem',
                   border: '2px dashed #d1d5db',
                   borderRadius: '0.375rem',
-                  cursor: 'pointer',
+                  cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                  opacity: uploadingImage ? 0.6 : 1,
                 }}
               />
+              {uploadingImage && (
+                <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#10b981' }}>
+                  Uploading image...
+                </p>
+              )}
             </div>
 
             {/* Image Gallery Display */}
