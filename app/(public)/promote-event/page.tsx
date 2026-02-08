@@ -149,7 +149,26 @@ export default function PromoteEventPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { isAuthenticated } = useAuth();
+
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
+
+    const data = await response.json();
+    return data.url;
+  };
 
   // Event categories (hardcoded to match admin dashboard)
   const eventCategories = [
@@ -704,33 +723,45 @@ export default function PromoteEventPage() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
+                        setUploadingImage(true);
+                        try {
+                          const cloudinaryUrl = await uploadImageToCloudinary(file);
                           const newImage = {
-                            url: reader.result as string,
+                            url: cloudinaryUrl,
                             caption: '',
                             order: formData.images.length,
                           };
                           setFormData(prev => ({
                             ...prev,
                             images: [...prev.images, newImage],
-                            posterImage: prev.posterImage || (reader.result as string), // Set as poster if first image
+                            posterImage: prev.posterImage || cloudinaryUrl, // Set as poster if first image
                           }));
-                        };
-                        reader.readAsDataURL(file);
+                        } catch (error) {
+                          setError('Failed to upload image. Please try again.');
+                          console.error('Image upload error:', error);
+                        } finally {
+                          setUploadingImage(false);
+                        }
                       }
                     }}
+                    disabled={uploadingImage}
                     style={{
                       width: '100%',
                       padding: '0.75rem',
                       border: '2px dashed #d1d5db',
                       borderRadius: '0.375rem',
-                      cursor: 'pointer',
+                      cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                      opacity: uploadingImage ? 0.6 : 1,
                     }}
                   />
+                  {uploadingImage && (
+                    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#10b981' }}>
+                      Uploading image...
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -981,16 +1012,22 @@ export default function PromoteEventPage() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setFormData(prev => ({ ...prev, posterImage: reader.result as string }));
-                      };
-                      reader.readAsDataURL(file);
+                      setUploadingImage(true);
+                      try {
+                        const cloudinaryUrl = await uploadImageToCloudinary(file);
+                        setFormData(prev => ({ ...prev, posterImage: cloudinaryUrl }));
+                      } catch (error) {
+                        setError('Failed to upload poster image. Please try again.');
+                        console.error('Poster image upload error:', error);
+                      } finally {
+                        setUploadingImage(false);
+                      }
                     }
                   }}
+                  disabled={uploadingImage}
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -1024,16 +1061,22 @@ export default function PromoteEventPage() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setFormData(prev => ({ ...prev, bannerImage: reader.result as string }));
-                      };
-                      reader.readAsDataURL(file);
+                      setUploadingImage(true);
+                      try {
+                        const cloudinaryUrl = await uploadImageToCloudinary(file);
+                        setFormData(prev => ({ ...prev, bannerImage: cloudinaryUrl }));
+                      } catch (error) {
+                        setError('Failed to upload banner image. Please try again.');
+                        console.error('Banner image upload error:', error);
+                      } finally {
+                        setUploadingImage(false);
+                      }
                     }
                   }}
+                  disabled={uploadingImage}
                   style={{
                     width: '100%',
                     padding: '0.75rem',
