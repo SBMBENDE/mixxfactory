@@ -245,6 +245,16 @@ export default function PromoteEventPage() {
         published: true,
       };
 
+      // Check if payment is required for selected tier
+      if (selectedTier === 'featured' || selectedTier === 'boost') {
+        // Save event data to session storage for after payment
+        sessionStorage.setItem('pendingEventData', JSON.stringify(submitData));
+        
+        // Redirect to event payment page
+        window.location.href = `/event-payment?tier=${selectedTier}`;
+        return;
+      }
+
       console.log('Submitting event data:', submitData);
 
       const res = await fetch('/api/promote-event', {
