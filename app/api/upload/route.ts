@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         else resolve({ fields, files });
       });
     });
-    const file = parsed.files.image;
+    const file = parsed.files.file || parsed.files.image;
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
