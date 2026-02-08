@@ -151,12 +151,12 @@ export default function ProfessionalDetailClient({ professional }: Props) {
           </a>
         </div>
 
-        {/* Profile Picture & Gallery Section */}
+        {/* Profile Gallery Section */}
         {visibleProfileImages && visibleProfileImages.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
             <ImageGallery
               images={visibleProfileImages}
-              title={`${professional.name} Gallery`}
+              title={`${professional.name}`}
               isAdmin={false}
             />
             {hasMoreProfileImages && (
@@ -751,12 +751,12 @@ export default function ProfessionalDetailClient({ professional }: Props) {
           </div>
         )}
 
-        {/* Portfolio Gallery Section */}
+        {/* Work Portfolio Section */}
         {visibleGallery && visibleGallery.length > 0 && (
           <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
             <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '2rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Portfolio Gallery</h2>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Work Portfolio</h2>
                 {hasMoreGalleryImages && !isOwner && (
                   <span style={{ 
                     fontSize: '0.875rem', 
