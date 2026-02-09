@@ -6,7 +6,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(_req: NextRequest) {
+export function proxy(_req: NextRequest) {
   // Temporarily disabled - allow all access
   return NextResponse.next();
   
