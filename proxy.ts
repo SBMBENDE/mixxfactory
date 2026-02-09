@@ -1,16 +1,16 @@
 /**
- * Middleware for handling locale routing and request logging
- * Currently disabled - will be enabled after app structure is updated with [lang] segment
+ * Proxy for handling coming soon page redirect in production
  */
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function proxy(_req: NextRequest) {
-  // Temporarily disabled - allow all access
-  return NextResponse.next();
-  
-  /* Coming Soon page logic - disabled for development
+export function proxy(req: NextRequest) {
+  // Skip coming soon page in local development
+  if (process.env.NODE_ENV === 'development') {
+    return NextResponse.next();
+  }
+
   const isAdmin =
     req.cookies.get('afrobizz_admin')?.value === process.env.ADMIN_ACCESS_KEY;
 
@@ -26,13 +26,12 @@ export function proxy(_req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect non-admins
+  // Redirect non-admins to coming soon page
   if (!isAdmin) {
     return NextResponse.redirect(new URL('/coming-soon', req.url));
   }
 
   return NextResponse.next();
-  */
 }
 
 export const config = {
