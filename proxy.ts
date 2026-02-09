@@ -7,7 +7,13 @@ import type { NextRequest } from 'next/server';
 
 export function proxy(req: NextRequest) {
   // Skip coming soon page in local development
-  if (process.env.NODE_ENV === 'development') {
+  // Check for localhost or development environment
+  const isDevelopment = 
+    req.nextUrl.hostname === 'localhost' || 
+    req.nextUrl.hostname === '127.0.0.1' ||
+    process.env.NODE_ENV === 'development';
+    
+  if (isDevelopment) {
     return NextResponse.next();
   }
 
