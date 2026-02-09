@@ -7,7 +7,7 @@ export interface UseAuthReturn {
   isAuthenticated: boolean;
   user: any;
   logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
+  checkAuth: (force?: boolean) => Promise<void>;
   hasCheckedAuth: boolean;
 }
 
@@ -22,8 +22,8 @@ function useProvideAuth(): UseAuthReturn {
   const [user, setUser] = useState<any>(null);
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
-  const checkAuth = useCallback(async () => {
-    if (hasCheckedAuth) return;
+  const checkAuth = useCallback(async (force: boolean = false) => {
+    if (hasCheckedAuth && !force) return;
     setAuthStatus('loading');
     try {
       const response = await fetch('/api/auth/me', {
@@ -95,6 +95,7 @@ function useProvideAuth(): UseAuthReturn {
   // Check auth on mount only - run exactly once
   useEffect(() => {
     if (!hasCheckedAuth) {
+      console.log('[AuthProvider] Running initial auth check...');
       checkAuth();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

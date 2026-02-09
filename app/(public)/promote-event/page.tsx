@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppImage } from '@/components/AppImage';
 import { AuthModal } from '@/components/AuthModal';
 import { useAuth } from '@/hooks/useAuth';
@@ -150,7 +150,12 @@ export default function PromoteEventPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authStatus } = useAuth();
+
+  // Log auth status for debugging
+  useEffect(() => {
+    console.log('[PromoteEvent] Auth status:', authStatus, 'isAuthenticated:', isAuthenticated);
+  }, [authStatus, isAuthenticated]);
 
   // Upload image to Cloudinary
   const uploadImageToCloudinary = async (file: File): Promise<string> => {

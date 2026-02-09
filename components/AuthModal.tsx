@@ -111,8 +111,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, redirectUrl, registerAsP
         onSuccess(data.data.userId);
       }
 
-      // Wait for cookie to propagate
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Wait for cookie to propagate - longer wait for registration
+      const waitTime = mode === 'register' ? 1000 : 500;
+      await new Promise(resolve => setTimeout(resolve, waitTime));
 
       // Redirect based on mode and user role
       if (mode === 'login') {
@@ -122,26 +123,26 @@ export function AuthModal({ isOpen, onClose, onSuccess, redirectUrl, registerAsP
         if (redirectUrl) {
           // If redirectUrl is specified, use it
           console.log('🔄 Redirecting to specified URL:', redirectUrl);
-          window.location.replace(redirectUrl);
+          window.location.href = redirectUrl;
         } else if (userRole === 'admin') {
           console.log('🔵 Redirecting admin to /admin');
-          window.location.replace('/admin');
+          window.location.href = '/admin';
         } else if (userRole === 'professional') {
           console.log('🟢 Redirecting professional to /professional');
-          window.location.replace('/professional');
+          window.location.href = '/professional';
         } else {
           console.log('🟡 Redirecting user to /directory');
-          window.location.replace('/directory');
+          window.location.href = '/directory';
         }
       } else {
         // After registration
         if (redirectUrl) {
           // If redirectUrl is specified, use it
           console.log('🔄 Redirecting to specified URL after registration:', redirectUrl);
-          window.location.replace(redirectUrl);
+          window.location.href = redirectUrl;
         } else if (registerAsProfessional) {
           // Only redirect to professional registration if explicitly registering as professional
-          window.location.replace('/register/professional');
+          window.location.href = '/register/professional';
         } else {
           // Regular user registration - refresh current page to update auth state
           window.location.reload();
