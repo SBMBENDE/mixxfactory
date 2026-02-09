@@ -26,12 +26,13 @@ export function proxy(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // Allow Next.js internals, coming soon page & admin access page
+  // Allow Next.js internals, coming soon page, admin access page & bypass page
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
     pathname === '/coming-soon' ||
-    pathname === '/admin-access'
+    pathname === '/admin-access' ||
+    pathname === '/bypass-coming-soon'
   ) {
     return NextResponse.next();
   }
