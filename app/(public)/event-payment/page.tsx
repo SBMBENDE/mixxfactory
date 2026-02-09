@@ -30,38 +30,49 @@ const EVENT_PRICING = {
 export default function EventPaymentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, authStatus } = useAuth();
   const [loading, setLoading] = useState(false);
   const [eventData, setEventData] = useState<any>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const tierParam = searchParams?.get('tier') || 'featured';
   const tier = tierParam as 'featured' | 'boost';
   const selectedTier = EVENT_PRICING[tier] || EVENT_PRICING.featured;
 
   useEffect(() => {
+    console.log('[EventPayment] Auth status:', authStatus, 'isAuthenticated:', isAuthenticated);
+    
+    // Wait for auth to finish loading
+    if (authStatus === 'loading') {
+      console.log('[EventPayment] Waiting for auth check to complete...');
+      return;
+    }
+
     // Check if user is authenticated
     if (!isAuthenticated) {
+      console.log('[EventPayment] Not authenticated, redirecting to login...');
       router.push('/login?redirect=/promote-event');
       return;
     }
 
+    console.log('[EventPayment] User authenticated, loading event data...');
+    
     // Load pending event data from session storage
     const pendingData = sessionStorage.getItem('pendingEventData');
     if (!pendingData) {
+      console.log('[EventPayment] No pending event data, redirecting to promote-event...');
       router.push('/promote-event');
       return;
     }
 
     try {
       const data = JSON.parse(pendingData);
+      console.log('[EventPayment] Event data loaded:', data.title);
       setEventData(data);
-      setCheckingAuth(false);
     } catch (error) {
-      console.error('Error parsing event data:', error);
+      console.error('[EventPayment] Error parsing event data:', error);
       router.push('/promote-event');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, authStatus, router]);
 
   const handlePaymentClick = async (provider: 'stripe' | 'paypal') => {
     if (!user || !eventData) {
@@ -103,7 +114,8 @@ export default function EventPaymentPage() {
     }
   };
 
-  if (checkingAuth) {
+  // Show loading state while checking auth
+  if (authStatus === 'loading' || (isAuthenticated && !eventData)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
