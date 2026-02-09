@@ -11,9 +11,11 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (userId: string) => void;
+  redirectUrl?: string; // Optional redirect after successful auth
+  registerAsProfessional?: boolean; // If true, register as professional, else as user
 }
 
-export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, onSuccess, redirectUrl, registerAsProfessional = true }: AuthModalProps) {
   const [mode, setMode] = useState<'login' | 'register' | 'forgot-password'>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -81,7 +83,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           setLoading(false);
           return;
         }
-        body.role = 'professional';
+        // Only set role to professional if explicitly requested
+        body.role = registerAsProfessional ? 'professional' : 'user';
       }
 
       const res = await fetch(endpoint, {
@@ -116,7 +119,11 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         const userRole = data.data.role;
         console.log('🎯 REDIRECT - userRole:', userRole, 'type:', typeof userRole);
         
-        if (userRole === 'admin') {
+        if (redirectUrl) {
+          // If redirectUrl is specified, use it
+          console.log('🔄 Redirecting to specified URL:', redirectUrl);
+          window.location.replace(redirectUrl);
+        } else if (userRole === 'admin') {
           console.log('🔵 Redirecting admin to /admin');
           window.location.replace('/admin');
         } else if (userRole === 'professional') {
@@ -127,7 +134,18 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           window.location.replace('/directory');
         }
       } else {
-        window.location.replace('/register/professional');
+        // After registration
+        if (redirectUrl) {
+          // If redirectUrl is specified, use it
+          console.log('🔄 Redirecting to specified URL after registration:', redirectUrl);
+          window.location.replace(redirectUrl);
+        } else if (registerAsProfessional) {
+          // Only redirect to professional registration if explicitly registering as professional
+          window.location.replace('/register/professional');
+        } else {
+          // Regular user registration - refresh current page to update auth state
+          window.location.reload();
+        }
       }
     } catch (err) {
       setError(t.auth.networkError);

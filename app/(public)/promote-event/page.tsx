@@ -321,7 +321,7 @@ export default function PromoteEventPage() {
               Promote Your Event
             </h1>
             <p style={{ fontSize: '1.125rem', marginBottom: '2rem', color: '#f0f9ff' }}>
-              You must be registered to promote your events.
+              Create a free account or login to promote your event on MixxFactory
             </p>
             <button
               onClick={() => setIsAuthModalOpen(true)}
@@ -347,7 +347,12 @@ export default function PromoteEventPage() {
             </button>
           </div>
         </section>
-        <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)}
+          redirectUrl="/promote-event"
+          registerAsProfessional={false}
+        />
       </>
     );
   }
