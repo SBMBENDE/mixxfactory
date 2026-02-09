@@ -7,10 +7,14 @@ import type { NextRequest } from 'next/server';
 
 export function proxy(req: NextRequest) {
   // Skip coming soon page in local development
-  // Check for localhost or development environment
+  // Check for localhost, local IPs, or development environment
+  const hostname = req.nextUrl.hostname;
   const isDevelopment = 
-    req.nextUrl.hostname === 'localhost' || 
-    req.nextUrl.hostname === '127.0.0.1' ||
+    hostname === 'localhost' || 
+    hostname === '127.0.0.1' ||
+    hostname.startsWith('192.168.') ||  // Local network
+    hostname.startsWith('10.') ||        // Local network
+    hostname.startsWith('172.16.') ||    // Local network
     process.env.NODE_ENV === 'development';
     
   if (isDevelopment) {
