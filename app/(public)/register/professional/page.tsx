@@ -55,54 +55,6 @@ const INITIAL_FORM = {
   tiktok: '',
 };
 
-// Compress image to reduce file size
-const compressImage = (file: File, maxSizeKB: number = 500): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        
-        // Scale down if image is too large
-        const maxDimension = 1200;
-        if (width > maxDimension || height > maxDimension) {
-          if (width > height) {
-            height = (height / width) * maxDimension;
-            width = maxDimension;
-          } else {
-            width = (width / height) * maxDimension;
-            height = maxDimension;
-          }
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
-        
-        // Start with quality 0.8 and reduce if needed
-        let quality = 0.8;
-        let result = canvas.toDataURL('image/jpeg', quality);
-        
-        // Reduce quality until size is acceptable
-        while (result.length > maxSizeKB * 1024 && quality > 0.1) {
-          quality -= 0.1;
-          result = canvas.toDataURL('image/jpeg', quality);
-        }
-        
-        resolve(result);
-      };
-      img.onerror = reject;
-      img.src = e.target?.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
-
 export default function ProfessionalRegistrationPage() {
   const router = useRouter();
   const t = useTranslations();
@@ -247,45 +199,6 @@ export default function ProfessionalRegistrationPage() {
 
     const data = await response.json();
     return data.url;
-  };
-
-  const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          // Compress image if needed
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          
-          // Scale down if image is too large (max 1200px)
-          const maxDimension = 1200;
-          if (width > maxDimension || height > maxDimension) {
-            if (width > height) {
-              height = (height / width) * maxDimension;
-              width = maxDimension;
-            } else {
-              width = (width / height) * maxDimension;
-              height = maxDimension;
-            }
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          
-          // Compress to JPEG with quality 0.7 to reduce size
-          resolve(canvas.toDataURL('image/jpeg', 0.7));
-        };
-        img.onerror = () => reject(new Error('Failed to load image'));
-        img.src = reader.result as string;
-      };
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(file);
-    });
   };
 
   const removeImage = (index: number) => {
