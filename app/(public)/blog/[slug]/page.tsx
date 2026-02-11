@@ -5,7 +5,7 @@
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import BlogPostClient from './BlogPostClient';
+import BlogPostClient from './BlogPostClient.tsx';
 
 interface Props {
   params: Promise<{ slug: string }>;
