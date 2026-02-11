@@ -55,6 +55,54 @@ const INITIAL_FORM = {
   tiktok: '',
 };
 
+// Compress image to reduce file size
+const compressImage = (file: File, maxSizeKB: number = 500): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Scale down if image is too large
+        const maxDimension = 1200;
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = (height / width) * maxDimension;
+            width = maxDimension;
+          } else {
+            width = (width / height) * maxDimension;
+            height = maxDimension;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Start with quality 0.8 and reduce if needed
+        let quality = 0.8;
+        let result = canvas.toDataURL('image/jpeg', quality);
+        
+        // Reduce quality until size is acceptable
+        while (result.length > maxSizeKB * 1024 && quality > 0.1) {
+          quality -= 0.1;
+          result = canvas.toDataURL('image/jpeg', quality);
+        }
+        
+        resolve(result);
+      };
+      img.onerror = reject;
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
 export default function ProfessionalRegistrationPage() {
   const router = useRouter();
   const t = useTranslations();
@@ -134,6 +182,20 @@ export default function ProfessionalRegistrationPage() {
   };
 
   const processFilesAndAddToGallery = async (files: File[]) => {
+    // Validate max 5 images total
+    if (formData.imageFiles.length + files.length > 5) {
+      setError('Maximum 5 gallery images allowed');
+      return;
+    }
+    
+    // Validate individual file sizes (max 5MB each)
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError(`Image "${file.name}" is too large. Maximum 5MB per image.`);
+        return;
+      }
+    }
+    
     const newPreviews: string[] = [];
     
     for (const file of files) {
@@ -142,6 +204,8 @@ export default function ProfessionalRegistrationPage() {
         newPreviews.push(preview);
       } catch (err) {
         console.error('Failed to read file:', err);
+        setError('Failed to process image. Please try a different image.');
+        return;
       }
     }
     
@@ -165,14 +229,51 @@ export default function ProfessionalRegistrationPage() {
   const readFileAsDataURL = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          // Compress image if needed
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Scale down if image is too large (max 1200px)
+          const maxDimension = 1200;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = (height / width) * maxDimension;
+              width = maxDimension;
+            } else {
+              width = (width / height) * maxDimension;
+              height = maxDimension;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Compress to JPEG with quality 0.7 to reduce size
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Profile picture must be less than 5MB');
+      return;
+    }
+    
+    try {
+      const preview = await readFileAsDataURL(file);
+      setFormData(prev => ({
+        ...prev,
+        profilePicFile: file,
+        profilePicPreview: preview,
+      }));
+    } catch (err) {
+      console.error('Failed to read profile picture:', err);
+      setError('Failed to process profile picture. Please try a different image.'
       ...prev,
       imageFiles: prev.imageFiles.filter((_, i) => i !== index),
       imagePreviews: prev.imagePreviews.filter((_, i) => i !== index),
@@ -256,7 +357,24 @@ export default function ProfessionalRegistrationPage() {
         }),
       });
 
-      const data = await res.json();
+      // Handle non-JSON responses (like "Request Entity Too Large")
+      const contentType = res.headers.get('content-type');
+      let data;
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        // Request too large error
+        if (res.status === 413 || text.toLowerCase().includes('too large')) {
+          setError('Images are too large. Please use fewer images or take photos at lower resolution.');
+          setLoading(false);
+          return;
+        }
+        setError('Server error. Please try with smaller images.');
+        setLoading(false);
+        return;
+      }
 
       if (!res.ok) {
         setError(data.error || data.message || 'Failed to create profile');
