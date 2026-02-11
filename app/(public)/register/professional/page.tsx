@@ -134,6 +134,8 @@ export default function ProfessionalRegistrationPage() {
   };
 
   const processFilesAndAddToGallery = async (files: File[]) => {
+    console.log('[Gallery] Starting upload for', files.length, 'files');
+    
     // Validate max 5 images total
     if (formData.imageFiles.length + files.length > 5) {
       setError('Maximum 5 gallery images allowed');
@@ -155,16 +157,19 @@ export default function ProfessionalRegistrationPage() {
     for (const file of files) {
       try {
         // Upload to Cloudinary and get URL
+        console.log('[Gallery] Uploading:', file.name);
         const url = await uploadImageToCloudinary(file);
+        console.log('[Gallery] Cloudinary URL received:', url);
         newPreviews.push(url); // Use Cloudinary URL as preview
         newUrls.push(url);
       } catch (err) {
-        console.error('Failed to upload file:', err);
+        console.error('[Gallery] Failed to upload file:', file.name, err);
         setError('Failed to upload image. Please try again.');
         return;
       }
     }
     
+    console.log('[Gallery] All uploads complete. URLs:', newPreviews);
     setError(''); // Clear uploading message
     // Add to existing images
     if (newPreviews.length > 0) {
@@ -210,6 +215,8 @@ export default function ProfessionalRegistrationPage() {
   };
 
   const handleProfilePicChange = async (file: File) => {
+    console.log('[Profile Pic] Starting upload for:', file.name, file.size, 'bytes');
+    
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('Profile picture must be less than 5MB');
@@ -219,15 +226,19 @@ export default function ProfessionalRegistrationPage() {
     setError('Uploading profile picture to Cloudinary...');
     try {
       // Upload to Cloudinary and get URL
+      console.log('[Profile Pic] Calling uploadImageToCloudinary...');
       const url = await uploadImageToCloudinary(file);
+      console.log('[Profile Pic] Cloudinary URL received:', url);
+      
       setFormData(prev => ({
         ...prev,
         profilePicFile: file,
         profilePicPreview: url, // Use Cloudinary URL
       }));
       setError(''); // Clear uploading message
+      console.log('[Profile Pic] Profile pic set successfully');
     } catch (err) {
-      console.error('Failed to upload profile picture:', err);
+      console.error('[Profile Pic] Failed to upload profile picture:', err);
       setError('Failed to upload profile picture. Please try again.');
     }
     setTimeout(() => {
