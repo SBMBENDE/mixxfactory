@@ -1,8 +1,16 @@
+/**
+ * Modern Blog Homepage - Production Ready
+ * Features: Featured posts, grid layout, filtering, search, pagination
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useTranslations } from '@/hooks/useTranslations';
+import { BookOpen, TrendingUp, Clock } from 'lucide-react';
+import BlogCard from '@/components/blog/BlogCard';
+import CategoryFilter from '@/components/blog/CategoryFilter';
+import SearchBar from '@/components/blog/SearchBar';
+import Newsletter from '@/components/Newsletter';
 
 interface BlogPost {
   _id: string;
@@ -13,7 +21,7 @@ interface BlogPost {
   category: string;
   tags: string[];
   author: string;
-  featuredImage: string;
+  featuredImage?: string;
   published: boolean;
   featured: boolean;
   views: number;
@@ -21,19 +29,44 @@ interface BlogPost {
   updatedAt: string;
 }
 
+interface BlogData {
+  posts: BlogPost[];
+  totalPages: number;
+  availableCategories: string[];
+  availableTags: string[];
+}
+
 export default function BlogPage() {
-  const t = useTranslations();
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [data, setData] = useState<BlogData>({
+    posts: [],
+    totalPages: 1,
+    availableCategories: [],
+    availableTags: [],
+  });
+  const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Filters
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTag, setSelectedTag] = useState('');
-  const [categories, setCategories] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
+
+  // Fetch featured posts
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const response = await fetch('/api/blog/posts?featured=true&limit=3');
+        const result = await response.json();
+        if (result.success && result.data?.posts) {
+          setFeaturedPosts(result.data.posts);
+        }
+      } catch (err) {
+        console.error('Error loading featured posts:', err);
+      }
+    };
+    fetchFeatured();
+  }, []);
 
   // Fetch blog posts
   useEffect(() => {
@@ -42,21 +75,21 @@ export default function BlogPage() {
         setLoading(true);
         const params = new URLSearchParams({
           page: page.toString(),
+          limit: '9',
           ...(searchQuery && { search: searchQuery }),
           ...(selectedCategory && { category: selectedCategory }),
-          ...(selectedTag && { tag: selectedTag }),
         });
 
-        const response = await fetch(`/api/blog/posts?${params}`, {
-          cache: 'force-cache', // Blog posts are stable, can be cached
-        });
-        const data = await response.json();
+        const response = await fetch(`/api/blog/posts?${params}`);
+        const result = await response.json();
 
-        if (data.success && data.data) {
-          setPosts(data.data.posts);
-          setTotalPages(data.data.totalPages);
-          setCategories(data.data.availableCategories);
-          setTags(data.data.availableTags);
+        if (result.success && result.data) {
+          setData({
+            posts: result.data.posts || [],
+            totalPages: result.data.pagination?.pages || 1,
+            availableCategories: result.data.availableCategories || [],
+            availableTags: result.data.availableTags || [],
+          });
         } else {
           setError('Failed to load blog posts');
         }
@@ -69,399 +102,195 @@ export default function BlogPage() {
     };
 
     fetchPosts();
-  }, [page, searchQuery, selectedCategory, selectedTag]);
+  }, [page, searchQuery, selectedCategory]);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setPage(1); // Reset to first page on new search
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setPage(1);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setPage(1);
   };
 
   const clearFilters = () => {
     setSearchQuery('');
     setSelectedCategory('');
-    setSelectedTag('');
     setPage(1);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', paddingTop: '1rem', paddingBottom: '2rem' }}>
-      {/* Header */}
-      <div style={{ backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', paddingTop: '1.5rem', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
-          <div style={{ marginBottom: '1rem' }}>
-            <Link href="/" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>
-              ← {t.blog.backToBlog} {t.nav.home}
-            </Link>
-          </div>
-          <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.25rem)', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>
-            {t.blog.title}
-          </h1>
-          <p style={{ color: '#6b7280', fontSize: 'clamp(0.875rem, 4vw, 1rem)' }}>
-            {t.blog.posts} • {posts.length} {posts.length === 1 ? 'article' : 'articles'}
-          </p>
-        </div>
-      </div>
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
-        {/* Search & Filter Bar */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <form onSubmit={handleSearch} style={{ marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <input
-                type="text"
-                placeholder={t.blog.search}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  flex: '1 1 200px',
-                  minWidth: '150px',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
-                }}
-              />
-              <button
-                type="submit"
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#3b82f6',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  fontWeight: '500',
-                }}
-              >
-                {t.common.search}
-              </button>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-orange-600 via-orange-500 to-orange-600 dark:from-orange-700 dark:via-orange-600 dark:to-orange-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+              <BookOpen className="h-5 w-5" />
+              <span className="text-sm font-semibold uppercase tracking-wide">Afrobizz Blog</span>
             </div>
-          </form>
+            
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              Insights, Stories & Updates
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-8">
+              Discover the latest trends, tips, and stories from Africa's creative and business community
+            </p>
 
-          {/* Filter Options */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-            {/* Category Filter */}
-            <select
-              value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-                setPage(1);
-              }}
-              style={{
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-              }}
-            >
-              <option value="">{t.blog.filterByCategory}</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-
-            {/* Tag Filter */}
-            <select
-              value={selectedTag}
-              onChange={(e) => {
-                setSelectedTag(e.target.value);
-                setPage(1);
-              }}
-              style={{
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-              }}
-            >
-              <option value="">{t.blog.filterByTag}</option>
-              {tags.map((tag) => (
-                <option key={tag} value={tag}>
-                  {tag}
-                </option>
-              ))}
-            </select>
-
-            {/* View Type Toggle */}
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button
-                onClick={() => setViewType('grid')}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem',
-                  backgroundColor: viewType === 'grid' ? '#3b82f6' : '#e5e7eb',
-                  color: viewType === 'grid' ? '#fff' : '#374151',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                }}
-              >
-                ⊞ Grid
-              </button>
-              <button
-                onClick={() => setViewType('list')}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem',
-                  backgroundColor: viewType === 'list' ? '#3b82f6' : '#e5e7eb',
-                  color: viewType === 'list' ? '#fff' : '#374151',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                }}
-              >
-                ≡ List
-              </button>
+            {/* Search Bar */}
+            <div className="flex justify-center">
+              <SearchBar onSearch={handleSearch} placeholder="Search articles..." />
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Clear Filters Button */}
-          {(searchQuery || selectedCategory || selectedTag) && (
-            <button
-              onClick={clearFilters}
-              style={{
-                color: '#3b82f6',
-                backgroundColor: 'transparent',
-                border: '1px solid #3b82f6',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
-            >
-              ✕ Clear Filters
-            </button>
-          )}
+      {/* Featured Posts Section */}
+      {featuredPosts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Main Featured Post */}
+            {featuredPosts[0] && (
+              <div className="lg:col-span-2">
+                <BlogCard post={featuredPosts[0]} variant="featured" priority />
+              </div>
+            )}
+            
+            {/* Secondary Featured Posts */}
+            {featuredPosts.slice(1, 3).map((post) => (
+              <BlogCard key={post._id} post={post} variant="default" priority />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Main Content */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Category Filter */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <TrendingUp className="h-6 w-6 text-orange-600" />
+              Latest Articles
+            </h2>
+            
+            {(searchQuery || selectedCategory) && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+          
+          <CategoryFilter
+            categories={data.availableCategories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+          />
         </div>
 
-        {/* Content Area */}
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>
-            <div style={{ color: '#6b7280' }}>{t.common.loading}</div>
+        {/* Loading State */}
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 dark:bg-gray-800 rounded-xl aspect-[16/9] mb-4" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded mb-2" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+              </div>
+            ))}
           </div>
-        ) : error ? (
-          <div style={{ backgroundColor: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '0.5rem', marginBottom: '2rem' }}>
-            {error}
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-red-600 dark:text-red-400">{error}</p>
           </div>
-        ) : posts.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280' }}>
-            {t.blog.noArticles}
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && data.posts.length === 0 && (
+          <div className="text-center py-16">
+            <Clock className="h-16 w-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              No articles found
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              {searchQuery || selectedCategory
+                ? 'Try adjusting your filters'
+                : 'Check back soon for new content'}
+            </p>
+            {(searchQuery || selectedCategory) && (
+              <button
+                onClick={clearFilters}
+                className="px-6 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
-        ) : (
+        )}
+
+        {/* Blog Posts Grid */}
+        {!loading && !error && data.posts.length > 0 && (
           <>
-            {/* Blog Posts Grid/List */}
-            <div
-              style={{
-                display: viewType === 'grid' ? 'grid' : 'flex',
-                gridTemplateColumns: viewType === 'grid' ? 'repeat(auto-fill, minmax(280px, 1fr))' : undefined,
-                flexDirection: viewType === 'list' ? 'column' : undefined,
-                gap: '1.5rem',
-                marginBottom: '2rem',
-              }}
-            >
-              {posts.map((post) => (
-                <article
-                  key={post._id}
-                  style={{
-                    backgroundColor: '#fff',
-                    borderRadius: '0.5rem',
-                    overflow: 'hidden',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                    display: 'flex',
-                    flexDirection: viewType === 'list' ? 'row' : 'column',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = '0 10px 15px rgba(0,0,0,0.1)';
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  }}
-                >
-                  {/* Featured Image */}
-                  {post.featuredImage && (
-                    <div
-                      style={{
-                        width: viewType === 'list' ? '250px' : '100%',
-                        height: viewType === 'list' ? '200px' : '180px',
-                        backgroundColor: '#e5e7eb',
-                        backgroundImage: `url(${post.featuredImage})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        flexShrink: 0,
-                        minHeight: '150px',
-                      }}
-                    />
-                  )}
-
-                  {/* Content */}
-                  <div style={{ padding: 'clamp(1rem, 3vw, 1.5rem)', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    {/* Meta */}
-                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', fontSize: '0.7rem', color: '#6b7280', flexWrap: 'wrap' }}>
-                      {post.category && (
-                        <span
-                          style={{
-                            backgroundColor: '#dbeafe',
-                            color: '#1e40af',
-                            padding: '0.3rem 0.7rem',
-                            borderRadius: '9999px',
-                            fontSize: 'clamp(0.65rem, 2vw, 0.75rem)',
-                            fontWeight: '500',
-                          }}
-                        >
-                          {post.category}
-                        </span>
-                      )}
-                      {post.featured && (
-                        <span
-                          style={{
-                            backgroundColor: '#fef3c7',
-                            color: '#92400e',
-                            padding: '0.3rem 0.7rem',
-                            borderRadius: '9999px',
-                            fontSize: 'clamp(0.65rem, 2vw, 0.75rem)',
-                            fontWeight: '500',
-                          }}
-                        >
-                          ⭐ {t.blog.featured}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Title */}
-                    <Link href={`/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
-                      <h2
-                        style={{
-                          fontSize: 'clamp(1.1rem, 5vw, 1.25rem)',
-                          fontWeight: '700',
-                          marginBottom: '0.75rem',
-                          color: '#1f2937',
-                          cursor: 'pointer',
-                          transition: 'color 0.2s',
-                          wordBreak: 'break-word',
-                          overflowWrap: 'break-word',
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = '#3b82f6')}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = '#1f2937')}
-                      >
-                        {post.title}
-                      </h2>
-                    </Link>
-
-                    {/* Excerpt */}
-                    <p style={{ color: '#374151', marginBottom: '1rem', flex: 1, fontSize: 'clamp(0.9rem, 4vw, 0.95rem)', lineHeight: '1.6', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      {post.excerpt || post.content.substring(0, 150) + '...'}
-                    </p>
-
-                    {/* Tags */}
-                    {post.tags && post.tags.length > 0 && (
-                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                        {post.tags.slice(0, 3).map((tag) => (
-                          <span
-                            key={tag}
-                            style={{
-                              backgroundColor: '#f3f4f6',
-                              color: '#6b7280',
-                              padding: '0.25rem 0.5rem',
-                              borderRadius: '0.25rem',
-                              fontSize: '0.75rem',
-                            }}
-                          >
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Footer */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: 'clamp(0.8rem, 2.5vw, 0.875rem)', color: '#4b5563', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', minWidth: '100%' }}>
-                        <span style={{ fontWeight: '500' }}>{post.author}</span>
-                        <span>•</span>
-                        <span>{formatDate(post.createdAt)}</span>
-                        <span>•</span>
-                        <span>👁 {post.views}</span>
-                      </div>
-                      <Link href={`/blog/${post.slug}`} style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: '600', marginTop: '0.5rem' }}>
-                        {t.blog.readMore} →
-                      </Link>
-                    </div>
-                  </div>
-                </article>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {data.posts.map((post) => (
+                <BlogCard key={post._id} post={post} variant="default" />
               ))}
             </div>
 
             {/* Pagination */}
-            {totalPages > 1 && (
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+            {data.totalPages > 1 && (
+              <div className="flex justify-center gap-2">
                 <button
-                  onClick={() => setPage(Math.max(1, page - 1))}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    backgroundColor: page === 1 ? '#f3f4f6' : '#fff',
-                    color: page === 1 ? '#9ca3af' : '#374151',
-                    cursor: page === 1 ? 'not-allowed' : 'pointer',
-                  }}
+                  className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  ← Previous
+                  Previous
                 </button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                  <button
-                    key={pageNum}
-                    onClick={() => setPage(pageNum)}
-                    style={{
-                      padding: '0.75rem 1rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      backgroundColor: page === pageNum ? '#3b82f6' : '#fff',
-                      color: page === pageNum ? '#fff' : '#374151',
-                      cursor: 'pointer',
-                      fontWeight: page === pageNum ? '600' : '400',
-                    }}
-                  >
-                    {pageNum}
-                  </button>
-                ))}
-
+                
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: data.totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        page === pageNum
+                          ? 'bg-orange-600 text-white'
+                          : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+                
                 <button
-                  onClick={() => setPage(Math.min(totalPages, page + 1))}
-                  disabled={page === totalPages}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    backgroundColor: page === totalPages ? '#f3f4f6' : '#fff',
-                    color: page === totalPages ? '#9ca3af' : '#374151',
-                    cursor: page === totalPages ? 'not-allowed' : 'pointer',
-                  }}
+                  onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
+                  disabled={page === data.totalPages}
+                  className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  Next →
+                  Next
                 </button>
               </div>
             )}
           </>
         )}
-      </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="bg-white dark:bg-gray-800 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Newsletter />
+        </div>
+      </section>
     </div>
   );
 }
