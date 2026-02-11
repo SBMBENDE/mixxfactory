@@ -14,6 +14,12 @@ const nextConfig = {
       },
     ],
   },
+  // Increase body size limit to 10MB for API routes
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
 }
 
 module.exports = nextConfig

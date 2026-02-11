@@ -259,6 +259,12 @@ export default function ProfessionalRegistrationPage() {
       }
 
       // Create professional profile with Cloudinary URLs (not base64)
+      console.log('[Profile Creation] Sending data with images:', {
+        profilePicPreview: formData.profilePicPreview?.substring(0, 100),
+        imagePreviewsCount: formData.imagePreviews.length,
+        imagePreviewSample: formData.imagePreviews[0]?.substring(0, 100),
+      });
+      
       const res = await fetch('/api/admin/professionals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -296,7 +302,14 @@ export default function ProfessionalRegistrationPage() {
         }),
       });
 
+      console.log('[Profile Creation] Response status:', res.status);
+      console.log('[Profile Creation] Response headers:', {
+        contentType: res.headers.get('content-type'),
+        contentLength: res.headers.get('content-length'),
+      });
+
       const data = await res.json();
+      console.log('[Profile Creation] Response data:', data);
 
       if (!res.ok) {
         setError(data.error || data.message || 'Failed to create profile');
