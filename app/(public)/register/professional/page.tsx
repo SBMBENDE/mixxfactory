@@ -281,22 +281,15 @@ export default function ProfessionalRegistrationPage() {
           resolve(canvas.toDataURL('image/jpeg', 0.7));
         };
         img.onerror = () => reject(new Error('Failed to load image'));
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Profile picture must be less than 5MB');
-      return;
-    }
-    
-    try {
-      const preview = await readFileAsDataURL(file);
-      setFormData(prev => ({
-        ...prev,
-        profilePicFile: file,
-        profilePicPreview: preview,
-      }));
-    } catch (err) {
-      console.error('Failed to read profile picture:', err);
-      setError('Failed to process profile picture. Please try a different image.'
+        img.src = reader.result as string;
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
       ...prev,
       imageFiles: prev.imageFiles.filter((_, i) => i !== index),
       imagePreviews: prev.imagePreviews.filter((_, i) => i !== index),
@@ -304,15 +297,25 @@ export default function ProfessionalRegistrationPage() {
   };
 
   const handleProfilePicChange = async (file: File) => {
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Profile picture must be less than 5MB');
+      return;
+    }
+    
+    setError('Uploading profile picture to Cloudinary...');
     try {
-      const preview = await readFileAsDataURL(file);
+      // Upload to Cloudinary and get URL
+      const url = await uploadImageToCloudinary(file);
       setFormData(prev => ({
         ...prev,
         profilePicFile: file,
-        profilePicPreview: preview,
+        profilePicPreview: url, // Use Cloudinary URL
       }));
+      setError(''); // Clear uploading message
     } catch (err) {
-      console.error('Failed to read profile picture:', err);
+      console.error('Failed to upload profile picture:', err);
+      setError('Failed to upload profile picture. Please try again.');
     }
     setTimeout(() => {
       if (profilePicInputRef.current) {
