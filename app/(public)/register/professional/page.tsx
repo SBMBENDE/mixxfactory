@@ -196,19 +196,24 @@ export default function ProfessionalRegistrationPage() {
       }
     }
     
+    setError('Uploading images to Cloudinary...');
     const newPreviews: string[] = [];
+    const newUrls: string[] = [];
     
     for (const file of files) {
       try {
-        const preview = await readFileAsDataURL(file);
-        newPreviews.push(preview);
+        // Upload to Cloudinary and get URL
+        const url = await uploadImageToCloudinary(file);
+        newPreviews.push(url); // Use Cloudinary URL as preview
+        newUrls.push(url);
       } catch (err) {
-        console.error('Failed to read file:', err);
-        setError('Failed to process image. Please try a different image.');
+        console.error('Failed to upload file:', err);
+        setError('Failed to upload image. Please try again.');
         return;
       }
     }
     
+    setError(''); // Clear uploading message
     // Add to existing images
     if (newPreviews.length > 0) {
       setFormData(prev => ({
@@ -224,6 +229,24 @@ export default function ProfessionalRegistrationPage() {
         fileInputRef.current.value = '';
       }
     }, 100);
+  };
+
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
+
+    const data = await response.json();
+    return data.url;
   };
 
   const readFileAsDataURL = (file: File): Promise<string> => {
@@ -319,7 +342,7 @@ export default function ProfessionalRegistrationPage() {
         return;
       }
 
-      // Create professional profile
+      // Create professional profile with Cloudinary URLs (not base64)
       const res = await fetch('/api/admin/professionals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -357,24 +380,7 @@ export default function ProfessionalRegistrationPage() {
         }),
       });
 
-      // Handle non-JSON responses (like "Request Entity Too Large")
-      const contentType = res.headers.get('content-type');
-      let data;
-      
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json();
-      } else {
-        const text = await res.text();
-        // Request too large error
-        if (res.status === 413 || text.toLowerCase().includes('too large')) {
-          setError('Images are too large. Please use fewer images or take photos at lower resolution.');
-          setLoading(false);
-          return;
-        }
-        setError('Server error. Please try with smaller images.');
-        setLoading(false);
-        return;
-      }
+      const data = await res.json();
 
       if (!res.ok) {
         setError(data.error || data.message || 'Failed to create profile');
