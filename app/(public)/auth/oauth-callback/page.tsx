@@ -6,10 +6,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, SessionProvider } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [error, setError] = useState<string | null>(null);
@@ -110,3 +110,12 @@ export default function OAuthCallbackPage() {
     </div>
   );
 }
+
+export default function OAuthCallbackPage() {
+  return (
+    <SessionProvider>
+      <OAuthCallbackContent />
+    </SessionProvider>
+  );
+}
+
