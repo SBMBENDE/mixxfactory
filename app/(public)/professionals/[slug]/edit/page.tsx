@@ -68,6 +68,11 @@ export default function EditProfessionalPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  
+  // Version check for debugging
+  useEffect(() => {
+    console.log('[EDIT PAGE VERSION CHECK] Edit Profile Page - Version: 2.0 - Cloudinary Upload Enabled');
+  }, []);
 
   // Load professional data
   useEffect(() => {
@@ -189,27 +194,62 @@ export default function EditProfessionalPage() {
     }
   };
 
-  const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(file);
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
     });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
+
+    const data = await response.json();
+    return data.url;
   };
 
   const processFilesAndAddToGallery = async (files: File[]) => {
+    console.log('[Edit Gallery] Starting upload for', files.length, 'files');
+    
+    // Validate max 5 images total
+    if (formData.imageFiles.length + files.length > 5) {
+      setError('Maximum 5 gallery images allowed');
+      return;
+    }
+    
+    // Validate individual file sizes (max 5MB each)
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError(`Image "${file.name}" is too large. Maximum 5MB per image.`);
+        return;
+      }
+    }
+    
+    setError('Uploading images to Cloudinary...');
     const newPreviews: string[] = [];
     
     for (const file of files) {
       try {
-        const preview = await readFileAsDataURL(file);
-        newPreviews.push(preview);
+        // Upload to Cloudinary and get URL
+        console.log('[Edit Gallery] Uploading:', file.name);
+        const url = await uploadImageToCloudinary(file);
+        console.log('[Edit Gallery] Cloudinary URL received:', url);
+        newPreviews.push(url); // Use Cloudinary URL as preview
       } catch (err) {
-        console.error('Failed to read file:', err);
+        console.error('[Edit Gallery] Failed to upload file:', file.name, err);
+        setError('Failed to upload image. Please try again.');
+        return;
       }
     }
     
+    console.log('[Edit Gallery] All uploads complete. URLs:', newPreviews);
+    setError(''); // Clear uploading message
+    
+    // Add to existing images
     if (newPreviews.length > 0) {
       setFormData(prev => ({
         ...prev,
@@ -234,15 +274,31 @@ export default function EditProfessionalPage() {
   };
 
   const handleProfilePicChange = async (file: File) => {
+    console.log('[Edit Profile Pic] Starting upload for:', file.name, file.size, 'bytes');
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Profile picture must be less than 5MB');
+      return;
+    }
+    
+    setError('Uploading profile picture to Cloudinary...');
     try {
-      const preview = await readFileAsDataURL(file);
+      // Upload to Cloudinary and get URL
+      console.log('[Edit Profile Pic] Calling uploadImageToCloudinary...');
+      const url = await uploadImageToCloudinary(file);
+      console.log('[Edit Profile Pic] Cloudinary URL received:', url);
+      
       setFormData(prev => ({
         ...prev,
         profilePicFile: file,
-        profilePicPreview: preview,
+        profilePicPreview: url, // Use Cloudinary URL
       }));
+      setError(''); // Clear uploading message
+      console.log('[Edit Profile Pic] Profile pic set successfully');
     } catch (err) {
-      console.error('Failed to read profile picture:', err);
+      console.error('[Edit Profile Pic] Failed to upload profile picture:', err);
+      setError('Failed to upload profile picture. Please try again.');
     }
     setTimeout(() => {
       if (profilePicInputRef.current) {
@@ -265,6 +321,22 @@ export default function EditProfessionalPage() {
     setSubmitting(true);
 
     try {
+      const images = formData.profilePicPreview 
+        ? [formData.profilePicPreview, ...formData.imagePreviews]
+        : formData.imagePreviews;
+      
+      console.log('[Edit Profile Submission] Images being sent:', images);
+      console.log('[Edit Profile Submission] Profile pic:', formData.profilePicPreview);
+      console.log('[Edit Profile Submission] Gallery previews:', formData.imagePreviews);
+      
+      // Check if any images are base64
+      const hasBase64 = images.some(img => img.startsWith('data:'));
+      if (hasBase64) {
+        console.error('[Edit Profile Submission] WARNING: Found base64 images in submission!');
+      } else {
+        console.log('[Edit Profile Submission] ✓ All images are Cloudinary URLs');
+      }
+      
       const res = await fetch(`/api/admin/professionals/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -275,9 +347,7 @@ export default function EditProfessionalPage() {
           email: formData.email,
           phone: formData.phone,
           website: formData.website,
-          images: formData.profilePicPreview 
-            ? [formData.profilePicPreview, ...formData.imagePreviews]
-            : formData.imagePreviews,
+          images: images,
           location: {
             city: formData.city,
             region: formData.region,
