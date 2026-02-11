@@ -10,13 +10,15 @@ import { successResponse, errorResponse } from '@/utils/api-response';
 
 export async function POST(
   _request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDB();
+    
+    const { slug } = await params;
 
     const post = await BlogPostModel.findOneAndUpdate(
-      { slug: params.slug, published: true },
+      { slug, published: true },
       { $inc: { views: 1 } },
       { new: true }
     );

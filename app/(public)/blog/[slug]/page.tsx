@@ -8,14 +8,16 @@ import { notFound } from 'next/navigation';
 import BlogPostClient from './BlogPostClient';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
+    const { slug } = await params;
+    
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/blog/posts/${params.slug}`,
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/blog/posts/${slug}`,
       { cache: 'no-store' }
     );
     
@@ -58,8 +60,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   try {
+    const { slug } = await params;
+    
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/blog/posts/${params.slug}`,
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/blog/posts/${slug}`,
       { cache: 'no-store' }
     );
 
