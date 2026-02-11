@@ -62,6 +62,11 @@ export default function ProfessionalRegistrationPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const profilePicInputRef = useRef<HTMLInputElement>(null);
   
+  // Version check for debugging
+  useEffect(() => {
+    console.log('[VERSION CHECK] Professional Registration Page - Version: 2.0 - Cloudinary Upload Enabled');
+  }, []);
+  
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
