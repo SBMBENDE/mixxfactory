@@ -162,7 +162,7 @@ export default function PremiumListingPage() {
         <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 overscroll-x-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow-lg rounded-lg">
-              <table className="min-w-full bg-white dark:bg-gray-800" style={{ minWidth: '600px' }}>}
+              <table className="min-w-full bg-white dark:bg-gray-800" style={{ minWidth: '600px' }}>
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
                     <th className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left text-sm md:text-base text-gray-900 dark:text-white font-semibold whitespace-nowrap">
