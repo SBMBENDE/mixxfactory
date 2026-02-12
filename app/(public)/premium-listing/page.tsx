@@ -58,22 +58,22 @@ export default function PremiumListingPage() {
         </p>
 
         {!isPremium && (
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
             <Link
               href={isLoggedIn ? '/checkout?tier=pro' : '/register'}
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 font-semibold text-lg shadow-lg transform hover:scale-105 transition-all"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 font-semibold text-lg shadow-lg transform hover:scale-105 transition-all text-center"
             >
               {isLoggedIn 
                 ? (isStarter ? t.premiumListing?.ctaUpgradeToPro || 'Upgrade to Pro' : t.premiumListing?.ctaGetStarted || 'Get Started')
                 : t.premiumListing?.ctaSignUp || 'Sign Up & Go Premium'
               }
             </Link>
-            <Link
-              href="/pricing"
-              className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-lg transition-all"
+            <a
+              href="#pricing"
+              className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-lg transition-all text-center"
             >
               {t.premiumListing?.ctaViewPricing || 'View Pricing'}
-            </Link>
+            </a>
           </div>
         )}
 
@@ -159,10 +159,10 @@ export default function PremiumListingPage() {
           {t.premiumListing?.comparisonTitle || 'Compare Plans'}
         </h2>
         
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 overscroll-x-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow-lg rounded-lg">
-              <table className="min-w-full bg-white dark:bg-gray-800">
+              <table className="min-w-full bg-white dark:bg-gray-800" style={{ minWidth: '600px' }}>}
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
                     <th className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left text-sm md:text-base text-gray-900 dark:text-white font-semibold whitespace-nowrap">
@@ -223,13 +223,13 @@ export default function PremiumListingPage() {
         </div>
         
         {/* Mobile scroll hint */}
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4 sm:hidden">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4 sm:hidden animate-pulse">
           ← Swipe to see all plans →
         </p>
       </div>
 
       {/* Pricing Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
+      <div id="pricing" className="bg-gradient-to-r from-purple-600 to-blue-600 py-16 scroll-mt-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
             {t.premiumListing?.pricingTitle || 'Simple, Transparent Pricing'}
