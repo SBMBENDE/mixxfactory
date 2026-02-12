@@ -47,13 +47,16 @@ export default function NewBlogPostPage() {
         body: formDataUpload,
       });
 
-      if (!response.ok) throw new Error('Upload failed');
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.details || 'Upload failed');
+      }
+
       setFormData((prev) => ({ ...prev, featuredImage: data.url }));
-    } catch (err) {
-      setError('Failed to upload image');
-      console.error(err);
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload image');
+      console.error('Upload error:', err);
     } finally {
       setUploading(false);
     }
@@ -78,13 +81,14 @@ export default function NewBlogPostPage() {
       const data = await response.json();
 
       if (data.success) {
-        router.push('/dashboard/admin/blog');
+        alert('Blog post created successfully! Remember to publish it to make it visible.');
+        router.push('/admin/blog');
       } else {
         setError(data.message || 'Failed to create post');
       }
-    } catch (err) {
-      setError('Error creating post');
-      console.error(err);
+    } catch (err: any) {
+      setError(err.message || 'Error creating post');
+      console.error('Submit error:', err);
     } finally {
       setSubmitting(false);
     }
@@ -97,7 +101,7 @@ export default function NewBlogPostPage() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Link
-              href="/dashboard/admin/blog"
+              href="/admin/blog"
               className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
             >
               <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
@@ -296,7 +300,7 @@ export default function NewBlogPostPage() {
             {/* Actions */}
             <div className="flex justify-end gap-4">
               <Link
-                href="/dashboard/admin/blog"
+                href="/admin/blog"
                 className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
               >
                 Cancel

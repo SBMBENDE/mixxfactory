@@ -46,7 +46,7 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#0ea5e9" />
       </head>
-      <body className="bg-gray-50 dark:bg-gray-950">
+      <body className="bg-gray-50 dark:bg-gray-950" suppressHydrationWarning>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

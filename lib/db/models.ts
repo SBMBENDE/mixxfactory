@@ -674,6 +674,59 @@ export const BlogPostModel =
   (mongoose.models.BlogPost as Model<IBlogPostDocument>) ||
   mongoose.model<IBlogPostDocument>('BlogPost', blogPostSchema);
 
+// ============ BLOG COMMENT MODEL ============
+export interface BlogComment {
+  _id?: string;
+  postId: string;
+  name: string;
+  email: string;
+  message: string;
+  approved: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IBlogCommentDocument extends Omit<BlogComment, '_id'>, Document {}
+
+const blogCommentSchema = new Schema<IBlogCommentDocument>(
+  {
+    postId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    message: {
+      type: String,
+      required: true,
+      maxlength: 1000,
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+  },
+  { timestamps: true }
+);
+
+blogCommentSchema.index({ postId: 1, approved: 1, createdAt: -1 });
+
+export const BlogCommentModel =
+  (mongoose.models.BlogComment as Model<IBlogCommentDocument>) ||
+  mongoose.model<IBlogCommentDocument>('BlogComment', blogCommentSchema);
+
 
 // ============ USER MODEL (Enhanced) ============
 interface IUserDocument extends Document {

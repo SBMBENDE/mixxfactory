@@ -27,7 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const { data: post } = await response.json();
+    const result = await response.json();
+    const post = result.data?.post || result.data;
 
     return {
       title: `${post.title} | Afrobizz Blog`,
@@ -71,7 +72,8 @@ export default async function BlogPostPage({ params }: Props) {
       notFound();
     }
 
-    const { data: post } = await response.json();
+    const result = await response.json();
+    const post = result.data?.post || result.data;
 
     // Fetch related posts
     const relatedResponse = await fetch(

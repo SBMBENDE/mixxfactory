@@ -9,6 +9,8 @@ const stats = [
 ];
 
 const quickLinks = [
+  { label: 'Manage Blog Posts', href: '/admin/blog' },
+  { label: 'Manage Blog Comments', href: '/admin/blog/comments' },
   { label: 'Manage News Flashes', href: '/admin/news-flash' },
   { label: 'Manage Events', href: '/admin/events' },
   { label: 'Manage Featured', href: '/admin/featured' },

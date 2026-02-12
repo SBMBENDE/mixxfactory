@@ -12,6 +12,7 @@ import ShareButtons from '@/components/blog/ShareButtons';
 import AuthorSection from '@/components/blog/AuthorSection';
 import TableOfContents from '@/components/blog/TableOfContents';
 import RelatedPosts from '@/components/blog/RelatedPosts';
+import BlogComments from '@/components/blog/BlogComments';
 import { formatDistanceToNow } from 'date-fns';
 
 interface BlogPost {
@@ -35,7 +36,7 @@ interface Props {
 }
 
 export default function BlogPostClient({ post, relatedPosts }: Props) {
-  const readingTime = Math.ceil(post.content.split(' ').length / 200);
+  const readingTime = Math.ceil((post.content || '').split(' ').length / 200);
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
@@ -53,21 +54,6 @@ export default function BlogPostClient({ post, relatedPosts }: Props) {
         day: 'numeric',
       });
     }
-  };
-
-  // Process content to add IDs to headings for TOC
-  const processContent = (html: string) => {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    
-    const headings = temp.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    headings.forEach((heading, index) => {
-      if (!heading.id) {
-        heading.id = `heading-${index}`;
-      }
-    });
-    
-    return temp.innerHTML;
   };
 
   return (
@@ -148,6 +134,7 @@ export default function BlogPostClient({ post, relatedPosts }: Props) {
               fill
               className="object-cover"
               priority
+              sizes="100vw"
             />
           </div>
         )}
@@ -166,7 +153,7 @@ export default function BlogPostClient({ post, relatedPosts }: Props) {
                 {/* Article Body */}
                 <div
                   className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:leading-relaxed prose-a:text-orange-600 hover:prose-a:text-orange-700 prose-img:rounded-xl prose-code:bg-gray-100 dark:prose-code:bg-gray-900 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 dark:prose-pre:bg-gray-950"
-                  dangerouslySetInnerHTML={{ __html: processContent(post.content) }}
+                  dangerouslySetInnerHTML={{ __html: post.content }}
                 />
 
                 {/* Tags */}
@@ -202,7 +189,7 @@ export default function BlogPostClient({ post, relatedPosts }: Props) {
                   <AuthorSection
                     author={{
                       name: post.author,
-                      bio: 'Content creator and writer passionate about African business and culture.',
+                      bio: 'Software Engineer',
                       social: {
                         twitter: 'https://twitter.com/afrobizz',
                         linkedin: 'https://linkedin.com/company/afrobizz',
@@ -217,19 +204,12 @@ export default function BlogPostClient({ post, relatedPosts }: Props) {
               <div className="mt-12">
                 <RelatedPosts posts={relatedPosts} currentPostId={post._id} />
               </div>
-
-              {/* Comments Placeholder */}
-              <div className="mt-12 bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  Comments
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Comments section coming soon. Stay tuned for engaging discussions!
-                </p>
-              </div>
             </main>
           </div>
         </div>
+
+        {/* Comments Section */}
+        <BlogComments postSlug={post.slug} />
       </article>
     </>
   );

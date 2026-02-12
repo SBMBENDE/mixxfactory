@@ -26,12 +26,45 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(request.url);
+    const slug = searchParams.get('slug');
+    
+    // If slug is provided, return single post
+    if (slug) {
+      const post = await BlogPostModel.findOne({ slug }).lean();
+      if (!post) {
+        return errorResponse('Post not found', 404);
+      }
+      return successResponse(
+        {
+          post: {
+            _id: post._id.toString(),
+            title: post.title,
+            slug: post.slug,
+            excerpt: post.excerpt,
+            content: post.content,
+            category: post.category,
+            tags: post.tags,
+            author: post.author,
+            featuredImage: post.featuredImage,
+            published: post.published,
+            featured: post.featured,
+            views: post.views,
+            createdAt: post.createdAt,
+          },
+        },
+        'Post fetched successfully',
+        200
+      );
+    }
+
+    // Otherwise, return list of posts with pagination
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const published = searchParams.get('published');
 
     const filter: any = {};
-    if (published !== null) {
+    // Only filter by published status if the parameter is explicitly provided
+    if (published === 'true' || published === 'false') {
       filter.published = published === 'true';
     }
 
@@ -93,12 +126,15 @@ export async function POST(request: NextRequest) {
     }
 
     const { title, content, excerpt, category, tags, author, featuredImage, featured } = validationResult.data;
-    const slug = generateSlug(title);
+    let slug = generateSlug(title);
 
-    // Check if slug already exists
-    const existingPost = await BlogPostModel.findOne({ slug });
-    if (existingPost) {
-      return errorResponse('A post with this title already exists', 409);
+    // Check if slug already exists and make it unique
+    let existingPost = await BlogPostModel.findOne({ slug });
+    let counter = 1;
+    while (existingPost) {
+      slug = `${generateSlug(title)}-${counter}`;
+      existingPost = await BlogPostModel.findOne({ slug });
+      counter++;
     }
 
     const post = new BlogPostModel({
@@ -149,14 +185,22 @@ export async function PUT(request: NextRequest) {
       return errorResponse('Post ID is required', 400);
     }
 
-    const validationResult = updateBlogPostSchema.safeParse(updateData);
-    if (!validationResult.success) {
-      return validationErrorResponse(validationResult.error.errors[0].message);
+    // For simple boolean toggles (published, featured), skip full validation
+    const isSimpleToggle = Object.keys(updateData).length <= 2 && 
+      (updateData.published !== undefined || updateData.featured !== undefined);
+
+    if (!isSimpleToggle) {
+      const validationResult = updateBlogPostSchema.safeParse(updateData);
+      if (!validationResult.success) {
+        return validationErrorResponse(validationResult.error.errors[0].message);
+      }
     }
 
-    const post = await BlogPostModel.findByIdAndUpdate(postId, validationResult.data, {
-      new: true,
-    });
+    const post = await BlogPostModel.findByIdAndUpdate(
+      postId, 
+      updateData,
+      { new: true }
+    );
 
     if (!post) {
       return errorResponse('Post not found', 404);

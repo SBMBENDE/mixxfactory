@@ -155,68 +155,77 @@ export default function PremiumListingPage() {
 
       {/* Comparison Table */}
       <div className="max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12 text-gray-900 dark:text-white">
           {t.premiumListing?.comparisonTitle || 'Compare Plans'}
         </h2>
         
-        <div className="overflow-x-auto">
-          <table className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-            <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <th className="px-6 py-4 text-left text-gray-900 dark:text-white font-semibold">
-                  {t.premiumListing?.featureColumn || 'Feature'}
-                </th>
-                <th className="px-6 py-4 text-center text-gray-900 dark:text-white font-semibold">
-                  {t.pricing?.free || 'Free'}
-                </th>
-                <th className="px-6 py-4 text-center text-gray-900 dark:text-white font-semibold">
-                  {t.pricing?.starter || 'Starter'}
-                </th>
-                <th className="px-6 py-4 text-center bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-t-lg">
-                  {t.pricing?.pro || 'Pro'} ⭐
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { feature: 'Profile Listing', free: true, starter: true, pro: true },
-                { feature: 'Gallery Images', free: '1', starter: '5', pro: 'Unlimited' },
-                { feature: 'Contact Info Display', free: false, starter: true, pro: true },
-                { feature: 'Social Media Links', free: false, starter: true, pro: true },
-                { feature: 'Dashboard Access', free: false, starter: true, pro: true },
-                { feature: 'Featured Badge', free: false, starter: false, pro: true },
-                { feature: 'Priority Search Placement', free: false, starter: false, pro: true },
-                { feature: 'Homepage Featured', free: false, starter: false, pro: true },
-                { feature: 'Analytics Dashboard', free: false, starter: false, pro: true },
-                { feature: 'Priority Support', free: false, starter: false, pro: true },
-              ].map((row, index) => (
-                <tr key={index} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-6 py-4 text-gray-900 dark:text-white font-medium">
-                    {row.feature}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {typeof row.free === 'boolean' 
-                      ? (row.free ? <CheckCircle className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-gray-300 mx-auto" />)
-                      : <span className="text-gray-600 dark:text-gray-400">{row.free}</span>
-                    }
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {typeof row.starter === 'boolean' 
-                      ? (row.starter ? <CheckCircle className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-gray-300 mx-auto" />)
-                      : <span className="text-gray-600 dark:text-gray-400">{row.starter}</span>
-                    }
-                  </td>
-                  <td className="px-6 py-4 text-center bg-purple-50 dark:bg-purple-900/20">
-                    {typeof row.pro === 'boolean' 
-                      ? (row.pro ? <CheckCircle className="h-5 w-5 text-purple-600 mx-auto" /> : <X className="h-5 w-5 text-gray-300 mx-auto" />)
-                      : <span className="text-purple-600 dark:text-purple-400 font-semibold">{row.pro}</span>
-                    }
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="inline-block min-w-full align-middle">
+            <div className="overflow-hidden shadow-lg rounded-lg">
+              <table className="min-w-full bg-white dark:bg-gray-800">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left text-sm md:text-base text-gray-900 dark:text-white font-semibold whitespace-nowrap">
+                      {t.premiumListing?.featureColumn || 'Feature'}
+                    </th>
+                    <th className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-center text-sm md:text-base text-gray-900 dark:text-white font-semibold whitespace-nowrap">
+                      {t.pricing?.free || 'Free'}
+                    </th>
+                    <th className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-center text-sm md:text-base text-gray-900 dark:text-white font-semibold whitespace-nowrap">
+                      {t.pricing?.starter || 'Starter'}
+                    </th>
+                    <th className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-center text-sm md:text-base bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-t-lg whitespace-nowrap">
+                      {t.pricing?.pro || 'Pro'} ⭐
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { feature: 'Profile Listing', free: true, starter: true, pro: true },
+                    { feature: 'Gallery Images', free: '1', starter: '5', pro: 'Unlimited' },
+                    { feature: 'Contact Info', free: false, starter: true, pro: true },
+                    { feature: 'Social Links', free: false, starter: true, pro: true },
+                    { feature: 'Dashboard', free: false, starter: true, pro: true },
+                    { feature: 'Featured Badge', free: false, starter: false, pro: true },
+                    { feature: 'Priority Search', free: false, starter: false, pro: true },
+                    { feature: 'Homepage Featured', free: false, starter: false, pro: true },
+                    { feature: 'Analytics', free: false, starter: false, pro: true },
+                    { feature: 'Priority Support', free: false, starter: false, pro: true },
+                  ].map((row, index) => (
+                    <tr key={index} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <td className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-xs sm:text-sm md:text-base text-gray-900 dark:text-white font-medium whitespace-nowrap">
+                        {row.feature}
+                      </td>
+                      <td className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-center">
+                        {typeof row.free === 'boolean' 
+                          ? (row.free ? <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 mx-auto" /> : <X className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300 mx-auto" />)
+                          : <span className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">{row.free}</span>
+                        }
+                      </td>
+                      <td className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-center">
+                        {typeof row.starter === 'boolean' 
+                          ? (row.starter ? <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 mx-auto" /> : <X className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300 mx-auto" />)
+                          : <span className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">{row.starter}</span>
+                        }
+                      </td>
+                      <td className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-center bg-purple-50 dark:bg-purple-900/20">
+                        {typeof row.pro === 'boolean' 
+                          ? (row.pro ? <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 mx-auto" /> : <X className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300 mx-auto" />)
+                          : <span className="text-xs sm:text-sm md:text-base text-purple-600 dark:text-purple-400 font-semibold whitespace-nowrap">{row.pro}</span>
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+        
+        {/* Mobile scroll hint */}
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4 sm:hidden">
+          ← Swipe to see all plans →
+        </p>
       </div>
 
       {/* Pricing Section */}
