@@ -47,7 +47,7 @@ export default function PricingPage() {
         </div>
 
         {/* Starter Plan */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 flex flex-col items-center border-4 border-blue-500 relative transform scale-105">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 flex flex-col items-center border-4 border-blue-500 relative md:transform md:scale-105">
           <div className="absolute -top-4 bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-bold">
             {t.pricing.mostPopular}
           </div>
@@ -139,52 +139,88 @@ export default function PricingPage() {
       </div>
       {/* Events Pricing */}
       <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-4 text-center">{t.pricing.eventPricingTitle}</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">{t.pricing.eventPricingTitle}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* Basic Event */}
-          <div className="bg-white rounded shadow p-6 flex flex-col items-center">
-            <h3 className="text-lg font-semibold mb-2">{t.pricing.basicEvent}</h3>
-            <div className="text-2xl font-bold mb-2">€4.99<span className="text-base font-normal">{t.pricing.perEvent}</span></div>
-            <ul className="text-gray-600 mb-4 text-sm list-disc list-inside">
-              <li>{t.pricing.basicEventFeature1}</li>
-              <li>{t.pricing.basicEventFeature2}</li>
-              <li>{t.pricing.basicEventFeature3}</li>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col items-center">
+            <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{t.pricing.basicEvent}</h3>
+            <div className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">€4.99<span className="text-base font-normal text-gray-600 dark:text-gray-400">{t.pricing.perEvent}</span></div>
+            <ul className="text-gray-600 dark:text-gray-400 mb-6 text-sm space-y-2">
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.basicEventFeature1}</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.basicEventFeature2}</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.basicEventFeature3}</span>
+              </li>
             </ul>
-            <Link href="/promote-event" className="mt-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{t.pricing.postEvent}</Link>
+            <Link href="/promote-event" className="mt-auto w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-center">{t.pricing.postEvent}</Link>
           </div>
           {/* Premium/Featured Event */}
-          <div className="bg-white rounded shadow p-6 flex flex-col items-center border-2 border-yellow-500">
-            <h3 className="text-lg font-semibold mb-2">{t.pricing.premiumEvent}</h3>
-            <div className="text-2xl font-bold mb-2">€19.99<span className="text-base font-normal">{t.pricing.perEvent}</span></div>
-            <ul className="text-gray-600 mb-4 text-sm list-disc list-inside">
-              <li>{t.pricing.premiumEventFeature1}</li>
-              <li>{t.pricing.premiumEventFeature2}</li>
-              <li>{t.pricing.premiumEventFeature3}</li>
-              <li>{t.pricing.premiumEventFeature4}</li>
-              <li>{t.pricing.premiumEventFeature5}</li>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col items-center border-2 border-yellow-500">
+            <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{t.pricing.premiumEvent}</h3>
+            <div className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">€19.99<span className="text-base font-normal text-gray-600 dark:text-gray-400">{t.pricing.perEvent}</span></div>
+            <ul className="text-gray-600 dark:text-gray-400 mb-6 text-sm space-y-2">
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.premiumEventFeature1}</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.premiumEventFeature2}</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.premiumEventFeature3}</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.premiumEventFeature4}</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span>{t.pricing.premiumEventFeature5}</span>
+              </li>
             </ul>
-            <Link href="/promote-event?featured=true" className="mt-auto px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">{t.pricing.promoteAsFeatured}</Link>
+            <Link href="/promote-event?featured=true" className="mt-auto w-full px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-semibold text-center">{t.pricing.promoteAsFeatured}</Link>
           </div>
         </div>
       </div>
 
       {/* News Flash Pricing */}
       <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-4 text-center">{t.pricing.newsFlashTitle}</h2>
-        <div className="bg-white rounded shadow p-6 flex flex-col items-center max-w-xl mx-auto">
-          <h3 className="text-lg font-semibold mb-2">{t.pricing.newsFlash}</h3>
-          <div className="text-2xl font-bold mb-2">€15<span className="text-base font-normal">{t.pricing.perFlash}</span></div>
-          <ul className="text-gray-600 mb-4 text-sm list-disc list-inside">
-            <li>{t.pricing.newsFlashFeature1}</li>
-            <li>{t.pricing.newsFlashFeature2}</li>
-            <li>{t.pricing.newsFlashFeature3}</li>
-            <li>{t.pricing.newsFlashFeature4}</li>
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">{t.pricing.newsFlashTitle}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col items-center max-w-xl mx-auto">
+          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{t.pricing.newsFlash}</h3>
+          <div className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">€15<span className="text-base font-normal text-gray-600 dark:text-gray-400">{t.pricing.perFlash}</span></div>
+          <ul className="text-gray-600 dark:text-gray-400 mb-6 text-sm space-y-2">
+            <li className="flex items-start">
+              <span className="text-green-500 mr-2">✓</span>
+              <span>{t.pricing.newsFlashFeature1}</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-green-500 mr-2">✓</span>
+              <span>{t.pricing.newsFlashFeature2}</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-green-500 mr-2">✓</span>
+              <span>{t.pricing.newsFlashFeature3}</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-green-500 mr-2">✓</span>
+              <span>{t.pricing.newsFlashFeature4}</span>
+            </li>
           </ul>
-          <Link href="/promote-event?newsflash=true" className="mt-auto px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">{t.pricing.submitNewsFlash}</Link>
+          <Link href="/promote-event?newsflash=true" className="mt-auto w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-semibold text-center">{t.pricing.submitNewsFlash}</Link>
         </div>
       </div>
 
-      <div className="text-center text-gray-500 text-sm mt-12">
+      <div className="text-center text-gray-500 dark:text-gray-400 text-sm mt-12">
         {t.pricing.disclaimer} <Link href="/terms" className="underline">{t.pricing.termsLink}</Link>.
       </div>
     </div>
