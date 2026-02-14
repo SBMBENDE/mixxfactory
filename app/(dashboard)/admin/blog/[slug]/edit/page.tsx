@@ -43,8 +43,10 @@ export default function EditBlogPostPage() {
   const fetchPost = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/admin/blog/posts?slug=${slug}`, {
+      // Add timestamp to prevent caching
+      const response = await fetch(`/api/admin/blog/posts?slug=${slug}&t=${Date.now()}`, {
         credentials: 'include',
+        cache: 'no-store',
       });
 
       if (!response.ok) {

@@ -7,6 +7,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import BlogPostClient from './BlogPostClient.tsx';
 
+// Force dynamic rendering to prevent stale content
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface Props {
   params: Promise<{ slug: string }>;
 }
