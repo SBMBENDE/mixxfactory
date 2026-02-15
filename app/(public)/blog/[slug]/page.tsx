@@ -5,7 +5,7 @@
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import BlogPostClient from './BlogPostClient.tsx';
+import BlogPostClient from './BlogPostClient';
 
 // Force dynamic rendering to prevent stale content
 export const dynamic = 'force-dynamic';
