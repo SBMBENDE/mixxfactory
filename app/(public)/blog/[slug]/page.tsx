@@ -14,13 +14,13 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     
     await connectDB();
     const post = await BlogPostModel.findOne({ slug, published: true }).lean();
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     
     await connectDB();
     const post = await BlogPostModel.findOne({ slug, published: true }).lean();
