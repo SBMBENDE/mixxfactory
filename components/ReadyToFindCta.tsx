@@ -59,7 +59,7 @@ export default function ReadyToFindCta() {
     const subtitleText = subtitleRef.current.textContent || '';
     subtitleRef.current.innerHTML = subtitleText
       .split('')
-      .map((char, i) => 
+      .map((char) => 
         char === ' ' 
           ? '<span style="display: inline-block; width: 0.3em; height: 1em;">&nbsp;</span>'
           : `<span style="display: inline-block; opacity: 0; white-space: nowrap;">${char}</span>`
