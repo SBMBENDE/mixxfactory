@@ -34,10 +34,10 @@ export const getFeaturedProfessionals = cache(async () => {
     console.log('[PROFESSIONALS] Fetching featured professionals...');
     const queryStart = Date.now();
 
-    // Get featured + active professionals
+    // Get featured + active professionals, sorted by priority then creation date
     let professionals = await ProfessionalModel.find({ featured: true, active: true })
-      .select('name slug images gallery rating reviewCount category createdAt featured active availability subscriptionTier')
-      .sort({ createdAt: -1 })
+      .select('name slug images gallery rating reviewCount category createdAt featured priority active availability subscriptionTier')
+      .sort({ priority: -1, createdAt: -1 })
       .limit(4)
       .lean()
       .exec();
@@ -46,8 +46,8 @@ export const getFeaturedProfessionals = cache(async () => {
     if (!professionals || professionals.length === 0) {
       console.log('[PROFESSIONALS] No featured found, falling back to top-rated');
       professionals = await ProfessionalModel.find({ active: true })
-        .select('name slug images gallery rating reviewCount category createdAt featured active availability subscriptionTier')
-        .sort({ rating: -1, reviewCount: -1, createdAt: -1 })
+        .select('name slug images gallery rating reviewCount category createdAt featured priority active availability subscriptionTier')
+        .sort({ priority: -1, rating: -1, reviewCount: -1, createdAt: -1 })
         .limit(4)
         .lean()
         .exec();

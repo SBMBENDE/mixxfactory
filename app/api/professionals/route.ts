@@ -64,11 +64,11 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Build sort - featured first, then by selected sort
+    // Build sort - featured first, then priority, then by selected sort
     const sortMap: any = {
-      newest: { featured: -1, createdAt: -1 },
-      rating: { featured: -1, rating: -1, reviewCount: -1 },
-      name: { featured: -1, name: 1 },
+      newest: { featured: -1, priority: -1, createdAt: -1 },
+      rating: { featured: -1, priority: -1, rating: -1, reviewCount: -1 },
+      name: { featured: -1, priority: -1, name: 1 },
     };
 
     const skip = (page - 1) * limit;
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
     // Fetch data - if querying by slug (for edit), return all fields
     const selectFields = slug 
       ? '' // Return all fields for edit page
-      : '_id name slug images gallery rating reviewCount description location category featured active userId createdAt';
+      : '_id name slug images gallery rating reviewCount description location category featured priority active userId createdAt';
     
     const [professionals, total] = await Promise.all([
       ProfessionalModel.find(filter)
