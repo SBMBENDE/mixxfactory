@@ -189,14 +189,14 @@ export default function Hero() {
   return (
     <section
       style={{
-        paddingTop: isMobile ? '3rem' : '6rem',
-        paddingBottom: isMobile ? '3rem' : '4rem',
+        paddingTop: isMobile ? '1rem' : '6rem',
+        paddingBottom: isMobile ? '2rem' : '4rem',
         paddingLeft: '1rem',
         paddingRight: '1rem',
         background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 50%, #000000 100%)',
         color: 'white',
         overflow: 'hidden',
-        minHeight: isMobile ? '100vh' : 'auto',
+        minHeight: isMobile ? '75vh' : 'auto',
         display: 'flex',
         alignItems: 'center',
       }}
@@ -210,12 +210,12 @@ export default function Hero() {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              marginBottom: '1.5rem',
+              marginBottom: '1rem',
             }}
           >
             <div style={{
-              width: '150px',
-              height: '150px',
+              width: '120px',
+              height: '120px',
               position: 'relative',
               display: 'flex',
               alignItems: 'center',
@@ -232,8 +232,8 @@ export default function Hero() {
               <Image 
                 src="https://res.cloudinary.com/dkd3k6eau/image/upload/e_background_removal/e_dropshadow:azimuth_220;elevation_60;spread_20/f_png/v1771255050/afrobizz-logo_aaau43.jpg" 
                 alt="Afrobizz - Connect Africa"
-                width={150}
-                height={150}
+                width={120}
+                height={120}
                 priority
                 style={{
                   width: '100%',
@@ -260,7 +260,7 @@ export default function Hero() {
               style={{
                 fontSize: isMobile ? '2rem' : '3.5rem',
                 fontWeight: 'bold',
-                marginBottom: isMobile ? '0.75rem' : '1.5rem',
+                marginBottom: isMobile ? '0.5rem' : '1.5rem',
                 marginTop: '0',
                 lineHeight: '1.2',
                 letterSpacing: '0.02em',
@@ -277,7 +277,7 @@ export default function Hero() {
               style={{
                 fontSize: isMobile ? '1.5rem' : '2rem',
                 fontWeight: 'bold',
-                marginBottom: isMobile ? '1.5rem' : '2.5rem',
+                marginBottom: isMobile ? '1rem' : '2.5rem',
                 lineHeight: isMobile ? '1.15' : '1.4',
                 maxWidth: '100%',
               }}
@@ -289,7 +289,7 @@ export default function Hero() {
               ref={subtextRef}
               style={{
                 fontSize: isMobile ? '0.95rem' : '1.25rem',
-                marginBottom: isMobile ? '1.5rem' : '2.5rem',
+                marginBottom: isMobile ? '1rem' : '2.5rem',
                 color: '#f0f9ff',
                 lineHeight: '1.6',
                 maxWidth: '100%',
