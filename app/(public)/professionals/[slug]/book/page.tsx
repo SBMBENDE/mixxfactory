@@ -87,8 +87,8 @@ export default function BookProfessionalPage() {
                       style={{
                         padding: '0.75rem 1.5rem',
                         borderRadius: 8,
-                        border: selectedSlot === slot ? '2px solid #2563eb' : '1px solid #d1d5db',
-                        background: slot.available ? (selectedSlot === slot ? '#dbeafe' : '#fff') : '#f3f4f6',
+                        border: selectedSlot === slot ? '2px solid #1e40af' : '1px solid #d1d5db',
+                        background: slot.available ? (selectedSlot === slot ? 'linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(15, 23, 42, 0.1) 100%)' : '#fff') : '#f3f4f6',
                         color: slot.available ? '#111827' : '#9ca3af',
                         cursor: slot.available ? 'pointer' : 'not-allowed',
                         fontWeight: 500,
@@ -110,7 +110,7 @@ export default function BookProfessionalPage() {
             onClick={handleBook}
             style={{
               padding: '0.75rem 2rem',
-              background: '#2563eb',
+              background: (!selectedSlot || submitting) ? '#9ca3af' : 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
               color: 'white',
               border: 'none',
               borderRadius: 8,
@@ -118,6 +118,17 @@ export default function BookProfessionalPage() {
               fontWeight: 600,
               cursor: !selectedSlot || submitting ? 'not-allowed' : 'pointer',
               opacity: !selectedSlot || submitting ? 0.6 : 1,
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              if (selectedSlot && !submitting) {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedSlot && !submitting) {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
+              }
             }}
           >
             {submitting ? 'Booking...' : 'Book Selected Slot'}

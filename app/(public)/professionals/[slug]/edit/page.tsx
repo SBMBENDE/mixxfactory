@@ -397,7 +397,7 @@ export default function EditProfessionalPage() {
     return (
       <div style={{ padding: '3rem 1rem', textAlign: 'center' }}>
         <p style={{ color: '#dc2626', marginBottom: '1rem' }}>{error}</p>
-        <a href="/directory" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 'bold' }}>
+        <a href="/directory" style={{ background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', textDecoration: 'none', fontWeight: 'bold' }}>
           Back to Directory
         </a>
       </div>
@@ -426,7 +426,7 @@ export default function EditProfessionalPage() {
         </div>
 
         {/* Back to Dashboard Link */}
-        <Link href="/professional" style={{ color: '#2563eb', fontWeight: 500, marginBottom: '1.5rem', display: 'inline-block', fontSize: '1rem' }}>
+        <Link href="/professional" style={{ background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontWeight: 600, marginBottom: '1.5rem', display: 'inline-block', fontSize: '1rem', textDecoration: 'none' }}>
           ← Back to Dashboard
         </Link>
 

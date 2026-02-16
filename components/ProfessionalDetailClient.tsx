@@ -129,19 +129,22 @@ export default function ProfessionalDetailClient({ professional }: Props) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              color: '#2563eb',
+              background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
               textDecoration: 'none',
               fontSize: '0.95rem',
-              fontWeight: '500',
+              fontWeight: '600',
               padding: '0.5rem 0.75rem',
               borderRadius: '0.375rem',
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#f0f9ff';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
             }}
           >
             ← {t.detail.backToDirectory}
@@ -308,18 +311,26 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             </div>
             {isOwner && (
               <Link href={`/professionals/${professional.slug}/edit`}>
-                <button style={{
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  padding: '0.625rem 1.5rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  border: 'none',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'background-color 0.2s',
-                }}>
+                <button 
+                  style={{
+                    background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
+                    color: 'white',
+                    padding: '0.625rem 1.5rem',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    border: 'none',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
+                  }}
+                >
                   ✏️ {t.common?.editProfile || 'Edit Profile'}
                 </button>
               </Link>
@@ -616,7 +627,7 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             onClick={handleContactClick}
             disabled={!canShowContactInfo}
             style={{
-              backgroundColor: canShowContactInfo ? '#3b82f6' : '#9ca3af',
+              background: canShowContactInfo ? 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)' : '#9ca3af',
               color: 'white',
               padding: '0.75rem 1.5rem',
               borderRadius: '0.375rem',
@@ -624,8 +635,18 @@ export default function ProfessionalDetailClient({ professional }: Props) {
               fontWeight: '500',
               border: 'none',
               cursor: canShowContactInfo ? 'pointer' : 'not-allowed',
-              transition: 'background-color 0.2s',
+              transition: 'all 0.2s',
               opacity: canShowContactInfo ? 1 : 0.6,
+            }}
+            onMouseEnter={(e) => {
+              if (canShowContactInfo) {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canShowContactInfo) {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
+              }
             }}
           >
             {canShowContactInfo ? (t.common?.contactNow || 'Contact Now') : `🔒 ${t.common?.contactUpgradeRequired || 'Contact (Upgrade Required)'}`}
@@ -635,12 +656,16 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             disabled={!canShowSocialLinks}
             style={{
               backgroundColor: 'transparent',
-              color: canShowSocialLinks ? '#3b82f6' : '#9ca3af',
+              background: canShowSocialLinks ? 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)' : 'transparent',
+              WebkitBackgroundClip: canShowSocialLinks ? 'text' : 'unset',
+              WebkitTextFillColor: canShowSocialLinks ? 'transparent' : '#9ca3af',
+              backgroundClip: canShowSocialLinks ? 'text' : 'unset',
+              color: canShowSocialLinks ? '#1e40af' : '#9ca3af',
               padding: '0.75rem 1.5rem',
               borderRadius: '0.375rem',
               fontSize: '1rem',
               fontWeight: '500',
-              border: `2px solid ${canShowSocialLinks ? '#3b82f6' : '#9ca3af'}`,
+              border: `2px solid ${canShowSocialLinks ? '#1e40af' : '#9ca3af'}`,
               cursor: canShowSocialLinks ? 'pointer' : 'not-allowed',
               transition: 'all 0.2s',
               opacity: canShowSocialLinks ? 1 : 0.6,

@@ -88,13 +88,20 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
           type="button"
           style={{
             padding: '0.75rem 2rem',
-            backgroundColor: '#2563eb',
+            background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
             color: 'white',
             border: 'none',
             borderRadius: '0.375rem',
             fontSize: '1rem',
             fontWeight: '600',
             cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
           }}
           onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal'))}
         >
@@ -202,13 +209,24 @@ export default function ReviewForm({ professionalId, onSuccess }: ReviewFormProp
         disabled={loading}
         style={{
           padding: '0.75rem 2rem',
-          backgroundColor: loading ? '#9ca3af' : '#2563eb',
+          background: loading ? '#9ca3af' : 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
           color: 'white',
           border: 'none',
           borderRadius: '0.375rem',
           fontSize: '1rem',
           fontWeight: '600',
           cursor: loading ? 'not-allowed' : 'pointer',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          if (!loading) {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!loading) {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
+          }
         }}
       >
         {loading ? t.reviews.submitting : t.reviews.submit}

@@ -66,7 +66,7 @@ export const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <FontAwesomeIcon icon={faEarthAfrica} className="w-8 h-8 text-primary-600" />
+            <FontAwesomeIcon icon={faEarthAfrica} className="w-8 h-8" style={{ background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
             <span className="font-bold text-xl text-gray-900 dark:text-white">Afrobizz</span>
           </Link>
 

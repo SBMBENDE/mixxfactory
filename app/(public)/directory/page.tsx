@@ -412,7 +412,7 @@ export default function DirectoryPage() {
             <button
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: '#2563eb',
+                background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
@@ -420,7 +420,7 @@ export default function DirectoryPage() {
                 fontWeight: '700',
                 fontSize: '0.95rem',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
                 whiteSpace: 'nowrap',
               }}
               onMouseEnter={(e) => {
@@ -446,13 +446,22 @@ export default function DirectoryPage() {
               onClick={handleRegisterClick}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: '#2563eb',
+                background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
                 color: 'white',
                 borderRadius: '0.375rem',
                 border: 'none',
                 cursor: 'pointer',
                 fontSize: '1rem',
                 fontWeight: '600',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {t.directory.registerProfessional}
@@ -463,7 +472,7 @@ export default function DirectoryPage() {
         {/* Results */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-            <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite', width: '3rem', height: '3rem', border: '2px solid #2563eb', borderBottomColor: 'transparent', borderRadius: '50%' }} />
+            <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite', width: '3rem', height: '3rem', border: '2px solid #1e40af', borderBottomColor: 'transparent', borderRadius: '50%' }} />
             <p style={{ marginTop: '1rem', color: '#6b7280' }}>{t.directory.loading}</p>
           </div>
         ) : professionals.length === 0 ? (

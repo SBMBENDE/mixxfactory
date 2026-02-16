@@ -103,7 +103,13 @@ export function Newsletter({
       input:
         'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400',
       button:
-        'bg-blue-600 hover:bg-blue-700 text-white focus:bg-blue-800',
+        'text-white focus:ring-2 focus:ring-blue-500',
+      buttonStyle: {
+        background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
+      },
+      buttonHoverStyle: {
+        background: 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)',
+      },
     },
     dark: {
       container: 'bg-gray-900 dark:bg-black border border-gray-800',
@@ -111,7 +117,13 @@ export function Newsletter({
       input:
         'bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-blue-500',
       button:
-        'bg-blue-600 hover:bg-blue-700 text-white focus:bg-blue-800',
+        'text-white focus:ring-2 focus:ring-blue-500',
+      buttonStyle: {
+        background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
+      },
+      buttonHoverStyle: {
+        background: 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)',
+      },
     },
     gradient: {
       container:
@@ -121,6 +133,8 @@ export function Newsletter({
         'bg-white/10 backdrop-blur border border-white/30 text-white placeholder-white/70 focus:border-white focus:bg-white/20',
       button:
         'bg-white hover:bg-gray-100 text-blue-600 hover:text-indigo-600 font-semibold',
+      buttonStyle: {},
+      buttonHoverStyle: {},
     },
   };
 
@@ -208,6 +222,17 @@ export function Newsletter({
             type="submit"
             disabled={loading || !email}
             className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${style.button} disabled:opacity-50 disabled:cursor-not-allowed`}
+            style={variant !== 'gradient' ? style.buttonStyle : {}}
+            onMouseEnter={(e) => {
+              if (variant !== 'gradient' && !loading && email && style.buttonHoverStyle) {
+                Object.assign(e.currentTarget.style, style.buttonHoverStyle);
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (variant !== 'gradient' && !loading && email && style.buttonStyle) {
+                Object.assign(e.currentTarget.style, style.buttonStyle);
+              }
+            }}
           >
             {loading ? (
               <>
