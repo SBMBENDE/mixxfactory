@@ -5,18 +5,32 @@ import { CategorySelect } from '@/components/ui/CategorySelect';
  * Uses Server Components + Suspense for initial load
  * Client component handles search/filter interactions
  * 
+ * Animation Strategy:
+ * - Header: Fade up entrance (establishes hierarchy)
+ * - Search bar: Scale up with elastic bounce (draws attention)
+ * - Professional cards: Staggered scroll reveal (progressive disclosure)
+ * - Creates premium, polished first impression
+ * 
  * KEY INSIGHT:
  * - Server renders initial professionals list (fast, no timeout)
  * - Client handles dynamic search/category filtering
  * - Suspense prevents blocking initial page load
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AuthModal } from '@/components/AuthModal';
 import { AppImage } from '@/components/AppImage';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useGSAP, ANIMATION_DEFAULTS } from '@/hooks/useGSAP';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 // import { useLanguage } from '@/hooks/useLanguage';
 // import { getCategoryNameTranslation } from '@/lib/utils/category-translation';
 
@@ -54,6 +68,80 @@ export default function DirectoryPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
   const t = useTranslations();
+
+  // Animation refs
+  const headerRef = useRef<HTMLDivElement>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Entrance animations
+  useGSAP(() => {
+    const timeline = gsap.timeline({
+      defaults: {
+        ease: ANIMATION_DEFAULTS.ease.entrance,
+      },
+    });
+
+    // Header: Fade up
+    if (headerRef.current) {
+      timeline.fromTo(
+        headerRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: ANIMATION_DEFAULTS.duration.normal }
+      );
+    }
+
+    // Search bar: Scale up with elastic bounce
+    if (searchBarRef.current) {
+      timeline.fromTo(
+        searchBarRef.current,
+        { opacity: 0, scale: 0.95, y: 20 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: ANIMATION_DEFAULTS.duration.normal,
+          ease: ANIMATION_DEFAULTS.ease.elastic,
+        },
+        '-=0.4' // Overlap for smoother flow
+      );
+    }
+  }, []);
+
+  // Scroll-triggered card animations
+  useEffect(() => {
+    if (loading || professionals.length === 0 || !gridRef.current) return;
+
+    const cards = gridRef.current.querySelectorAll('.professional-card');
+    
+    // Batch animate cards as they enter viewport
+    ScrollTrigger.batch(cards, {
+      onEnter: (batch) => {
+        gsap.fromTo(
+          batch,
+          {
+            opacity: 0,
+            y: 50,
+            scale: 0.95,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power3.out',
+          }
+        );
+      },
+      start: 'top 85%',
+      once: true,
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [loading, professionals]);
 
   // Read URL query parameters on mount
   useEffect(() => {
@@ -204,7 +292,7 @@ export default function DirectoryPage() {
         )}
 
         {/* Header */}
-        <div style={{ marginBottom: '3rem' }}>
+        <div ref={headerRef} style={{ marginBottom: '3rem' }}>
           <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t.directory.title}</h1>
           <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>
             {t.directory.subtitle}
@@ -232,7 +320,9 @@ export default function DirectoryPage() {
         </div>
 
         {/* Search & Filter */}
-        <div style={{
+        <div
+          ref={searchBarRef}
+          style={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '0.5rem',
           padding: '2rem',
@@ -381,10 +471,13 @@ export default function DirectoryPage() {
             <p style={{ color: '#6b7280' }}>{t.directory.noResults}</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          <div
+            ref={gridRef}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}
+          >
             {professionals.map((prof) => (
               <a key={prof._id} href={`/professionals/${prof.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', transition: 'transform 0.2s, boxShadow 0.2s', cursor: 'pointer' }}>
+                <div className="professional-card" style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', transition: 'transform 0.2s, boxShadow 0.2s', cursor: 'pointer' }}>
                   {(prof.images?.[0] || prof.gallery?.[0]) ? (
                     <div style={{ width: '100%', aspectRatio: '1.5', overflow: 'hidden', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                       <AppImage
