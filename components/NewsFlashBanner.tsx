@@ -156,19 +156,19 @@ export default function NewsFlashBanner() {
 
   // Body scroll lock when modal is open
   useEffect(() => {
-    if (showModal) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      
-      // Focus trap: focus close button when modal opens
-      setTimeout(() => {
-        closeButtonRef.current?.focus();
-      }, 100);
+    if (!showModal) return;
 
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    
+    // Focus trap: focus close button when modal opens
+    setTimeout(() => {
+      closeButtonRef.current?.focus();
+    }, 100);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
   }, [showModal]);
 
   // ESC key to close modal
