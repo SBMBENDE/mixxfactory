@@ -57,14 +57,29 @@ export default function ReadyToFindCta() {
 
     // Split subtitle text into individual letters
     const subtitleText = subtitleRef.current.textContent || '';
-    subtitleRef.current.innerHTML = subtitleText
-      .split('')
-      .map((char) => 
-        char === ' ' 
-          ? '<span style="display: inline-block; width: 0.3em; height: 1em;">&nbsp;</span>'
-          : `<span style="display: inline-block; opacity: 0; white-space: nowrap;">${char}</span>`
+    
+    // For mobile, insert a line break after "top-rated" or "meilleurs"
+    let formattedSubtitle = subtitleText;
+    if (isMobile) {
+      if (subtitleText.includes('top-rated professionals')) {
+        formattedSubtitle = subtitleText.replace('top-rated professionals', 'top-rated<br/>professionals');
+      } else if (subtitleText.includes('meilleurs professionnels')) {
+        formattedSubtitle = subtitleText.replace('meilleurs professionnels', 'meilleurs<br/>professionnels');
+      }
+    }
+    
+    subtitleRef.current.innerHTML = formattedSubtitle
+      .split(/<br\/?>/)  
+      .map(line => 
+        line.split('')
+          .map((char) => 
+            char === ' ' 
+              ? '<span style="display: inline-block; width: 0.3em; height: 1em;">&nbsp;</span>'
+              : `<span style="display: inline-block; opacity: 0; white-space: nowrap;">${char}</span>`
+          )
+          .join('')
       )
-      .join('');
+      .join('<br/>');
 
     // Animate heading letters sliding down
     const headingLetters = headingRef.current.querySelectorAll('span');
@@ -142,7 +157,7 @@ export default function ReadyToFindCta() {
           wordWrap: 'break-word',
         }}
       >
-        {(t.home?.browseDescription || 'Browse our directory of top-rated professionals and venues for your next event.')}
+        {(t.home?.browseDescription || 'Browse our directory of top-rated professionals and events')}
       </p>
       <a
         ref={ctaRef}
