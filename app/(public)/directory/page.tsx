@@ -531,11 +531,11 @@ export default function DirectoryPage() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.875rem 1.5rem',
-            backgroundColor: '#2563eb',
+            background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '2rem',
-            boxShadow: '0 10px 30px rgba(37, 99, 235, 0.4)',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
             fontWeight: '600',
             fontSize: '0.95rem',
             zIndex: 1000,
@@ -543,12 +543,12 @@ export default function DirectoryPage() {
             animation: 'slideUp 0.3s ease-out',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#1d4ed8';
+            e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
             e.currentTarget.style.transform = 'translateX(-50%) translateY(-4px)';
-            e.currentTarget.style.boxShadow = '0 15px 40px rgba(37, 99, 235, 0.5)';
+            e.currentTarget.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.5)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#2563eb';
+            e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
             e.currentTarget.style.transform = 'translateX(-50%) translateY(0)';
             e.currentTarget.style.boxShadow = '0 10px 30px rgba(37, 99, 235, 0.4)';
           }}

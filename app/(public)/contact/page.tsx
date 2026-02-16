@@ -105,7 +105,7 @@ export default function ContactPage() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
       {/* Hero Section */}
       <section style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #7c3aed 100%)',
+        background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 50%, #000000 100%)',
         color: 'white',
         padding: '4rem 1rem',
         textAlign: 'center',
@@ -324,24 +324,24 @@ export default function ContactPage() {
                 style={{
                   width: '100%',
                   padding: '0.875rem 1.5rem',
-                  backgroundColor: loading ? '#9ca3af' : '#2563eb',
+                  background: loading ? '#9ca3af' : 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
                   color: 'white',
                   fontSize: '1rem',
                   fontWeight: '600',
                   border: 'none',
                   borderRadius: '0.5rem',
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'background-color 0.2s, transform 0.2s',
+                  transition: 'all 0.3s ease',
                 }}
                 onMouseEnter={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = '#1d4ed8';
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = '#2563eb';
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }
                 }}
