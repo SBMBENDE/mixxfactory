@@ -973,7 +973,7 @@ export default function ProfessionalRegistrationPage() {
               style={{
                 width: '100%',
                 padding: '0.875rem',
-                backgroundColor: loading ? '#9ca3af' : '#2563eb',
+                background: loading ? '#9ca3af' : 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
                 color: 'white',
                 fontWeight: '600',
                 borderRadius: '0.375rem',

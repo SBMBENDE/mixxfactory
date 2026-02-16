@@ -40,7 +40,7 @@ export default function AboutPage() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
       {/* Hero Section */}
       <section style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #7c3aed 100%)',
+        background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 50%, #000000 100%)',
         color: 'white',
         padding: '4rem 1rem',
         textAlign: 'center',
@@ -75,11 +75,11 @@ export default function AboutPage() {
             </p>
           </div>
           <div style={{
-            backgroundColor: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+            background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
             borderRadius: '1.5rem',
             padding: '3rem 2rem',
             textAlign: 'center',
-            boxShadow: '0 10px 30px rgba(37, 99, 235, 0.2)',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -185,7 +185,7 @@ export default function AboutPage() {
 
       {/* CTA Section */}
       <section style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+        background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
         color: 'white',
         padding: '4rem 1rem',
         textAlign: 'center',

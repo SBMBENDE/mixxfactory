@@ -170,7 +170,7 @@ export default function MyEventsPage() {
               <Link href="/promote-event" style={{
                 display: 'inline-block',
                 padding: '0.75rem 1.5rem',
-                backgroundColor: '#2563eb',
+                background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
                 color: 'white',
                 borderRadius: '0.375rem',
                 textDecoration: 'none',

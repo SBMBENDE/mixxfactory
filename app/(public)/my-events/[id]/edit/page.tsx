@@ -1162,7 +1162,7 @@ export default function EditEventPage() {
               disabled={submitting}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: submitting ? '#d1d5db' : '#2563eb',
+                background: submitting ? '#d1d5db' : 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.375rem',

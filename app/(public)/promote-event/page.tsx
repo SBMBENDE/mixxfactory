@@ -1313,10 +1313,10 @@ export default function PromoteEventPage() {
                 transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.backgroundColor = '#1d4ed8';
+                if (!loading) e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
               }}
               onMouseLeave={(e) => {
-                if (!loading) e.currentTarget.style.backgroundColor = '#2563eb';
+                if (!loading) e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
               }}
             >
               {loading ? 'Submitting...' : 'Promote Event'}

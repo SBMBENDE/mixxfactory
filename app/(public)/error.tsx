@@ -46,7 +46,7 @@ export default function PublicError({
           <button
             onClick={() => reset()}
             style={{
-              backgroundColor: '#2563eb',
+              background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
               color: 'white',
               padding: '0.75rem 1.5rem',
               borderRadius: '0.375rem',

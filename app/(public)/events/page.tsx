@@ -198,7 +198,7 @@ export default function EventsPage() {
               onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: showFeaturedOnly ? '#2563eb' : '#e5e7eb',
+                background: showFeaturedOnly ? 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)' : '#e5e7eb',
                 color: showFeaturedOnly ? 'white' : '#374151',
                 border: 'none',
                 borderRadius: '0.5rem',
