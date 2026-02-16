@@ -46,7 +46,7 @@ export default function ReadyToFindCta() {
       .split(/<br\/?>/)
       .map(line => 
         line.split('')
-          .map((char, i) => 
+          .map((char) => 
             char === ' ' 
               ? '<span style="display: inline-block; width: 0.3em; height: 1em;">&nbsp;</span>'
               : `<span style="display: inline-block; opacity: 0; transform: translateY(-30px); white-space: nowrap;">${char}</span>`
