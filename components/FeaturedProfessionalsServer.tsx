@@ -2,15 +2,29 @@
  * FeaturedProfessionals Client Component
  * Mobile-first with horizontal scroll, desktop grid
  * Multiple curated sections: Featured, Top Rated
+ * 
+ * Animation Strategy:
+ * - Section title: Fade in from bottom
+ * - Cards: Staggered fade-up on scroll (reveals as user scrolls)
+ * - Improves perceived performance by loading content progressively
  */
 
 'use client';
 
+import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { AppImage } from '@/components/AppImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useTranslations } from '@/hooks/useTranslations';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useReducedMotion } from '@/hooks/useGSAP';
+
+// Register ScrollTrigger
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface Professional {
   _id: string;
@@ -33,6 +47,44 @@ interface Props {
 
 export default function FeaturedProfessionalsServer({ professionals }: Props) {
   const t = useTranslations();
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Scroll-triggered animations for cards
+  useEffect(() => {
+    if (prefersReducedMotion || !sectionRef.current) return;
+
+    const cards = sectionRef.current.querySelectorAll('.professional-card');
+    
+    // Batch animate cards as they enter viewport
+    ScrollTrigger.batch(cards, {
+      onEnter: (batch) => {
+        gsap.fromTo(
+          batch,
+          {
+            opacity: 0,
+            y: 50,
+            scale: 0.95,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power3.out',
+          }
+        );
+      },
+      start: 'top 85%',
+      once: true, // Only animate once for performance
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [prefersReducedMotion, professionals]);
+
   if (!professionals || professionals.length === 0) {
     return null;
   }
@@ -199,10 +251,13 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
   };
 
   return (
-    <section style={{
-      padding: '3rem 0',
-      backgroundColor: 'white',
-    }}>
+    <section
+      ref={sectionRef}
+      style={{
+        padding: '3rem 0',
+        backgroundColor: 'white',
+      }}
+    >
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
         {/* Featured Professionals Section */}

@@ -2,16 +2,27 @@
  * PopularCategories Client Component
  * Receives data from parent server component
  * Uses translation hook
+ * 
+ * Animation Strategy:
+ * - Cards reveal with stagger on scroll
+ * - Creates horizontal flow that guides eye movement
  */
 
 'use client';
 
+import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as SolidIcons from '@fortawesome/free-solid-svg-icons';
-
 import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useReducedMotion } from '@/hooks/useGSAP';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface Category {
   _id: string;
@@ -44,9 +55,45 @@ const categoryEmojis: Record<string, string> = {
 };
 
 export default function PopularCategoriesServer({ categories }: Props) {
-
   const t = useTranslations();
   const { language } = useLanguage();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Scroll-triggered animations
+  useEffect(() => {
+    if (prefersReducedMotion || !containerRef.current) return;
+
+    const cards = containerRef.current.querySelectorAll('.category-link');
+
+    ScrollTrigger.batch(cards, {
+      onEnter: (batch) => {
+        gsap.fromTo(
+          batch,
+          {
+            opacity: 0,
+            y: 40,
+            scale: 0.9,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            stagger: 0.08,
+            ease: 'back.out(1.1)',
+          }
+        );
+      },
+      start: 'top 85%',
+      once: true,
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [prefersReducedMotion, categories]);
+
   if (!categories || categories.length === 0) {
     return null;
   }
@@ -75,13 +122,16 @@ export default function PopularCategoriesServer({ categories }: Props) {
         </div>
 
         {/* Horizontal scroll categories */}
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          overflowX: 'auto',
-          paddingBottom: '1rem',
-          WebkitOverflowScrolling: 'touch',
-        }}>
+        <div
+          ref={containerRef}
+          style={{
+            display: 'flex',
+            gap: '1rem',
+            overflowX: 'auto',
+            paddingBottom: '1rem',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
           <style>{`
             .category-link {
               flex: 0 0 auto;
