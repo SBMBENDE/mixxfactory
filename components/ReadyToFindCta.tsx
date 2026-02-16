@@ -6,12 +6,12 @@ export default function ReadyToFindCta() {
   return (
     <section style={{
       padding: '4rem 1rem',
-      background: 'linear-gradient(90deg, #2563eb 0%, #1e40af 100%)',
+      background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 50%, #000000 100%)',
       color: 'white',
       textAlign: 'center',
       margin: '4rem 0',
       borderRadius: '1.5rem',
-      boxShadow: '0 8px 32px rgba(30,64,175,0.12)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
     }}>
       <h2 style={{
         fontSize: '2.5rem',

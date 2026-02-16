@@ -120,7 +120,7 @@ export default function Hero() {
         paddingBottom: isMobile ? '2rem' : '4rem',
         paddingLeft: '1rem',
         paddingRight: '1rem',
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #7c3aed 100%)',
+        background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 50%, #000000 100%)',
         color: 'white',
       }}
     >

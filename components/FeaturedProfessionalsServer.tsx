@@ -336,13 +336,13 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
               alignItems: 'center',
               gap: '0.5rem',
               padding: '1rem 2.5rem',
-              backgroundColor: '#2563eb',
+              background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
               color: 'white',
               borderRadius: '0.5rem',
               textDecoration: 'none',
               fontWeight: '600',
               fontSize: '1rem',
-              transition: 'background-color 0.2s',
+              transition: 'all 0.3s ease',
             }}
           >
             {t.home?.browseCta || 'View All Professionals'}
@@ -398,7 +398,8 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
 
         /* Button hover */
         .browse-btn:hover {
-          background-color: #1d4ed8;
+          background: linear-gradient(135deg, #1e3a8a 0%, #000000 100%);
+          transform: translateY(-2px);
         }
       `}</style>
     </section>

@@ -154,7 +154,7 @@ export default function Carousel({
               width: navButtonSize,
               height: navButtonSize,
               borderRadius: '50%',
-              backgroundColor: '#2563eb',
+              background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
               color: 'white',
               border: 'none',
               fontSize: '1.25rem',
@@ -163,14 +163,14 @@ export default function Carousel({
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.2s',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#1d4ed8';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
               e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
             }}
             aria-label="Previous"
@@ -188,7 +188,7 @@ export default function Carousel({
               width: navButtonSize,
               height: navButtonSize,
               borderRadius: '50%',
-              backgroundColor: '#2563eb',
+              background: 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)',
               color: 'white',
               border: 'none',
               fontSize: '1.25rem',
@@ -197,14 +197,14 @@ export default function Carousel({
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.2s',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#1d4ed8';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
               e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
             }}
             aria-label="Next"
@@ -232,7 +232,9 @@ export default function Carousel({
               width: '0.75rem',
               height: '0.75rem',
               borderRadius: '50%',
-              backgroundColor: idx === currentIndex % items.length ? '#2563eb' : '#d1d5db',
+              background: idx === currentIndex % items.length 
+                ? 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)' 
+                : '#d1d5db',
               border: 'none',
               cursor: 'pointer',
               transition: 'all 0.3s',
