@@ -1020,6 +1020,9 @@ interface IEventDocument extends Document {
   promotionTier?: string; // 'free', 'featured', 'boost'
   promotionStartDate?: Date;
   promotionExpiryDate?: Date;
+  stripeConnectedAccountId?: string; // Promoter's Stripe Connect account
+  ticketingEnabled?: boolean; // True when connected account verified
+  ticketingCommissionRate?: number; // % commission (5% basic, 3% premium)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -1197,6 +1200,19 @@ const eventSchema = new Schema<IEventDocument>(
       default: Date.now,
     },
     promotionExpiryDate: Date, // For featured (1 week) and boost (1 month) tiers
+    
+    // Stripe Connect fields for ticketing revenue
+    stripeConnectedAccountId: String, // Promoter's Stripe Connect account ID
+    ticketingEnabled: {
+      type: Boolean,
+      default: false, // Set to true once connected account is verified
+    },
+    ticketingCommissionRate: {
+      type: Number,
+      default: 5, // Default 5% for basic events, 3% for premium/featured
+      min: 0,
+      max: 100,
+    },
   },
   { timestamps: true }
 );

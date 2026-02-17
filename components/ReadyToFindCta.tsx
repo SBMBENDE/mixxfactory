@@ -34,12 +34,13 @@ export default function ReadyToFindCta() {
     // Split heading text into individual letters
     const headingText = (t.home?.readyToFind || 'Find Your Perfect Professional');
     
-    // For mobile, insert a line break before "Professional"
+    // For mobile, insert a line break before "Professional" or before "professionnel"
     let formattedText = headingText;
     if (isMobile && headingText.includes('Perfect Professional')) {
       formattedText = headingText.replace('Perfect Professional', 'Perfect<br/>Professional');
-    } else if (isMobile && headingText.includes('professionnel parfait')) {
-      formattedText = headingText.replace('professionnel parfait', 'professionnel<br/>parfait');
+    } else if (isMobile && headingText.includes('votre professionnel')) {
+      // Break before "professionnel" to keep it on one line
+      formattedText = headingText.replace('votre professionnel', 'votre<br/>professionnel');
     }
     
     headingRef.current.innerHTML = formattedText

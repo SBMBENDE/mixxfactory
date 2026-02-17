@@ -195,6 +195,35 @@ export default function PricingPage() {
         </div>
       </div>
 
+      {/* Ticket Sales Section */}
+      <div className="mt-16">
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">{t.pricing.ticketSalesTitle}</h2>
+        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-8 max-w-2xl mx-auto">
+          <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white text-center">{t.pricing.ticketSalesSubtitle}</h3>
+          <ul className="text-gray-700 dark:text-gray-300 space-y-3 mb-6">
+            <li className="flex items-start">
+              <span className="text-blue-600 dark:text-blue-400 mr-3 text-lg">•</span>
+              <span>{t.pricing.ticketSalesFeature1}</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 dark:text-blue-400 mr-3 text-lg">•</span>
+              <span>{t.pricing.ticketSalesFeature2}</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 dark:text-blue-400 mr-3 text-lg">•</span>
+              <span>{t.pricing.ticketSalesFeature3}</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 dark:text-blue-400 mr-3 text-lg">•</span>
+              <span>{t.pricing.ticketSalesFeature4}</span>
+            </li>
+          </ul>
+          <p className="text-sm text-gray-600 dark:text-gray-400 italic text-center border-t border-blue-200 dark:border-blue-800 pt-4">
+            {t.pricing.ticketSalesNote}
+          </p>
+        </div>
+      </div>
+
       {/* News Flash Pricing */}
       <div className="mt-16">
         <h2 className="text-3xl font-bold mb-2 text-center text-gray-900 dark:text-white">{t.pricing.newsFlashTitle}</h2>

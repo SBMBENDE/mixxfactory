@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AppImage } from '@/components/AppImage';
+import TicketCheckoutModal from '@/components/TicketCheckoutModal';
 
 interface EventData {
   _id: string;
@@ -40,8 +41,10 @@ interface EventData {
     label: string;
     price: number;
     currency: string;
+    quantity?: number;
   }>;
   ticketUrl?: string;
+  ticketingEnabled?: boolean;
   organizer: {
     name: string;
     email?: string;
@@ -62,6 +65,7 @@ export default function EventDetailPage() {
   const [error, setError] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
   // Detect mobile
   useEffect(() => {
@@ -79,6 +83,22 @@ export default function EventDetailPage() {
       try {
         setLoading(true);
         const res = await fetch(`/api/events/${slug}`);
+        
+        // Check if response is OK before parsing JSON
+        if (!res.ok) {
+          setError('Failed to load event');
+          console.error('API response not OK:', res.status);
+          return;
+        }
+
+        // Check content type before parsing
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          setError('Invalid response from server');
+          console.error('Expected JSON but got:', contentType);
+          return;
+        }
+
         const data = await res.json();
 
         if (data.success) {
@@ -88,7 +108,7 @@ export default function EventDetailPage() {
         }
       } catch (err) {
         setError('Failed to load event');
-        console.error(err);
+        console.error('Event fetch error:', err);
       } finally {
         setLoading(false);
       }
@@ -518,11 +538,9 @@ export default function EventDetailPage() {
                 </div>
 
                 {/* Get Tickets Button */}
-                {event.ticketUrl ? (
-                  <a
-                    href={event.ticketUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {event.ticketing && event.ticketing.length > 0 ? (
+                  <button
+                    onClick={() => setShowCheckoutModal(true)}
                     style={{
                       display: 'block',
                       width: '100%',
@@ -545,8 +563,8 @@ export default function EventDetailPage() {
                       e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
                     }}
                   >
-                    Get Tickets
-                  </a>
+                    🎟️ Buy Tickets
+                  </button>
                 ) : (
                   <button
                     disabled
@@ -596,6 +614,18 @@ export default function EventDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Ticket Checkout Modal */}
+      {event && (
+        <TicketCheckoutModal
+          eventId={event._id}
+          eventTitle={event.title}
+          tickets={event.ticketing}
+          isOpen={showCheckoutModal}
+          onClose={() => setShowCheckoutModal(false)}
+          ticketingEnabled={event.ticketingEnabled}
+        />
+      )}
     </>
   );
 }

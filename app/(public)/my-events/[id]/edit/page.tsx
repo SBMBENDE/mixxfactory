@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { AppImage } from '@/components/AppImage';
 import { validateVideoUrl } from '@/utils/videoValidation';
+import StripeConnectStatus from '@/components/StripeConnectStatus';
 
 interface LocationData {
   venue: string;
@@ -881,6 +882,18 @@ export default function EditEventPage() {
                 boxSizing: 'border-box',
               }}
             />
+          </div>
+
+          {/* Stripe Connect - Enable Online Ticketing */}
+          <div style={{ marginBottom: '1.5rem', marginTop: '2rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>
+              💳 Online Ticket Sales
+            </h3>
+            <p style={{ color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }}>
+              Enable customers to buy tickets directly through Afrobizz. You&apos;ll receive automatic payouts 
+              minus a small platform fee (5% for basic events, 3% for premium).
+            </p>
+            <StripeConnectStatus eventId={eventId} />
           </div>
 
           {/* Organizer */}

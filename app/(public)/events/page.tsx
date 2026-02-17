@@ -7,6 +7,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { AppImage } from '@/components/AppImage';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -356,31 +357,57 @@ export default function EventsPage() {
                   </div>
 
                   {/* CTA */}
-                  <a
-                    href={event.ticketUrl || `#event-${event._id}`}
-                    target={event.ticketUrl ? '_blank' : '_self'}
-                    rel={event.ticketUrl ? 'noopener noreferrer' : ''}
-                    style={{
-                      display: 'block',
-                      padding: '0.75rem 1rem',
-                      backgroundColor: '#2563eb',
-                      color: 'white',
-                      textAlign: 'center',
-                      borderRadius: '0.375rem',
-                      fontWeight: '600',
-                      textDecoration: 'none',
-                      transition: 'background-color 0.3s ease',
-                      marginTop: 'auto',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#1d4ed8';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#2563eb';
-                    }}
-                  >
-                    🎟️ {t.events.buyTickets}
-                  </a>
+                  {event.ticketUrl ? (
+                    <a
+                      href={event.ticketUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'block',
+                        padding: '0.75rem 1rem',
+                        backgroundColor: '#2563eb',
+                        color: 'white',
+                        textAlign: 'center',
+                        borderRadius: '0.375rem',
+                        fontWeight: '600',
+                        textDecoration: 'none',
+                        transition: 'background-color 0.3s ease',
+                        marginTop: 'auto',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#1d4ed8';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#2563eb';
+                      }}
+                    >
+                      🎟️ {t.events.buyTickets}
+                    </a>
+                  ) : (
+                    <Link
+                      href={`/events/${event.slug}`}
+                      style={{
+                        display: 'block',
+                        padding: '0.75rem 1rem',
+                        backgroundColor: '#6b7280',
+                        color: 'white',
+                        textAlign: 'center',
+                        borderRadius: '0.375rem',
+                        fontWeight: '600',
+                        textDecoration: 'none',
+                        transition: 'background-color 0.3s ease',
+                        marginTop: 'auto',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#4b5563';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#6b7280';
+                      }}
+                    >
+                      ℹ️ {t.events.viewDetails}
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
