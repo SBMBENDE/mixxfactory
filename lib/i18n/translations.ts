@@ -550,8 +550,16 @@ export const translations = {
       billedMonthly: 'Billed monthly. Cancel anytime',
       eventPromotionDisclaimer: 'Promotion fees cover visibility and reach only. Ticket sales are handled separately.',
       newsFlashDescription: 'For urgent announcements, time-sensitive updates, or important promotion',
+      // Ticket Sales
+      ticketSalesTitle: 'Ticket Sales (Optional)',
+      ticketSalesSubtitle: 'Sell tickets through Afrobizz',
+      ticketSalesFeature1: 'Optional checkout handled by Afrobizz',
+      ticketSalesFeature2: 'Secure payments & automatic payouts',
+      ticketSalesFeature3: '5% service fee per ticket sold',
+      ticketSalesFeature4: 'You keep 95%',
+      ticketSalesNote: 'Only applies if you choose to sell tickets through Afrobizz.',
       // Footer
-      disclaimer: 'All prices in EUR. VAT may apply. Cancel anytime. For more details, see our',
+      disclaimer: 'All prices in EUR. VAT may apply. Cancel anytime. Promotion fees and ticketing fees are charged separately based on usage. For more details, see our',
       termsLink: 'Terms of Service',
     },
     // Premium Listing Page
@@ -1167,8 +1175,16 @@ export const translations = {
       billedMonthly: 'Facturation mensuelle. Annulation à tout moment',
       eventPromotionDisclaimer: 'Les frais de promotion couvrent uniquement la visibilité et la portée. La vente de billets est gérée séparément.',
       newsFlashDescription: 'Pour les annonces urgentes, les mises à jour sensibles au temps ou les promotions importantes',
+      // Ticket Sales
+      ticketSalesTitle: 'Vente de Billets (Optionnel)',
+      ticketSalesSubtitle: 'Vendez des billets via Afrobizz',
+      ticketSalesFeature1: 'Paiement optionnel géré par Afrobizz',
+      ticketSalesFeature2: 'Paiements sécurisés et virements automatiques',
+      ticketSalesFeature3: 'Frais de service de 5% par billet vendu',
+      ticketSalesFeature4: 'Vous conservez 95%',
+      ticketSalesNote: 'S\'applique uniquement si vous choisissez de vendre des billets via Afrobizz.',
       // Footer
-      disclaimer: 'Tous les prix sont en EUR. TVA applicable. Annulation à tout moment. Pour plus de détails, consultez nos',
+      disclaimer: 'Tous les prix sont en EUR. TVA applicable. Annulation à tout moment. Les frais de promotion et de billetterie sont facturés séparément en fonction de l\'utilisation. Pour plus de détails, consultez nos',
       termsLink: 'Conditions d\'utilisation',
     },
     // Premium Listing Page
