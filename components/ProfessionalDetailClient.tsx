@@ -142,9 +142,13 @@ export default function ProfessionalDetailClient({ professional }: Props) {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #000000 100%)';
+              e.currentTarget.style.webkitBackgroundClip = 'text';
+              e.currentTarget.style.webkitTextFillColor = 'transparent';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'linear-gradient(135deg, #1e40af 0%, #0f172a 100%)';
+              e.currentTarget.style.webkitBackgroundClip = 'text';
+              e.currentTarget.style.webkitTextFillColor = 'transparent';
             }}
           >
             ← {t.detail.backToDirectory}
