@@ -492,9 +492,9 @@ export const translations = {
       perEvent: '/event',
       perFlash: '/flash',
       // Tier badges
-      hookRegister: 'HOOK & REGISTER',
-      firstMonetization: 'FIRST MONETIZATION',
-      revenueLoyalty: 'REVENUE & LOYALTY',
+      hookRegister: 'Get Listed',
+      firstMonetization: 'Start Getting Clients',
+      revenueLoyalty: 'Grow Faster & Stand Out',
       mostPopular: 'MOST POPULAR',
       // Tier names
       free: 'Free',
@@ -536,7 +536,7 @@ export const translations = {
       premiumEventFeature2: 'Featured badge',
       premiumEventFeature3: 'Highlighted in newsletters',
       premiumEventFeature4: 'Social media spotlight',
-      premiumEventFeature5: 'Increased reach & RSVPs',
+      premiumEventFeature5: 'Higher visibility → more views & RSVPs',
       postEvent: 'Post Event',
       promoteAsFeatured: 'Promote as Featured',
       // News Flash
@@ -547,6 +547,9 @@ export const translations = {
       newsFlashFeature3: 'Included in weekly newsletter',
       newsFlashFeature4: 'Great for urgent updates & announcements',
       submitNewsFlash: 'Submit News Flash',
+      billedMonthly: 'Billed monthly. Cancel anytime',
+      eventPromotionDisclaimer: 'Promotion fees cover visibility and reach only. Ticket sales are handled separately.',
+      newsFlashDescription: 'For urgent announcements, time-sensitive updates, or important promotion',
       // Footer
       disclaimer: 'All prices in EUR. VAT may apply. Cancel anytime. For more details, see our',
       termsLink: 'Terms of Service',
@@ -1106,9 +1109,9 @@ export const translations = {
       perEvent: '/événement',
       perFlash: '/flash',
       // Tier badges
-      hookRegister: 'ATTIRER & INSCRIRE',
-      firstMonetization: 'PREMIÈRE MONÉTISATION',
-      revenueLoyalty: 'REVENU & FIDÉLITÉ',
+      hookRegister: 'Être Répertorié',
+      firstMonetization: 'Commencer à Obtenir des Clients',
+      revenueLoyalty: 'Croître Plus Vite & Se Démarquer',
       mostPopular: 'LE PLUS POPULAIRE',
       // Tier names
       free: 'Gratuit',
@@ -1150,7 +1153,7 @@ export const translations = {
       premiumEventFeature2: 'Badge en vedette',
       premiumEventFeature3: 'Mis en avant dans les newsletters',
       premiumEventFeature4: 'Spotlight sur les réseaux sociaux',
-      premiumEventFeature5: 'Portée et inscriptions augmentées',
+      premiumEventFeature5: 'Visibilité supérieure → plus de vues & inscriptions',
       postEvent: 'Publier un Événement',
       promoteAsFeatured: 'Promouvoir en Vedette',
       // News Flash
@@ -1161,6 +1164,9 @@ export const translations = {
       newsFlashFeature3: 'Inclus dans la newsletter hebdomadaire',
       newsFlashFeature4: 'Idéal pour les mises à jour urgentes',
       submitNewsFlash: 'Soumettre un Flash Info',
+      billedMonthly: 'Facturation mensuelle. Annulation à tout moment',
+      eventPromotionDisclaimer: 'Les frais de promotion couvrent uniquement la visibilité et la portée. La vente de billets est gérée séparément.',
+      newsFlashDescription: 'Pour les annonces urgentes, les mises à jour sensibles au temps ou les promotions importantes',
       // Footer
       disclaimer: 'Tous les prix sont en EUR. TVA applicable. Annulation à tout moment. Pour plus de détails, consultez nos',
       termsLink: 'Conditions d\'utilisation',

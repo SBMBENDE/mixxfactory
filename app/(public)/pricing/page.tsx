@@ -57,7 +57,8 @@ export default function PricingPage() {
             </span>
           </div>
           <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{t.pricing.starter}</h2>
-          <div className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">€9.99<span className="text-lg font-normal text-gray-600 dark:text-gray-400">{t.pricing.perMonth}</span></div>
+          <div className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">€9.99<span className="text-lg font-normal text-gray-600 dark:text-gray-400">{t.pricing.perMonth}</span></div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">{t.pricing.billedMonthly}</p>
           <ul className="text-gray-600 dark:text-gray-400 mb-6 text-sm space-y-3 w-full">
             <li className="flex items-start">
               <span className="text-green-500 mr-2">✓</span>
@@ -101,7 +102,8 @@ export default function PricingPage() {
             </span>
           </div>
           <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{t.pricing.pro}</h2>
-          <div className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">€19.99<span className="text-lg font-normal text-gray-600 dark:text-gray-400">{t.pricing.perMonth}</span></div>
+          <div className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">€19.99<span className="text-lg font-normal text-gray-600 dark:text-gray-400">{t.pricing.perMonth}</span></div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">{t.pricing.billedMonthly}</p>
           <ul className="text-gray-600 dark:text-gray-400 mb-6 text-sm space-y-3 w-full">
             <li className="flex items-start">
               <span className="text-green-500 mr-2">✓</span>
@@ -139,7 +141,8 @@ export default function PricingPage() {
       </div>
       {/* Events Pricing */}
       <div className="mt-16">
-        <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">{t.pricing.eventPricingTitle}</h2>
+        <h2 className="text-3xl font-bold mb-2 text-center text-gray-900 dark:text-white">{t.pricing.eventPricingTitle}</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 text-center max-w-2xl mx-auto">{t.pricing.eventPromotionDisclaimer}</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* Basic Event */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col items-center">
@@ -194,7 +197,8 @@ export default function PricingPage() {
 
       {/* News Flash Pricing */}
       <div className="mt-16">
-        <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">{t.pricing.newsFlashTitle}</h2>
+        <h2 className="text-3xl font-bold mb-2 text-center text-gray-900 dark:text-white">{t.pricing.newsFlashTitle}</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 text-center max-w-2xl mx-auto italic">{t.pricing.newsFlashDescription}</p>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col items-center max-w-xl mx-auto">
           <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{t.pricing.newsFlash}</h3>
           <div className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">€15<span className="text-base font-normal text-gray-600 dark:text-gray-400">{t.pricing.perFlash}</span></div>
