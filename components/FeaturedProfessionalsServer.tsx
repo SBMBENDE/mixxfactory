@@ -92,7 +92,8 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
   // Helper function to check if professional is available today
   const isAvailableToday = (professional: Professional): boolean | null => {
     if (!professional.availability) return null; // no data — hide badge
-    const today = new Date().toISOString().split('T')[0];
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     if (professional.availability[today] === true) return true;
     if (professional.availability[today] === false) return false;
     return null; // date not set — hide badge
