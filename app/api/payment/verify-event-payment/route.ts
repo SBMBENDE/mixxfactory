@@ -57,7 +57,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const tier = session.metadata?.tier || 'featured';
+    const tier = session.metadata?.tier || 'basic';
+
+    // Check if an event was already created for this payment session
+    const existingEvent = await EventModel.findOne({ paymentId: session.id }).lean();
+    if (existingEvent) {
+      console.log('⚠️ Event already exists for this payment session:', existingEvent._id);
+      return NextResponse.json({
+        success: true,
+        data: existingEvent,
+        message: 'Event already created for this payment.',
+      });
+    }
 
     // Generate slug from title
     let slug = generateSlug(eventData.title);
@@ -82,11 +93,8 @@ export async function POST(req: NextRequest) {
 
     // Calculate promotion expiry date based on tier
     let promotionExpiryDate: Date | undefined = undefined;
-    if (tier === 'featured') {
-      // Featured: 1 week
-      promotionExpiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    } else if (tier === 'boost') {
-      // Boost: 1 month
+    if (tier === 'premium') {
+      // Premium: 30 days
       promotionExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     }
 
@@ -111,7 +119,7 @@ export async function POST(req: NextRequest) {
       organizer: eventData.organizer,
       highlights: eventData.highlights || [],
       published: true,
-      featured: true,
+      featured: tier === 'premium',
       userId: auth.payload.userId,
       promotionTier: tier,
       promotionStartDate: new Date(),

@@ -52,67 +52,48 @@ interface EventFormData {
     videoId: string;
     embedUrl: string;
   }>;
-  pricingTier: 'free' | 'featured' | 'boost';
+  pricingTier: 'basic' | 'premium';
 }
 
 const PRICING_TIERS = [
   {
-    id: 'free',
-    name: '🆓 Free Listing',
-    description: 'Basic event listing',
-    price: 0,
+    id: 'basic',
+    name: '🎫 Basic Event',
+    description: 'Standard event listing',
+    price: 4.99,
+    duration: 'per event',
     imageLimit: 1,
     videoLimit: 0,
     features: [
-      'Basic event profile',
+      'Basic event listing',
       'Search visibility',
-      '1 image',
-      'Contact information',
+      'Up to 1 image',
+      'Event details & description',
     ],
   },
   {
-    id: 'featured',
-    name: '⭐ Featured Event',
-    description: 'Premium visibility',
-    pricePerWeek: 25,
-    price: 25,
-    duration: 'per week',
+    id: 'premium',
+    name: '⭐ Premium Event',
+    description: 'Featured visibility',
+    price: 19.99,
+    duration: 'per event',
     imageLimit: 5,
-    videoLimit: 1,
+    videoLimit: 2,
     features: [
-      'Everything in Free',
-      'Featured on homepage',
-      'Top search results',
-      'Event badge',
+      'Everything in Basic',
+      'Featured badge',
+      'Priority in search results',
+      'Homepage carousel',
+      'Social media boost',
       'Up to 5 images',
-      '1 video embed',
-      'Social media promotion',
-    ],
-  },
-  {
-    id: 'boost',
-    name: '🚀 Boost Pack',
-    description: 'Maximum exposure',
-    price: 99,
-    duration: 'per month',
-    imageLimit: 10,
-    videoLimit: 3,
-    features: [
-      'Everything in Featured',
-      'Homepage banner',
-      'News Flash inclusion',
-      'Priority support',
-      'Up to 10 images',
-      'Up to 3 videos',
-      'Analytics dashboard',
-      'Extended duration (30 days)',
+      'Up to 2 videos',
     ],
   },
 ];
 
 export default function PromoteEventPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [selectedTier, setSelectedTier] = useState<'free' | 'featured' | 'boost'>('free');
+  const [selectedTier, setSelectedTier] = useState<'basic' | 'premium'>('basic');
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     category: '',
@@ -144,7 +125,7 @@ export default function PromoteEventPage() {
     },
     highlights: [],
     media: [],
-    pricingTier: 'free',
+    pricingTier: 'basic',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -250,15 +231,13 @@ export default function PromoteEventPage() {
         published: true,
       };
 
-      // Check if payment is required for selected tier
-      if (selectedTier === 'featured' || selectedTier === 'boost') {
-        // Save event data to session storage for after payment
-        sessionStorage.setItem('pendingEventData', JSON.stringify(submitData));
-        
-        // Redirect to event payment page
-        window.location.href = `/event-payment?tier=${selectedTier}`;
-        return;
-      }
+      // Check if payment is required for selected tier (both basic and premium require payment)
+      // Save event data to session storage for after payment
+      sessionStorage.setItem('pendingEventData', JSON.stringify(submitData));
+      
+      // Redirect to event payment page
+      window.location.href = `/event-payment?tier=${selectedTier}`;
+      return;
 
       console.log('Submitting event data:', submitData);
 
@@ -293,7 +272,7 @@ export default function PromoteEventPage() {
           ticketUrl: '',
           organizer: { name: '', email: '', phone: '', website: '' },
           highlights: [],
-          pricingTier: 'free',
+          pricingTier: 'basic',
         });
         // Redirect after 2 seconds
         setTimeout(() => window.location.href = '/events', 2000);
@@ -398,7 +377,7 @@ export default function PromoteEventPage() {
             {PRICING_TIERS.map((tier) => (
               <div
                 key={tier.id}
-                onClick={() => setSelectedTier(tier.id as 'free' | 'featured' | 'boost')}
+                onClick={() => setSelectedTier(tier.id as 'basic' | 'premium')}
                 style={{
                   padding: '2rem',
                   backgroundColor: selectedTier === tier.id ? '#2563eb' : 'white',
@@ -1125,17 +1104,108 @@ export default function PromoteEventPage() {
               </div>
             </div>
 
+            {/* Ticketing Section */}
+            <div style={{ marginTop: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>
+                Ticketing (Optional)
+              </h2>
+
+              {formData.ticketing.map((ticket, index) => (
+                <div key={index} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
+                      Ticket Label
+                    </label>
+                    <input
+                      type="text"
+                      value={ticket.label}
+                      onChange={(e) => {
+                        const newTicketing = [...formData.ticketing];
+                        newTicketing[index].label = e.target.value;
+                        setFormData(prev => ({
+                          ...prev,
+                          ticketing: newTicketing,
+                        }));
+                      }}
+                      placeholder="e.g., General, VIP, Early Bird"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '0.375rem',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
+                      Price
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={ticket.price}
+                      onChange={(e) => {
+                        const newTicketing = [...formData.ticketing];
+                        newTicketing[index].price = parseFloat(e.target.value) || 0;
+                        setFormData(prev => ({
+                          ...prev,
+                          ticketing: newTicketing,
+                        }));
+                      }}
+                      placeholder="0.00"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '0.375rem',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
+                      Currency
+                    </label>
+                    <select
+                      value={ticket.currency}
+                      onChange={(e) => {
+                        const newTicketing = [...formData.ticketing];
+                        newTicketing[index].currency = e.target.value;
+                        setFormData(prev => ({
+                          ...prev,
+                          ticketing: newTicketing,
+                        }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '0.375rem',
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <option value="EUR">EUR</option>
+                      <option value="USD">USD</option>
+                      <option value="GBP">GBP</option>
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             {/* Ticket URL */}
-            <div>
+            <div style={{ marginTop: '1.5rem' }}>
               <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                Ticket Purchase URL
+                Where Can Attendees Buy Tickets? (Optional)
               </label>
               <input
                 type="url"
                 name="ticketUrl"
                 value={formData.ticketUrl}
                 onChange={handleInputChange}
-                placeholder="https://example.com/tickets"
+                placeholder="e.g., https://eventbrite.com/your-event or https://yourwebsite.com/buy-tickets"
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -1145,6 +1215,9 @@ export default function PromoteEventPage() {
                   boxSizing: 'border-box',
                 }}
               />
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                Add a link to your ticketing platform (Eventbrite, Ticketmaster, etc.) or your own website where people can purchase tickets. Leave blank if tickets are not sold online.
+              </p>
             </div>
 
             {/* Organizer Info */}

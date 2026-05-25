@@ -25,32 +25,43 @@ import mongoose from 'mongoose';
  * - Indexed queries
  * - React cache prevents N+1 during render
  */
+const QUERY_TIMEOUT_MS = 8000;
+
 export const getFeaturedProfessionals = cache(async () => {
   try {
     if (mongoose.connection.readyState !== 1) {
-      await connectDB();
+      await Promise.race([
+        connectDB(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB connect timeout')), QUERY_TIMEOUT_MS)),
+      ]);
     }
 
     console.log('[PROFESSIONALS] Fetching featured professionals...');
     const queryStart = Date.now();
 
     // Get featured + active professionals, sorted by priority then creation date
-    let professionals = await ProfessionalModel.find({ featured: true, active: true })
+    let professionals = await Promise.race([
+      ProfessionalModel.find({ featured: true, active: true })
       .select('name slug images gallery rating reviewCount category createdAt featured priority active availability subscriptionTier')
       .sort({ priority: -1, createdAt: -1 })
       .limit(4)
       .lean()
-      .exec();
+      .exec(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Query timeout')), QUERY_TIMEOUT_MS)),
+    ]) as any[];
 
     // Fallback: if no featured found, get top active professionals
     if (!professionals || professionals.length === 0) {
       console.log('[PROFESSIONALS] No featured found, falling back to top-rated');
-      professionals = await ProfessionalModel.find({ active: true })
-        .select('name slug images gallery rating reviewCount category createdAt featured priority active availability subscriptionTier')
-        .sort({ priority: -1, rating: -1, reviewCount: -1, createdAt: -1 })
-        .limit(4)
-        .lean()
-        .exec();
+      professionals = await Promise.race([
+        ProfessionalModel.find({ active: true })
+          .select('name slug images gallery rating reviewCount category createdAt featured priority active availability subscriptionTier')
+          .sort({ priority: -1, rating: -1, reviewCount: -1, createdAt: -1 })
+          .limit(4)
+          .lean()
+          .exec(),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Query timeout')), QUERY_TIMEOUT_MS)),
+      ]) as any[];
     }
 
     const queryTime = Date.now() - queryStart;

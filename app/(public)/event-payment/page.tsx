@@ -1,6 +1,6 @@
 /**
  * Event Payment Checkout Page
- * Handles payment for featured and boost event listings
+ * Handles payment for basic and premium event listings
  */
 
 'use client';
@@ -11,19 +11,19 @@ import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const EVENT_PRICING = {
-  featured: {
-    id: 'featured',
-    name: '⭐ Featured Event',
-    price: 25,
-    duration: 'per week',
-    description: 'Premium visibility with featured placement on homepage',
+  basic: {
+    id: 'basic',
+    name: '🎫 Basic Event',
+    price: 4.99,
+    duration: 'per event',
+    description: 'Standard event listing with essential features',
   },
-  boost: {
-    id: 'boost',
-    name: '🚀 Boost Pack',
-    price: 99,
-    duration: 'per month',
-    description: 'Maximum exposure with premium features',
+  premium: {
+    id: 'premium',
+    name: '⭐ Premium Event',
+    price: 19.99,
+    duration: 'per event',
+    description: 'Featured visibility with priority placement',
   },
 };
 
@@ -34,9 +34,9 @@ export default function EventPaymentPage() {
   const [loading, setLoading] = useState(false);
   const [eventData, setEventData] = useState<any>(null);
 
-  const tierParam = searchParams?.get('tier') || 'featured';
-  const tier = tierParam as 'featured' | 'boost';
-  const selectedTier = EVENT_PRICING[tier] || EVENT_PRICING.featured;
+  const tierParam = searchParams?.get('tier') || 'basic';
+  const tier = tierParam as 'basic' | 'premium';
+  const selectedTier = EVENT_PRICING[tier] || EVENT_PRICING.basic;
 
   useEffect(() => {
     console.log('[EventPayment] Auth status:', authStatus, 'isAuthenticated:', isAuthenticated);
@@ -172,19 +172,46 @@ export default function EventPaymentPage() {
           </div>
 
           <div className="space-y-3 mb-8">
-            {tier === 'featured' ? (
+            {tier === 'basic' ? (
               <>
                 <div className="flex items-start">
                   <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300">Featured on homepage for 1 week</span>
+                  <span className="text-gray-600 dark:text-gray-300">Basic event listing</span>
                 </div>
                 <div className="flex items-start">
                   <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300">Top of search results</span>
+                  <span className="text-gray-600 dark:text-gray-300">Search visibility</span>
+                </div>
+                <div className="flex items-start">
+                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600 dark:text-gray-300">Up to 1 image</span>
+                </div>
+                <div className="flex items-start">
+                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600 dark:text-gray-300">Event details & description</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-start">
+                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600 dark:text-gray-300">Featured for 30 days</span>
+                </div>
+                <div className="flex items-start">
+                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600 dark:text-gray-300">Priority in search results</span>
                 </div>
                 <div className="flex items-start">
                   <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,40 +223,19 @@ export default function EventPaymentPage() {
                   <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300">1 video embed</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-start">
-                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-gray-600 dark:text-gray-300">Featured for 1 month</span>
+                  <span className="text-gray-600 dark:text-gray-300">Up to 2 videos</span>
                 </div>
                 <div className="flex items-start">
                   <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300">Premium placement everywhere</span>
+                  <span className="text-gray-600 dark:text-gray-300">Homepage carousel</span>
                 </div>
                 <div className="flex items-start">
                   <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300">Up to 10 images</span>
-                </div>
-                <div className="flex items-start">
-                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-gray-600 dark:text-gray-300">3 video embeds</span>
-                </div>
-                <div className="flex items-start">
-                  <svg className="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-gray-600 dark:text-gray-300">Social media promotion</span>
+                  <span className="text-gray-600 dark:text-gray-300">Social media boost</span>
                 </div>
               </>
             )}

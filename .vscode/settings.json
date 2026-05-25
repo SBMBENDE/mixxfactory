@@ -1,11 +1,9 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM"],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "liveServer.settings.port": 5501
+  "liveServer.settings.port": 5501,
+  "typescript.tsserver.maxTsServerMemory": 1024,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.tsserver.useSeparateSyntaxServer": false,
+  "editor.semanticHighlighting.enabled": false,
+  "typescript.tsserver.watchOptions": {},
+  "editor.formatOnSave": true
 }

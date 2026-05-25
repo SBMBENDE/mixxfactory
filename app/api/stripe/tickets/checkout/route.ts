@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     let commissionRate = event.ticketingCommissionRate || 5; // Default 5%
     
     // Override based on tier
-    if (event.promotionTier === 'featured' || event.promotionTier === 'boost') {
+    if (event.promotionTier === 'premium') {
       commissionRate = 3; // Premium events get 3% rate
     }
 

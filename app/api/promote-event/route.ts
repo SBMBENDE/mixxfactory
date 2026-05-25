@@ -29,16 +29,14 @@ export async function POST(req: NextRequest) {
 
     // Define image limits per tier
     const IMAGE_LIMITS: { [key: string]: number } = {
-      free: 1,
-      featured: 5,
-      boost: 10,
+      basic: 1,
+      premium: 5,
     };
 
     // Define video limits per tier
     const VIDEO_LIMITS: { [key: string]: number } = {
-      free: 0,
-      featured: 1,
-      boost: 3,
+      basic: 0,
+      premium: 2,
     };
 
     // Validate required fields
@@ -160,11 +158,8 @@ export async function POST(req: NextRequest) {
 
     // Calculate promotion expiry date based on tier
     let promotionExpiryDate: Date | undefined = undefined;
-    if (body.pricingTier === 'featured') {
-      // Featured: 1 week
-      promotionExpiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    } else if (body.pricingTier === 'boost') {
-      // Boost: 1 month
+    if (body.pricingTier === 'premium') {
+      // Premium: 30 days
       promotionExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     }
 
@@ -189,9 +184,9 @@ export async function POST(req: NextRequest) {
       organizer: body.organizer,
       highlights: body.highlights || [],
       published: body.published || false,
-      featured: body.pricingTier === 'featured' || body.pricingTier === 'boost',
+      featured: body.pricingTier === 'premium',
       userId,
-      promotionTier: body.pricingTier || 'free',
+      promotionTier: body.pricingTier || 'basic',
       promotionStartDate: new Date(),
       promotionExpiryDate,
     });

@@ -1017,7 +1017,7 @@ interface IEventDocument extends Document {
   highlights: string[]; // Featured acts, performers, etc.
   media?: string[]; // Video URLs (YouTube, Facebook, Vimeo embeds)
   userId?: mongoose.Types.ObjectId; // User who created the event
-  promotionTier?: string; // 'free', 'featured', 'boost'
+  promotionTier?: string; // 'free', 'basic', 'premium'
   promotionStartDate?: Date;
   promotionExpiryDate?: Date;
   stripeConnectedAccountId?: string; // Promoter's Stripe Connect account
@@ -1192,7 +1192,7 @@ const eventSchema = new Schema<IEventDocument>(
     },
     promotionTier: {
       type: String,
-      enum: ['free', 'featured', 'boost'],
+      enum: ['free', 'basic', 'premium'],
       default: 'free',
     },
     promotionStartDate: {

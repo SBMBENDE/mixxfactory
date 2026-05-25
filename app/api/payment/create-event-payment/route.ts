@@ -1,6 +1,6 @@
 /**
  * POST /api/payment/create-event-payment
- * Creates a payment session for event promotion (featured/boost)
+ * Creates a payment session for event promotion (basic/premium)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -14,8 +14,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 const EVENT_PRICES = {
-  featured: 25,
-  boost: 99,
+  basic: 4.99,
+  premium: 19.99,
 };
 
 export async function POST(req: NextRequest) {
@@ -39,16 +39,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!['featured', 'boost'].includes(tier)) {
+    if (!['basic', 'premium'].includes(tier)) {
       return NextResponse.json(
         { success: false, error: 'Invalid tier' },
         { status: 400 }
       );
     }
 
-    const price = EVENT_PRICES[tier as 'featured' | 'boost'];
-    const duration = tier === 'featured' ? 'per week' : 'per month';
-    const tierName = tier === 'featured' ? '⭐ Featured Event' : '🚀 Boost Pack';
+    const price = EVENT_PRICES[tier as 'basic' | 'premium'];
+    const duration = 'per event';
+    const tierName = tier === 'basic' ? '🎫 Basic Event' : '⭐ Premium Event';
 
     if (provider === 'stripe') {
       // Create Stripe checkout session
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
                 name: `${tierName} - ${eventData.title}`,
                 description: `Event promotion ${duration}`,
               },
-              unit_amount: price * 100, // Convert to cents
+              unit_amount: Math.round(price * 100), // Convert to cents and round to avoid floating-point errors
             },
             quantity: 1,
           },

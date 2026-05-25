@@ -216,7 +216,11 @@ export default function DirectoryPage() {
           setProfessionals([]);
         }
       } catch (error) {
-        console.error('[Directory] Failed to fetch professionals:', error);
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.warn('[Directory] Request timed out — showing empty results');
+        } else {
+          console.error('[Directory] Failed to fetch professionals:', error);
+        }
         setProfessionals([]);
       } finally {
         setLoading(false);

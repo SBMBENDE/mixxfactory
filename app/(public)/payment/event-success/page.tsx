@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
@@ -14,16 +14,41 @@ export default function EventPaymentSuccessPage() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processing your payment...');
+  const hasVerifiedRef = useRef(false);
 
   useEffect(() => {
+    const sessionId = searchParams?.get('session_id');
+    
+    if (!sessionId) {
+      setStatus('error');
+      setMessage('Invalid payment session');
+      return;
+    }
+
+    // Check if this session was already processed (sessionStorage guard)
+    const processedKey = `event_processed_${sessionId}`;
+    const alreadyProcessed = sessionStorage.getItem(processedKey);
+    
+    if (alreadyProcessed) {
+      console.log('[EventPaymentSuccess] Session already processed, skipping...');
+      setStatus('success');
+      setMessage('Payment successful! Your event has been created and is being reviewed.');
+      setTimeout(() => router.push('/events'), 3000);
+      return;
+    }
+
+    // Prevent duplicate API calls using ref (React StrictMode protection)
+    if (hasVerifiedRef.current) {
+      console.log('[EventPaymentSuccess] Already verified in this render, skipping...');
+      return;
+    }
+
     const verifyAndCreateEvent = async () => {
-      const sessionId = searchParams?.get('session_id');
+      console.log('[EventPaymentSuccess] Starting verification...');
+      hasVerifiedRef.current = true;
       
-      if (!sessionId) {
-        setStatus('error');
-        setMessage('Invalid payment session');
-        return;
-      }
+      // Mark as processed immediately
+      sessionStorage.setItem(processedKey, 'true');
 
       // Get event data from session storage
       const eventDataStr = sessionStorage.getItem('pendingEventData');
@@ -61,18 +86,23 @@ export default function EventPaymentSuccessPage() {
             router.push('/events');
           }, 3000);
         } else {
+          // If failed, remove the processed flag so user can retry
+          sessionStorage.removeItem(processedKey);
           setStatus('error');
           setMessage(data.error || 'Failed to create event. Please contact support.');
         }
       } catch (error) {
         console.error('Error:', error);
+        // If failed, remove the processed flag so user can retry
+        sessionStorage.removeItem(processedKey);
         setStatus('error');
         setMessage('An error occurred. Please contact support.');
       }
     };
 
     verifyAndCreateEvent();
-  }, [searchParams, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">

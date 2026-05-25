@@ -39,9 +39,9 @@ export async function connectDB() {
       bufferCommands: false,
       maxPoolSize: 10,
       minPoolSize: 2,
-      socketTimeoutMS: 120000, // Increased to 120 seconds for very slow Atlas connections
-      connectTimeoutMS: 30000, // Increased to 30 seconds for initial connection
-      serverSelectionTimeoutMS: 30000, // Increased to 30 seconds for server selection
+      socketTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 10000,
       maxIdleTimeMS: 60000,
       retryWrites: true,
       // Add connection resilience for serverless environments

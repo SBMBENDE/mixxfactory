@@ -78,16 +78,24 @@ export async function GET(request: NextRequest) {
       ? '' // Return all fields for edit page
       : '_id name slug images gallery rating reviewCount description location category featured priority active userId createdAt';
     
-    const [professionals, total] = await Promise.all([
-      ProfessionalModel.find(filter)
-        .select(selectFields)
-        .sort(sortMap[sort])
-        .skip(skip)
-        .limit(limit)
-        .lean()
-        .exec(),
-      ProfessionalModel.countDocuments(filter),
-    ]);
+    const QUERY_TIMEOUT = 8000;
+    const queryTimeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Query timeout')), QUERY_TIMEOUT)
+    );
+
+    const [professionals, total] = await Promise.race([
+      Promise.all([
+        ProfessionalModel.find(filter)
+          .select(selectFields)
+          .sort(sortMap[sort])
+          .skip(skip)
+          .limit(limit)
+          .lean()
+          .exec(),
+        ProfessionalModel.countDocuments(filter),
+      ]),
+      queryTimeout.then(() => { throw new Error('Query timeout'); }),
+    ]) as [any[], number];
 
     // Convert ObjectIds to strings for frontend compatibility
     // Category is just an ID now (not populated)
