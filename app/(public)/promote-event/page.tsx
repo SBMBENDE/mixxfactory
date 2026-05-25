@@ -166,6 +166,7 @@ export default function PromoteEventPage() {
     'Festivals',
     'Exhibitions',
     'Workshops',
+    'Fundraising',
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -1111,7 +1112,7 @@ export default function PromoteEventPage() {
               </h2>
 
               {formData.ticketing.map((ticket, index) => (
-                <div key={index} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div key={index} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: '1rem', marginBottom: '1rem', alignItems: 'flex-end' }}>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
                       Ticket Label
@@ -1122,12 +1123,9 @@ export default function PromoteEventPage() {
                       onChange={(e) => {
                         const newTicketing = [...formData.ticketing];
                         newTicketing[index].label = e.target.value;
-                        setFormData(prev => ({
-                          ...prev,
-                          ticketing: newTicketing,
-                        }));
+                        setFormData(prev => ({ ...prev, ticketing: newTicketing }));
                       }}
-                      placeholder="e.g., General, VIP, Early Bird"
+                      placeholder="e.g., Presale, VIP, At the Gate"
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -1149,10 +1147,7 @@ export default function PromoteEventPage() {
                       onChange={(e) => {
                         const newTicketing = [...formData.ticketing];
                         newTicketing[index].price = parseFloat(e.target.value) || 0;
-                        setFormData(prev => ({
-                          ...prev,
-                          ticketing: newTicketing,
-                        }));
+                        setFormData(prev => ({ ...prev, ticketing: newTicketing }));
                       }}
                       placeholder="0.00"
                       style={{
@@ -1173,10 +1168,7 @@ export default function PromoteEventPage() {
                       onChange={(e) => {
                         const newTicketing = [...formData.ticketing];
                         newTicketing[index].currency = e.target.value;
-                        setFormData(prev => ({
-                          ...prev,
-                          ticketing: newTicketing,
-                        }));
+                        setFormData(prev => ({ ...prev, ticketing: newTicketing }));
                       }}
                       style={{
                         width: '100%',
@@ -1189,10 +1181,79 @@ export default function PromoteEventPage() {
                       <option value="EUR">EUR</option>
                       <option value="USD">USD</option>
                       <option value="GBP">GBP</option>
+                      <option value="XAF">XAF</option>
                     </select>
+                  </div>
+                  <div>
+                    {formData.ticketing.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, ticketing: prev.ticketing.filter((_, i) => i !== index) }))}
+                        style={{
+                          padding: '0.75rem',
+                          background: '#fee2e2',
+                          color: '#dc2626',
+                          border: 'none',
+                          borderRadius: '0.375rem',
+                          cursor: 'pointer',
+                          fontWeight: '700',
+                          fontSize: '1rem',
+                          lineHeight: 1,
+                        }}
+                        title="Remove this ticket type"
+                      >
+                        ×
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
+
+              {/* Quick-add presets */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                {['Presale', 'General', 'At the Gate', 'VIP', 'Table'].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      ticketing: [...prev.ticketing, { label: preset, price: 0, currency: prev.ticketing[0]?.currency || 'EUR' }],
+                    }))}
+                    style={{
+                      padding: '0.375rem 0.75rem',
+                      background: '#eff6ff',
+                      color: '#2563eb',
+                      border: '1px solid #bfdbfe',
+                      borderRadius: '999px',
+                      cursor: 'pointer',
+                      fontSize: '0.8125rem',
+                      fontWeight: '500',
+                    }}
+                  >
+                    + {preset}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({
+                  ...prev,
+                  ticketing: [...prev.ticketing, { label: '', price: 0, currency: prev.ticketing[0]?.currency || 'EUR' }],
+                }))}
+                style={{
+                  padding: '0.6rem 1.25rem',
+                  background: '#f3f4f6',
+                  color: '#374151',
+                  border: '1px dashed #9ca3af',
+                  borderRadius: '0.375rem',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '0.875rem',
+                }}
+              >
+                + Add Ticket Type
+              </button>
             </div>
 
             {/* Ticket URL */}

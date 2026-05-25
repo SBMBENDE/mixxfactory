@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       priority: priority || 0,
       startDate: startDate ? new Date(startDate) : new Date(),
       endDate: endDate ? new Date(endDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      published: false,
+      published: true,
       link: link || null,
     });
 

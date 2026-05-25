@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     date: true,
   },
   icons: [
-    { rel: 'icon', url: '/afrobizz logo.png' },
-    { rel: 'apple-touch-icon', url: '/afrobizz logo.png' },
+    { rel: 'icon', url: '/afrobizz-logo.png' },
+    { rel: 'apple-touch-icon', url: '/afrobizz-logo.png' },
   ],
 };
 

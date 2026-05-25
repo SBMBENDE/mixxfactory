@@ -211,6 +211,7 @@ export default function AdminNewsFlashPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [unpublishingId, setUnpublishingId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -298,6 +299,27 @@ export default function AdminNewsFlashPage() {
                   >
                     Edit
                   </Button>
+
+                  {!n.published && (
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      disabled={publishingId === n._id}
+                      onClick={async () => {
+                        setPublishingId(n._id);
+                        try {
+                          await fetch(`/api/admin/news-flash/${n._id}`, {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ published: true }),
+                          });
+                          setItems(prev => prev.map(i => i._id === n._id ? { ...i, published: true } : i));
+                        } catch (err) { console.error(err); } finally { setPublishingId(null); }
+                      }}
+                    >
+                      Publish
+                    </Button>
+                  )}
 
                   {n.published && (
                     <Button

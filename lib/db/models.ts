@@ -59,7 +59,6 @@ const availabilitySchema = new Schema({
   bufferMinutes: { type: Number, default: 0 },
   exceptions: [{ date: Date, reason: String }],
 }, { timestamps: true });
-availabilitySchema.index({ professionalId: 1 });
 export const AvailabilityModel = (mongoose.models.Availability as Model<IAvailabilityDocument>) || mongoose.model<IAvailabilityDocument>('Availability', availabilitySchema);
 
 // ============ BLOCKED TIME MODEL ============
@@ -280,7 +279,6 @@ const professionalSchema = new Schema<IProfessionalDocument>(
 // Compound index for efficient filtering
 professionalSchema.index({ category: 1, active: 1, featured: -1 });
 professionalSchema.index({ name: 'text', description: 'text' });
-professionalSchema.index({ userId: 1 });
 
 export const ProfessionalModel =
   (mongoose.models.Professional as Model<IProfessionalDocument>) ||
