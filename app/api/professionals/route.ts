@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
     // Fetch data - if querying by slug (for edit), return all fields
     const selectFields = slug 
       ? '' // Return all fields for edit page
-      : '_id name slug images gallery rating reviewCount description location category featured priority active userId createdAt';
+      : '_id name slug images gallery rating reviewCount description location category featured priority active userId createdAt availability';
     
     const QUERY_TIMEOUT = 8000;
     const queryTimeout = new Promise<never>((_, reject) =>

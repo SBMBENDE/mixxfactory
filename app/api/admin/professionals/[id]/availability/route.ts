@@ -39,6 +39,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   if (body.clear === true) {
     pro.availability = new Map();
+    pro.markModified('availability');
   } else if (body.date) {
     const map: Map<string, boolean> = pro.availability instanceof Map
       ? pro.availability
@@ -54,6 +55,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: 'Provide date+available or clear:true' }, { status: 400 });
   }
 
+  pro.markModified('availability'); // Ensure Mongoose detects Map mutation
   await pro.save();
 
   const availability = pro.availability instanceof Map
