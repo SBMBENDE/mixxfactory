@@ -90,12 +90,12 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
   }
 
   // Helper function to check if professional is available today
-  const isAvailableToday = (professional: Professional): boolean => {
-    if (!professional.availability || professional.subscriptionTier !== 'pro') {
-      return false;
-    }
+  const isAvailableToday = (professional: Professional): boolean | null => {
+    if (!professional.availability) return null; // no data — hide badge
     const today = new Date().toISOString().split('T')[0];
-    return professional.availability[today] === true;
+    if (professional.availability[today] === true) return true;
+    if (professional.availability[today] === false) return false;
+    return null; // date not set — hide badge
   };
 
   // Split into sections: Featured (max 8), Top Rated (max 8)
@@ -183,8 +183,8 @@ export default function FeaturedProfessionalsServer({ professionals }: Props) {
               </span>
             )}
 
-            {/* Availability Badge - Only for Pro users with availability data */}
-            {professional.subscriptionTier === 'pro' && professional.availability && Object.keys(professional.availability).length > 0 && (
+            {/* Availability Badge - Only shown when explicitly set */}
+            {isAvailableToday(professional) !== null && (
               <span style={{
                 display: 'inline-block',
                 backgroundColor: isAvailableToday(professional) ? '#d1fae5' : '#f3f4f6',

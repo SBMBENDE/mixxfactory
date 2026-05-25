@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -11,7 +10,133 @@ import GalleryUpload from "@/components/GalleryUpload";
 
 type ProfessionalWithCategory = Omit<Professional, 'category'> & { category?: Category | string };
 
-// Removed unused badgeMap
+// ─── Availability Modal ──────────────────────────────────────────────────────
+
+function AvailabilityModal({ proId, proName, onClose }: { proId: string; proName: string; onClose: () => void }) {
+  const today = new Date();
+  const [year, setYear] = useState(today.getFullYear());
+  const [month, setMonth] = useState(today.getMonth()); // 0-indexed
+  const [availability, setAvailability] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/admin/professionals/${proId}/availability`)
+      .then(r => r.json())
+      .then(d => setAvailability(d.availability ?? {}))
+      .finally(() => setLoading(false));
+  }, [proId]);
+
+  const toggleDate = async (dateStr: string) => {
+    const current = availability[dateStr];
+    // Cycle: undefined → true → false → undefined
+    const next = current === undefined ? true : current === true ? false : undefined;
+    setSaving(dateStr);
+    try {
+      const res = await fetch(`/api/admin/professionals/${proId}/availability`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: dateStr, available: next ?? null }),
+      });
+      const data = await res.json();
+      setAvailability(data.availability ?? {});
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const clearAll = async () => {
+    if (!confirm('Clear all availability for this professional?')) return;
+    setSaving('all');
+    try {
+      const res = await fetch(`/api/admin/professionals/${proId}/availability`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clear: true }),
+      });
+      const data = await res.json();
+      setAvailability(data.availability ?? {});
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  // Build calendar days for current month
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const monthName = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  return (
+    <div className="p-4 w-full max-w-md">
+      <h2 className="text-lg font-bold mb-1">Availability — {proName}</h2>
+      <p className="text-xs text-gray-500 mb-4">Click a day to cycle: <span className="text-green-600 font-semibold">Available</span> → <span className="text-red-500 font-semibold">Unavailable</span> → <span className="text-gray-400">Not set</span></p>
+
+      {/* Month navigation */}
+      <div className="flex items-center justify-between mb-3">
+        <button onClick={() => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); }} className="px-2 py-1 rounded border text-sm hover:bg-gray-100">‹</button>
+        <span className="font-semibold text-sm">{monthName}</span>
+        <button onClick={() => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); }} className="px-2 py-1 rounded border text-sm hover:bg-gray-100">›</button>
+      </div>
+
+      {loading ? (
+        <p className="text-center py-8 text-gray-500">Loading...</p>
+      ) : (
+        <>
+          {/* Day headers */}
+          <div className="grid grid-cols-7 text-center text-xs text-gray-400 mb-1">
+            {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d}>{d}</div>)}
+          </div>
+
+          {/* Calendar grid */}
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} />)}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1;
+              const dateStr = `${year}-${pad(month + 1)}-${pad(day)}`;
+              const val = availability[dateStr];
+              const isToday = dateStr === `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+              const isSaving = saving === dateStr;
+
+              let bg = 'bg-gray-100 hover:bg-gray-200 text-gray-500';
+              if (val === true) bg = 'bg-green-100 hover:bg-green-200 text-green-700 font-semibold';
+              if (val === false) bg = 'bg-red-100 hover:bg-red-200 text-red-600 font-semibold';
+
+              return (
+                <button
+                  key={dateStr}
+                  onClick={() => toggleDate(dateStr)}
+                  disabled={isSaving}
+                  className={`rounded text-xs py-1.5 text-center transition-colors ${bg} ${isToday ? 'ring-2 ring-blue-400' : ''} ${isSaving ? 'opacity-50' : ''}`}
+                >
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex gap-3 mt-4 text-xs">
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-200 inline-block" /> Available</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-200 inline-block" /> Unavailable</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-200 inline-block" /> Not set</span>
+          </div>
+
+          <div className="flex gap-2 mt-4">
+            <button onClick={clearAll} disabled={saving === 'all'} className="text-xs text-red-500 underline hover:text-red-700">
+              Clear all
+            </button>
+            <Button size="sm" variant="secondary" onClick={onClose} className="ml-auto">Close</Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Removed unused badgeMap ─────────────────────────────────────────────────
 
 function EditProfessionalForm({
   professional,
@@ -217,6 +342,7 @@ export default function AdminProfessionalsPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [addLoading, setAddLoading] = useState(false);
+  const [availabilityModalId, setAvailabilityModalId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -326,6 +452,17 @@ export default function AdminProfessionalsPage() {
 )}
 
 
+      {/* Availability Modal */}
+      {availabilityModalId && (() => {
+        const pro = professionals.find(p => p._id === availabilityModalId);
+        if (!pro) return null;
+        return (
+          <Modal open={true} onClose={() => setAvailabilityModalId(null)}>
+            <AvailabilityModal proId={pro._id} proName={pro.name} onClose={() => setAvailabilityModalId(null)} />
+          </Modal>
+        );
+      })()}
+
       {/* Edit Modal */}
       {editModalOpen && editingId && (() => {
         const editing = professionals.find((p) => p._id === editingId);
@@ -395,6 +532,7 @@ export default function AdminProfessionalsPage() {
                     <td className="px-3 py-2 border text-center">{pro.priority ?? "-"}</td>
                     <td className="px-3 py-2 border flex gap-2 justify-center">
                       <Button size="sm" variant="outline" onClick={() => { setEditingId(pro._id); setEditModalOpen(true); }}>Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => setAvailabilityModalId(pro._id)}>Availability</Button>
                       <Button size="sm" variant="secondary" onClick={() => handleDelete(pro._id)}>Delete</Button>
                     </td>
                   </tr>
