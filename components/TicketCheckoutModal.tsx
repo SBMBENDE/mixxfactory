@@ -106,59 +106,7 @@ export default function TicketCheckoutModal({
     }
   };
 
-  if (!ticketingEnabled) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-        }}
-        onClick={onClose}
-      >
-        <div
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '0.5rem',
-            padding: '2rem',
-            maxWidth: '500px',
-            width: '90%',
-            textAlign: 'center',
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>
-            Ticketing Not Available
-          </h2>
-          <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-            The event organizer has not yet set up online ticketing for this event.
-            Please contact them directly for ticket purchases.
-          </p>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#2563eb',
-              color: 'white',
-              borderRadius: '0.375rem',
-              fontWeight: '600',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (!ticketingEnabled) return null; // Silently hide if not enabled (shouldn't happen)
 
   return (
     <div

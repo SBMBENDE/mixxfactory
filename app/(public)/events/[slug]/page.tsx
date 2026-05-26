@@ -623,7 +623,7 @@ export default function EventDetailPage() {
           tickets={event.ticketing}
           isOpen={showCheckoutModal}
           onClose={() => setShowCheckoutModal(false)}
-          ticketingEnabled={event.ticketingEnabled}
+          ticketingEnabled={!!(event.ticketing && event.ticketing.length > 0)}
         />
       )}
     </>

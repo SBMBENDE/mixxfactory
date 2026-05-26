@@ -1,14 +1,14 @@
 /**
  * Event Ticket Checkout API Route
- * Creates Stripe Checkout session with automatic revenue splitting
- * Basic events: 5% to Afrobizz, 95% to promoter
- * Premium/Featured events: 3% to Afrobizz, 97% to promoter
+ * Creates Stripe Checkout session — payments go to the Afrobizz platform account.
+ * A TicketPurchase record is created (pending) immediately; confirmed via Stripe webhook.
  */
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
+import { randomUUID } from 'crypto';
 import { connectDB } from '@/lib/db/connection';
-import { EventModel } from '@/lib/db/models';
+import { EventModel, TicketPurchaseModel } from '@/lib/db/models';
 import { stripe } from '@/lib/payment/stripe';
 import { errorResponse, successResponse } from '@/utils/api-response';
 
@@ -18,168 +18,122 @@ const checkoutSchema = z.object({
   ticketType: z.string().min(1, 'Ticket type is required'),
   quantity: z.number().int().min(1, 'Quantity must be at least 1').max(20, 'Maximum 20 tickets per purchase'),
   customerEmail: z.string().email('Valid email is required'),
-  customerName: z.string().min(1, 'Customer name is required').optional(),
+  customerName: z.string().min(1, 'Customer name is required'),
 });
 
 /**
  * POST /api/stripe/tickets/checkout
- * Create Stripe Checkout session for event tickets with revenue splitting
+ * Create Stripe Checkout session; all payments go to Afrobizz platform account.
  */
 export async function POST(req: NextRequest) {
   try {
-    // Parse and validate request body
     const body = await req.json();
     const parsed = checkoutSchema.safeParse(body);
-
-    if (!parsed.success) {
-      return errorResponse(
-        'Invalid request data',
-        400
-      );
-    }
+    if (!parsed.success) return errorResponse('Invalid request data', 400);
 
     const { eventId, ticketType, quantity, customerEmail, customerName } = parsed.data;
 
-    // Connect to database
     await connectDB();
 
-    // Find event
     const event = await EventModel.findById(eventId);
+    if (!event) return errorResponse('Event not found', 404);
+    if (!event.published) return errorResponse('Event is not published', 400);
+    if (!event.ticketing?.length) return errorResponse('No tickets configured for this event', 400);
 
-    if (!event) {
-      return errorResponse('Event not found', 404);
+    const ticketOption = event.ticketing.find((t: any) => t.label === ticketType);
+    if (!ticketOption) return errorResponse('Ticket type not found', 400);
+
+    // Check remaining stock (undefined/null = unlimited)
+    if (ticketOption.quantity != null && ticketOption.quantity < quantity) {
+      return errorResponse(`Only ${ticketOption.quantity} tickets remaining`, 400);
     }
 
-    if (!event.published) {
-      return errorResponse('Event is not published', 400);
-    }
-
-    // Check if ticketing is enabled (Stripe Connect account verified)
-    if (!event.ticketingEnabled || !event.stripeConnectedAccountId) {
-      return errorResponse(
-        'Ticketing not enabled for this event. Promoter must complete Stripe Connect setup.',
-        400
-      );
-    }
-
-    // Find the specific ticket type
-    const ticketOption = event.ticketing.find((t) => t.label === ticketType);
-
-    if (!ticketOption) {
-      return errorResponse('Invalid ticket type', 400);
-    }
-
-    // Check ticket availability
-    if (ticketOption.quantity !== undefined && ticketOption.quantity < quantity) {
-      return errorResponse(
-        `Only ${ticketOption.quantity} tickets remaining`,
-        400
-      );
-    }
-
-    // Check event capacity
-    if (event.attendees + quantity > event.capacity) {
-      return errorResponse(
-        `Event capacity exceeded. Only ${event.capacity - event.attendees} spots remaining`,
-        400
-      );
-    }
-
-    // Calculate pricing with commission
-    const ticketPrice = ticketOption.price; // Price in EUR
-    const totalTicketAmount = ticketPrice * quantity; // Total ticket revenue
-    
-    // Determine commission rate based on promotion tier
-    let commissionRate = event.ticketingCommissionRate || 5; // Default 5%
-    
-    // Override based on tier
-    if (event.promotionTier === 'premium') {
-      commissionRate = 3; // Premium events get 3% rate
-    }
-
-    // Calculate commission amount
-    const commissionAmount = Math.round(totalTicketAmount * 100 * (commissionRate / 100)); // in cents
-    const netAmount = Math.round(totalTicketAmount * 100) - commissionAmount; // Promoter receives this
-
-    // Prepare line items for Stripe Checkout
-    const lineItems = [
-      {
-        price_data: {
-          currency: ticketOption.currency.toLowerCase() || 'eur',
-          product_data: {
-            name: `${event.title} - ${ticketOption.label}`,
-            description: `${quantity} x ${ticketOption.label} ticket(s)`,
-            images: event.posterImage ? [event.posterImage] : [],
-            metadata: {
-              eventId: eventId,
-              eventTitle: event.title,
-              ticketType: ticketOption.label,
-            },
-          },
-          unit_amount: Math.round(ticketPrice * 100), // Convert to cents
-        },
-        quantity,
-      },
-    ];
-
+    const unitPrice = ticketOption.price ?? 0;
+    const totalAmount = unitPrice * quantity;
+    const currency = (ticketOption.currency || 'EUR').toLowerCase();
+    const ticketCode = `TKT-${randomUUID().toUpperCase().slice(0, 8)}`;
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-    // Create Stripe Checkout session with destination charges
-    // This automatically splits revenue between platform and connected account
+    // ── Free tickets ─────────────────────────────────────────────────────────
+    if (unitPrice === 0) {
+      await TicketPurchaseModel.create({
+        eventId: event._id,
+        eventTitle: event.title,
+        eventSlug: event.slug,
+        ticketType,
+        quantity,
+        unitPrice: 0,
+        totalAmount: 0,
+        currency: currency.toUpperCase(),
+        customerEmail,
+        customerName,
+        stripeSessionId: `free-${randomUUID()}`,
+        ticketCode,
+        status: 'confirmed',
+      });
+      return successResponse({ url: `${baseUrl}/events/${event.slug}/ticket-success?code=${ticketCode}` });
+    }
+
+    // ── Paid tickets via Stripe ───────────────────────────────────────────────
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: lineItems,
       mode: 'payment',
       customer_email: customerEmail,
       client_reference_id: eventId,
+      line_items: [
+        {
+          price_data: {
+            currency,
+            product_data: {
+              name: `${event.title} — ${ticketOption.label}`,
+              description: `${quantity} × ${ticketOption.label}`,
+              images: event.posterImage ? [event.posterImage] : [],
+            },
+            unit_amount: Math.round(unitPrice * 100),
+          },
+          quantity,
+        },
+      ],
       success_url: `${baseUrl}/events/${event.slug}/ticket-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/events/${event.slug}?checkout=cancelled`,
       metadata: {
         eventId: eventId,
         eventTitle: event.title,
-        ticketType: ticketOption.label,
+        eventSlug: event.slug,
+        ticketType,
         quantity: quantity.toString(),
         customerEmail,
-        customerName: customerName || 'Guest',
-        commissionRate: commissionRate.toString(),
-      },
-      payment_intent_data: {
-        application_fee_amount: commissionAmount, // Platform fee in cents
-        transfer_data: {
-          destination: event.stripeConnectedAccountId, // Promoter's account
-        },
-        metadata: {
-          eventId: eventId,
-          eventTitle: event.title,
-          ticketType: ticketOption.label,
-          quantity: quantity.toString(),
-          commissionRate: commissionRate.toString(),
-        },
+        customerName,
+        ticketCode,
+        unitPrice: unitPrice.toString(),
+        totalAmount: totalAmount.toString(),
+        currency: currency.toUpperCase(),
       },
     });
 
-    return successResponse({
-      sessionId: session.id,
-      url: session.url,
-      totalAmount: totalTicketAmount,
-      commissionAmount: commissionAmount / 100, // Convert back to EUR
-      netAmount: netAmount / 100, // Convert back to EUR
-      commissionRate,
-      message: 'Checkout session created successfully',
+    // Pre-create a pending purchase — webhook will confirm it on payment
+    await TicketPurchaseModel.create({
+      eventId: event._id,
+      eventTitle: event.title,
+      eventSlug: event.slug,
+      ticketType,
+      quantity,
+      unitPrice,
+      totalAmount,
+      currency: currency.toUpperCase(),
+      customerEmail,
+      customerName,
+      stripeSessionId: session.id,
+      ticketCode,
+      status: 'pending',
     });
+
+    return successResponse({ sessionId: session.id, url: session.url });
   } catch (error: any) {
-    console.error('Ticket checkout error:', error);
-    
+    console.error('[Ticket Checkout]', error);
     if (error.type === 'StripeInvalidRequestError') {
-      return errorResponse(
-        `Stripe error: ${error.message}`,
-        400
-      );
+      return errorResponse(`Stripe error: ${error.message}`, 400);
     }
-
-    return errorResponse(
-      error instanceof Error ? error.message : 'Server error',
-      500
-    );
+    return errorResponse(error instanceof Error ? error.message : 'Server error', 500);
   }
 }

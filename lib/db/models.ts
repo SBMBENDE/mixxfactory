@@ -1310,3 +1310,59 @@ const logoutTokenSchema = new Schema<ILogoutTokenDocument>(
 export const LogoutTokenModel =
   (mongoose.models.LogoutToken as Model<ILogoutTokenDocument>) ||
   mongoose.model<ILogoutTokenDocument>('LogoutToken', logoutTokenSchema);
+
+// ============ TICKET PURCHASE MODEL ============
+interface ITicketPurchaseDocument extends Document {
+  eventId: mongoose.Types.ObjectId;
+  eventTitle: string;
+  eventSlug: string;
+  ticketType: string;
+  quantity: number;
+  unitPrice: number;
+  totalAmount: number;
+  currency: string;
+  customerEmail: string;
+  customerName: string;
+  stripeSessionId: string;
+  stripePaymentIntentId?: string;
+  ticketCode: string; // Unique ref for check-in
+  status: 'pending' | 'confirmed' | 'cancelled' | 'refunded';
+  checkedIn: boolean;
+  checkedInAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const ticketPurchaseSchema = new Schema<ITicketPurchaseDocument>(
+  {
+    eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true, index: true },
+    eventTitle: { type: String, required: true },
+    eventSlug: { type: String, required: true, index: true },
+    ticketType: { type: String, required: true },
+    quantity: { type: Number, required: true, min: 1 },
+    unitPrice: { type: Number, required: true, min: 0 },
+    totalAmount: { type: Number, required: true, min: 0 },
+    currency: { type: String, required: true, default: 'EUR' },
+    customerEmail: { type: String, required: true, lowercase: true, index: true },
+    customerName: { type: String, required: true },
+    stripeSessionId: { type: String, required: true, unique: true, index: true },
+    stripePaymentIntentId: { type: String, index: true },
+    ticketCode: { type: String, required: true, unique: true, index: true },
+    status: {
+      type: String,
+      enum: ['pending', 'confirmed', 'cancelled', 'refunded'],
+      default: 'pending',
+      index: true,
+    },
+    checkedIn: { type: Boolean, default: false },
+    checkedInAt: Date,
+  },
+  { timestamps: true }
+);
+
+ticketPurchaseSchema.index({ eventId: 1, status: 1 });
+ticketPurchaseSchema.index({ customerEmail: 1, createdAt: -1 });
+
+export const TicketPurchaseModel =
+  (mongoose.models.TicketPurchase as Model<ITicketPurchaseDocument>) ||
+  mongoose.model<ITicketPurchaseDocument>('TicketPurchase', ticketPurchaseSchema);
