@@ -74,18 +74,22 @@ export async function POST(req: NextRequest) {
         status: 'confirmed',
       });
 
-      // Send confirmation email immediately for free tickets
-      sendTicketConfirmationEmail({
-        customerEmail,
-        customerName,
-        eventTitle: event.title,
-        eventSlug: event.slug,
-        ticketType,
-        quantity,
-        totalAmount: 0,
-        currency: currency.toUpperCase(),
-        ticketCode,
-      }).catch((err) => console.error('[Checkout] Free ticket email failed:', err));
+      // Await email send so the serverless function does not exit before dispatch completes.
+      try {
+        await sendTicketConfirmationEmail({
+          customerEmail,
+          customerName,
+          eventTitle: event.title,
+          eventSlug: event.slug,
+          ticketType,
+          quantity,
+          totalAmount: 0,
+          currency: currency.toUpperCase(),
+          ticketCode,
+        });
+      } catch (err) {
+        console.error('[Checkout] Free ticket email failed:', err);
+      }
 
       return successResponse({ url: `${baseUrl}/events/${event.slug}/ticket-success?code=${ticketCode}` });
     }

@@ -51,18 +51,23 @@ export async function POST(req: NextRequest) {
           { $inc: { 'ticketing.$.quantity': -quantity, attendees: quantity } }
         );
 
-        // Send confirmation email (non-blocking — don't fail webhook on email error)
-        sendTicketConfirmationEmail({
-          customerEmail: purchase.customerEmail,
-          customerName: purchase.customerName,
-          eventTitle: purchase.eventTitle,
-          eventSlug: purchase.eventSlug,
-          ticketType: purchase.ticketType,
-          quantity: purchase.quantity,
-          totalAmount: purchase.totalAmount,
-          currency: purchase.currency,
-          ticketCode: purchase.ticketCode,
-        }).catch((err) => console.error('[Webhook] Email send failed:', err));
+        // Await email send so serverless execution does not end before the request is made.
+        // Email failures are logged but do not fail webhook acknowledgement.
+        try {
+          await sendTicketConfirmationEmail({
+            customerEmail: purchase.customerEmail,
+            customerName: purchase.customerName,
+            eventTitle: purchase.eventTitle,
+            eventSlug: purchase.eventSlug,
+            ticketType: purchase.ticketType,
+            quantity: purchase.quantity,
+            totalAmount: purchase.totalAmount,
+            currency: purchase.currency,
+            ticketCode: purchase.ticketCode,
+          });
+        } catch (err) {
+          console.error('[Webhook] Email send failed:', err);
+        }
 
         console.log(`[Webhook] Confirmed ticket purchase ${purchase.ticketCode} for ${purchase.eventTitle}`);
       } else {
