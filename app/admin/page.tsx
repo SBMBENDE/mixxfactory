@@ -1,12 +1,145 @@
 
 import Link from 'next/link';
+import { connectDB } from '@/lib/db/connection';
+import {
+  BookingModel,
+  EventModel,
+  ProfessionalModel,
+  TicketPurchaseModel,
+  UserModel,
+} from '@/lib/db/models';
 
-const stats = [
-  { label: 'Total Users', value: 1243 },
-  { label: 'Total Professionals', value: 312 },
-  { label: 'Active Bookings', value: 27 },
-  { label: 'Platform Activity', value: 'High' },
-];
+export const dynamic = 'force-dynamic';
+
+type SalesSummary = {
+  totalRevenue: number;
+  ticketsSold: number;
+  confirmedPurchases: number;
+  monthRevenue: number;
+  monthTicketsSold: number;
+  pendingPurchases: number;
+};
+
+type RecentPurchase = {
+  _id: string;
+  eventTitle: string;
+  ticketType: string;
+  quantity: number;
+  totalAmount: number;
+  currency: string;
+  customerEmail: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'refunded';
+  createdAt: Date;
+};
+
+async function getDashboardData() {
+  await connectDB();
+
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const [
+    totalUsers,
+    totalProfessionals,
+    activeBookings,
+    totalEvents,
+    pendingPurchases,
+    confirmedSalesAgg,
+    monthSalesAgg,
+    recentPurchases,
+  ] = await Promise.all([
+    UserModel.countDocuments(),
+    ProfessionalModel.countDocuments({ active: true }),
+    BookingModel.countDocuments({ status: { $in: ['pending', 'confirmed'] } }),
+    EventModel.countDocuments(),
+    TicketPurchaseModel.countDocuments({ status: 'pending' }),
+    TicketPurchaseModel.aggregate([
+      { $match: { status: 'confirmed' } },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$totalAmount' },
+          ticketsSold: { $sum: '$quantity' },
+          confirmedPurchases: { $sum: 1 },
+        },
+      },
+    ]),
+    TicketPurchaseModel.aggregate([
+      {
+        $match: {
+          status: 'confirmed',
+          createdAt: { $gte: thirtyDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          monthRevenue: { $sum: '$totalAmount' },
+          monthTicketsSold: { $sum: '$quantity' },
+        },
+      },
+    ]),
+    TicketPurchaseModel.find()
+      .sort({ createdAt: -1 })
+      .limit(8)
+      .select('eventTitle ticketType quantity totalAmount currency customerEmail status createdAt')
+      .lean(),
+  ]);
+
+  const confirmedSales = confirmedSalesAgg[0] || {
+    totalRevenue: 0,
+    ticketsSold: 0,
+    confirmedPurchases: 0,
+  };
+
+  const monthSales = monthSalesAgg[0] || {
+    monthRevenue: 0,
+    monthTicketsSold: 0,
+  };
+
+  const salesSummary: SalesSummary = {
+    totalRevenue: confirmedSales.totalRevenue || 0,
+    ticketsSold: confirmedSales.ticketsSold || 0,
+    confirmedPurchases: confirmedSales.confirmedPurchases || 0,
+    monthRevenue: monthSales.monthRevenue || 0,
+    monthTicketsSold: monthSales.monthTicketsSold || 0,
+    pendingPurchases,
+  };
+
+  return {
+    platformStats: {
+      totalUsers,
+      totalProfessionals,
+      activeBookings,
+      totalEvents,
+    },
+    salesSummary,
+    recentPurchases: recentPurchases as unknown as RecentPurchase[],
+  };
+}
+
+function formatCurrency(amount: number, currency = 'EUR') {
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: currency || 'EUR',
+    minimumFractionDigits: 2,
+  }).format(amount || 0);
+}
+
+function getStatusStyle(status: RecentPurchase['status']) {
+  switch (status) {
+    case 'confirmed':
+      return 'bg-green-100 text-green-700';
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-700';
+    case 'cancelled':
+      return 'bg-red-100 text-red-700';
+    case 'refunded':
+      return 'bg-blue-100 text-blue-700';
+    default:
+      return 'bg-gray-100 text-gray-700';
+  }
+}
 
 const quickLinks = [
   { label: 'Manage Blog Posts', href: '/admin/blog' },
@@ -21,13 +154,6 @@ const quickLinks = [
   { label: 'View Bookings', href: '/admin/bookings' },
   { label: 'SOS Support Tickets', href: '/admin/sos-support' },
   { label: 'Manage Contact Messages', href: '/admin/contact-messages' },
-];
-
-const recentActivity = [
-  { id: 1, type: 'Professional Registered', detail: 'DJ Coolio', time: '2 min ago' },
-  { id: 2, type: 'Booking Created', detail: 'Event Hall - Jan 2026', time: '10 min ago' },
-  { id: 3, type: 'User Joined', detail: 'jane.doe@email.com', time: '30 min ago' },
-  { id: 4, type: 'Event Published', detail: 'New Year Bash', time: '1 hr ago' },
 ];
 
 function Sidebar() {
@@ -64,6 +190,25 @@ function Topbar() {
 }
 
 export default function AdminDashboard() {
+  const dataPromise = getDashboardData();
+
+  return <AdminDashboardContent dataPromise={dataPromise} />;
+}
+
+async function AdminDashboardContent({
+  dataPromise,
+}: {
+  dataPromise: ReturnType<typeof getDashboardData>;
+}) {
+  const { platformStats, salesSummary, recentPurchases } = await dataPromise;
+
+  const stats = [
+    { label: 'Total Users', value: platformStats.totalUsers },
+    { label: 'Total Professionals', value: platformStats.totalProfessionals },
+    { label: 'Active Bookings', value: platformStats.activeBookings },
+    { label: 'Total Events', value: platformStats.totalEvents },
+  ];
+
   return (
     <div className="min-h-screen flex bg-gray-100 dark:bg-gray-950">
       <Sidebar />
@@ -91,25 +236,92 @@ export default function AdminDashboard() {
                 </Link>
               ))}
             </div>
+            <section className="mb-10">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Ticket Sales</h2>
+                <Link href="/admin/events" className="text-sm text-blue-600 hover:underline">
+                  Manage events
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                  <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {formatCurrency(salesSummary.totalRevenue)}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">Confirmed purchases only</p>
+                </div>
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                  <p className="text-sm text-gray-500 mb-1">Tickets Sold</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesSummary.ticketsSold}</p>
+                  <p className="text-xs text-gray-500 mt-2">From {salesSummary.confirmedPurchases} purchases</p>
+                </div>
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                  <p className="text-sm text-gray-500 mb-1">Pending Purchases</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesSummary.pendingPurchases}</p>
+                  <p className="text-xs text-gray-500 mt-2">Awaiting payment confirmation</p>
+                </div>
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5 sm:col-span-2 lg:col-span-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500 mb-1">Last 30 Days Revenue</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {formatCurrency(salesSummary.monthRevenue)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500">Tickets Sold (30d)</p>
+                      <p className="text-xl font-semibold text-gray-900 dark:text-white">{salesSummary.monthTicketsSold}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </section>
-          <section>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Recent Ticket Purchases</h2>
             <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Recent Activity</h2>
             <div className="overflow-x-auto rounded-lg shadow bg-white dark:bg-gray-900">
               <table className="min-w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-100 dark:bg-gray-800">
-                    <th className="px-4 py-2 text-left font-semibold">Type</th>
-                    <th className="px-4 py-2 text-left font-semibold">Detail</th>
+                      <th className="px-4 py-2 text-left font-semibold">Event</th>
+                      <th className="px-4 py-2 text-left font-semibold">Customer</th>
+                      <th className="px-4 py-2 text-left font-semibold">Ticket</th>
+                      <th className="px-4 py-2 text-left font-semibold">Amount</th>
+                      <th className="px-4 py-2 text-left font-semibold">Status</th>
+                      <th className="px-4 py-2 text-left font-semibold">Date</th>
                     <th className="px-4 py-2 text-left font-semibold">Time</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {recentActivity.map(item => (
-                    <tr key={item.id} className="border-b border-gray-100 dark:border-gray-800">
-                      <td className="px-4 py-2">{item.type}</td>
-                      <td className="px-4 py-2">{item.detail}</td>
-                      <td className="px-4 py-2 text-gray-500">{item.time}</td>
-                    </tr>
+                    {recentPurchases.length === 0 ? (
+                      <tr>
+                        <td className="px-4 py-4 text-gray-500" colSpan={6}>
+                          No ticket purchases yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      recentPurchases.map((purchase) => (
+                        <tr key={purchase._id} className="border-b border-gray-100 dark:border-gray-800">
+                          <td className="px-4 py-2">{purchase.eventTitle}</td>
+                          <td className="px-4 py-2">{purchase.customerEmail}</td>
+                          <td className="px-4 py-2">
+                            {purchase.ticketType} x{purchase.quantity}
+                          </td>
+                          <td className="px-4 py-2">{formatCurrency(purchase.totalAmount, purchase.currency)}</td>
+                          <td className="px-4 py-2">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${getStatusStyle(
+                                purchase.status
+                              )}`}
+                            >
+                              {purchase.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 text-gray-500">
+                            {new Date(purchase.createdAt).toLocaleString()}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   ))}
                 </tbody>
               </table>
