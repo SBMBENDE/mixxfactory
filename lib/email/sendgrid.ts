@@ -1,20 +1,9 @@
 /**
- * SendGrid Email Service
+ * Email Service — powered by Resend
  * Handles email sending for verification, password reset, and notifications
  */
 
-import sgMail from '@sendgrid/mail';
-
-// Initialize SendGrid with API key
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  console.log('✅ [SendGrid] Initialized with API key');
-} else {
-  console.warn('⚠️ [SendGrid] WARNING: API key not configured!');
-  console.warn('⚠️ [SendGrid] SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY);
-  console.warn('⚠️ [SendGrid] SENDGRID_FROM_EMAIL:', process.env.SENDGRID_FROM_EMAIL);
-  console.warn('⚠️ [SendGrid] SENDGRID_FROM_NAME:', process.env.SENDGRID_FROM_NAME);
-}
+import { Resend } from 'resend';
 
 interface EmailOptions {
   to: string;
@@ -24,40 +13,36 @@ interface EmailOptions {
 }
 
 /**
- * Send email via SendGrid
+ * Send email via Resend
  */
 export async function sendEmail(options: EmailOptions): Promise<void> {
-  try {
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('❌ [Email] CRITICAL: SendGrid API key not configured!');
-      throw new Error('SendGrid API key not configured');
-    }
-
-    if (!process.env.SENDGRID_FROM_EMAIL) {
-      console.error('❌ [Email] CRITICAL: SendGrid FROM email not configured!');
-      throw new Error('SendGrid FROM email not configured');
-    }
-
-    const msg = {
-      to: options.to,
-      from: process.env.SENDGRID_FROM_EMAIL,
-      subject: options.subject,
-      text: options.text || options.html,
-      html: options.html,
-      replyTo: 'support@afrobizz.com',
-    };
-
-    console.log(`[Email] API Key length: ${process.env.SENDGRID_API_KEY.length}`);
-    console.log(`[Email] From: ${msg.from}`);
-    console.log(`[Email] To: ${options.to}`);
-    console.log(`[Email] Subject: ${options.subject}`);
-    console.log(`[Email] Sending...`);
-    await sgMail.send(msg as any);
-    console.log(`✅ [Email] Successfully sent to ${options.to}`);
-  } catch (error) {
-    console.error('❌ [Email] Send failed:', error);
-    throw new Error(`Failed to send email: ${error}`);
+  if (!process.env.RESEND_API_KEY) {
+    console.error('❌ [Email] CRITICAL: RESEND_API_KEY not configured!');
+    throw new Error('RESEND_API_KEY not configured');
   }
+
+  const from = process.env.RESEND_FROM_EMAIL || 'noreply@afrobizz.com';
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  console.log(`[Email] From: ${from}`);
+  console.log(`[Email] To: ${options.to}`);
+  console.log(`[Email] Subject: ${options.subject}`);
+
+  const { error } = await resend.emails.send({
+    from,
+    to: options.to,
+    replyTo: 'support@afrobizz.com',
+    subject: options.subject,
+    html: options.html,
+    text: options.text,
+  });
+
+  if (error) {
+    console.error('❌ [Email] Resend error:', error);
+    throw new Error(`Failed to send email: ${error.message}`);
+  }
+
+  console.log(`✅ [Email] Successfully sent to ${options.to}`);
 }
 
 /**
