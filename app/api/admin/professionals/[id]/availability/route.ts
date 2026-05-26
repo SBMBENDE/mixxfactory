@@ -41,16 +41,16 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     pro.availability = {} as Record<string, boolean>;
     pro.markModified('availability');
   } else if (body.date) {
-    const map: Map<string, boolean> = pro.availability instanceof Map
-      ? pro.availability
-      : new Map(Object.entries(pro.availability ?? {}));
+    const current: Record<string, boolean> = (pro.availability instanceof Map)
+      ? Object.fromEntries(pro.availability)
+      : { ...(pro.availability ?? {}) };
 
     if (body.available === null || body.available === undefined) {
-      map.delete(body.date);
+      delete current[body.date];
     } else {
-      map.set(body.date, Boolean(body.available));
+      current[body.date] = Boolean(body.available);
     }
-    pro.availability = map;
+    pro.availability = current;
   } else {
     return NextResponse.json({ error: 'Provide date+available or clear:true' }, { status: 400 });
   }
