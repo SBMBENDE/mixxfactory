@@ -9,7 +9,7 @@ import { connectDB } from '@/lib/db/connection';
 import { TicketPurchaseModel, EventModel } from '@/lib/db/models';
 import { sendTicketConfirmationEmail } from '@/lib/email';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-03-31.basil' });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-12-15.clover' });
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
