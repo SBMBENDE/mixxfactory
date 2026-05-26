@@ -29,7 +29,7 @@ const eventSchema = z.object({
     label: z.string(),
     price: z.number().min(0),
     currency: z.string(),
-    quantity: z.number().int().optional(),
+    quantity: z.number().int().min(0).optional(),
   })),
   ticketUrl: z.string().url().optional(),
   capacity: z.number().int().min(1),

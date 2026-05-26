@@ -141,6 +141,31 @@ export async function PUT(
       });
     }
 
+    if ('ticketing' in body && Array.isArray(body.ticketing)) {
+      const hasInvalidTicket = body.ticketing.some(
+        (ticket: any) =>
+          !ticket?.label ||
+          Number(ticket.price) < 0 ||
+          (ticket.quantity !== undefined && Number(ticket.quantity) < 0)
+      );
+
+      if (hasInvalidTicket) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid ticketing data: label required, price and quantity must be non-negative' },
+          { status: 400 }
+        );
+      }
+
+      body.ticketing = body.ticketing.map((ticket: any) => ({
+        ...ticket,
+        price: Number(ticket.price) || 0,
+        quantity:
+          ticket.quantity === undefined || ticket.quantity === null
+            ? undefined
+            : Math.max(0, Number(ticket.quantity) || 0),
+      }));
+    }
+
     // Update only allowed fields
     editableFields.forEach(field => {
       if (field in body && body[field] !== undefined) {

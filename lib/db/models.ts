@@ -1107,7 +1107,10 @@ const eventSchema = new Schema<IEventDocument>(
           type: String,
           default: 'EUR',
         },
-        quantity: Number, // Optional: available tickets
+        quantity: {
+          type: Number,
+          min: 0,
+        }, // Optional: available tickets
       },
     ],
     ticketUrl: String, // External ticketing platform link

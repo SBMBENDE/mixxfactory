@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       !body.location?.venue ||
       !Array.isArray(body.ticketing) ||
       body.ticketing.length === 0 ||
-      !body.ticketing.every((t: any) => t.label && t.price >= 0) ||
+      !body.ticketing.every((t: any) => t.label && t.price >= 0 && (t.quantity === undefined || t.quantity >= 0)) ||
       !body.capacity ||
       !body.organizer?.name
     ) {
