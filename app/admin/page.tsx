@@ -230,99 +230,103 @@ async function AdminDashboardContent({
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">CRUD Operations</h2>
             <div className="flex flex-wrap gap-4">
-              {quickLinks.map(link => (
-                <Link key={link.href} href={link.href} className="px-5 py-3 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition-colors font-medium">
+              {quickLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-5 py-3 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition-colors font-medium"
+                >
                   {link.label}
                 </Link>
               ))}
             </div>
-            <section className="mb-10">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Ticket Sales</h2>
-                <Link href="/admin/events" className="text-sm text-blue-600 hover:underline">
-                  Manage events
-                </Link>
+          </section>
+
+          <section className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Ticket Sales</h2>
+              <Link href="/admin/events" className="text-sm text-blue-600 hover:underline">
+                Manage events
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {formatCurrency(salesSummary.totalRevenue)}
+                </p>
+                <p className="text-xs text-gray-500 mt-2">Confirmed purchases only</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
-                  <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {formatCurrency(salesSummary.totalRevenue)}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-2">Confirmed purchases only</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
-                  <p className="text-sm text-gray-500 mb-1">Tickets Sold</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesSummary.ticketsSold}</p>
-                  <p className="text-xs text-gray-500 mt-2">From {salesSummary.confirmedPurchases} purchases</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
-                  <p className="text-sm text-gray-500 mb-1">Pending Purchases</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesSummary.pendingPurchases}</p>
-                  <p className="text-xs text-gray-500 mt-2">Awaiting payment confirmation</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5 sm:col-span-2 lg:col-span-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Last 30 Days Revenue</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {formatCurrency(salesSummary.monthRevenue)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">Tickets Sold (30d)</p>
-                      <p className="text-xl font-semibold text-gray-900 dark:text-white">{salesSummary.monthTicketsSold}</p>
-                    </div>
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                <p className="text-sm text-gray-500 mb-1">Tickets Sold</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesSummary.ticketsSold}</p>
+                <p className="text-xs text-gray-500 mt-2">From {salesSummary.confirmedPurchases} purchases</p>
+              </div>
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                <p className="text-sm text-gray-500 mb-1">Pending Purchases</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesSummary.pendingPurchases}</p>
+                <p className="text-xs text-gray-500 mt-2">Awaiting payment confirmation</p>
+              </div>
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5 sm:col-span-2 lg:col-span-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Last 30 Days Revenue</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {formatCurrency(salesSummary.monthRevenue)}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500">Tickets Sold (30d)</p>
+                    <p className="text-xl font-semibold text-gray-900 dark:text-white">{salesSummary.monthTicketsSold}</p>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           </section>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Recent Ticket Purchases</h2>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Recent Activity</h2>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Recent Ticket Purchases</h2>
             <div className="overflow-x-auto rounded-lg shadow bg-white dark:bg-gray-900">
               <table className="min-w-full text-sm">
                 <thead>
-                      <th className="px-4 py-2 text-left font-semibold">Event</th>
-                      <th className="px-4 py-2 text-left font-semibold">Customer</th>
-                      <th className="px-4 py-2 text-left font-semibold">Ticket</th>
-                      <th className="px-4 py-2 text-left font-semibold">Amount</th>
-                      <th className="px-4 py-2 text-left font-semibold">Status</th>
-                      <th className="px-4 py-2 text-left font-semibold">Date</th>
-                    <th className="px-4 py-2 text-left font-semibold">Time</th>
+                  <tr className="bg-gray-100 dark:bg-gray-800">
+                    <th className="px-4 py-2 text-left font-semibold">Event</th>
+                    <th className="px-4 py-2 text-left font-semibold">Customer</th>
+                    <th className="px-4 py-2 text-left font-semibold">Ticket</th>
+                    <th className="px-4 py-2 text-left font-semibold">Amount</th>
+                    <th className="px-4 py-2 text-left font-semibold">Status</th>
+                    <th className="px-4 py-2 text-left font-semibold">Date</th>
                   </tr>
                 </thead>
-                    {recentPurchases.length === 0 ? (
-                      <tr>
-                        <td className="px-4 py-4 text-gray-500" colSpan={6}>
-                          No ticket purchases yet.
+                <tbody>
+                  {recentPurchases.length === 0 ? (
+                    <tr>
+                      <td className="px-4 py-4 text-gray-500" colSpan={6}>
+                        No ticket purchases yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    recentPurchases.map((purchase) => (
+                      <tr key={purchase._id} className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="px-4 py-2">{purchase.eventTitle}</td>
+                        <td className="px-4 py-2">{purchase.customerEmail}</td>
+                        <td className="px-4 py-2">
+                          {purchase.ticketType} x{purchase.quantity}
                         </td>
+                        <td className="px-4 py-2">{formatCurrency(purchase.totalAmount, purchase.currency)}</td>
+                        <td className="px-4 py-2">
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${getStatusStyle(
+                              purchase.status
+                            )}`}
+                          >
+                            {purchase.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-gray-500">{new Date(purchase.createdAt).toLocaleString()}</td>
                       </tr>
-                    ) : (
-                      recentPurchases.map((purchase) => (
-                        <tr key={purchase._id} className="border-b border-gray-100 dark:border-gray-800">
-                          <td className="px-4 py-2">{purchase.eventTitle}</td>
-                          <td className="px-4 py-2">{purchase.customerEmail}</td>
-                          <td className="px-4 py-2">
-                            {purchase.ticketType} x{purchase.quantity}
-                          </td>
-                          <td className="px-4 py-2">{formatCurrency(purchase.totalAmount, purchase.currency)}</td>
-                          <td className="px-4 py-2">
-                            <span
-                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${getStatusStyle(
-                                purchase.status
-                              )}`}
-                            >
-                              {purchase.status}
-                            </span>
-                          </td>
-                          <td className="px-4 py-2 text-gray-500">
-                            {new Date(purchase.createdAt).toLocaleString()}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  ))}
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
