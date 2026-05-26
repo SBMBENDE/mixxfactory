@@ -41,6 +41,9 @@ export default function TicketCheckoutModal({
   if (!isOpen) return null;
 
   const selectedTicket = tickets.find((t) => t.label === selectedTicketType);
+  const selectedTicketQuantity = selectedTicket?.quantity;
+  const selectedTicketAvailable = selectedTicketQuantity == null ? null : Math.max(0, selectedTicketQuantity);
+  const isSoldOut = selectedTicketAvailable === 0;
   const totalPrice = selectedTicket ? selectedTicket.price * quantity : 0;
 
   const handleCheckout = async () => {
@@ -76,7 +79,18 @@ export default function TicketCheckoutModal({
       if (!res.ok) {
         const errorText = await res.text();
         console.error('Checkout API error:', errorText);
-        setError(`Failed to create checkout session (${res.status})`);
+
+        let message = `Failed to create checkout session (${res.status})`;
+        try {
+          const parsedError = JSON.parse(errorText);
+          if (parsedError?.error) {
+            message = parsedError.error;
+          }
+        } catch {
+          // Non-JSON response, keep default message
+        }
+
+        setError(message);
         setLoading(false);
         return;
       }
@@ -192,7 +206,7 @@ export default function TicketCheckoutModal({
             {tickets.map((ticket) => (
               <option key={ticket.label} value={ticket.label}>
                 {ticket.label} - {ticket.currency} {ticket.price}
-                {ticket.quantity !== undefined && ` (${ticket.quantity} available)`}
+                {ticket.quantity !== undefined && ` (${Math.max(0, ticket.quantity)} available)`}
               </option>
             ))}
           </select>
@@ -206,17 +220,28 @@ export default function TicketCheckoutModal({
           <input
             type="number"
             min="1"
-            max={selectedTicket?.quantity || 20}
+            max={selectedTicketAvailable ?? 20}
             value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            onChange={(e) => {
+              const nextValue = Math.max(1, parseInt(e.target.value, 10) || 1);
+              const cap = selectedTicketAvailable ?? 20;
+              setQuantity(Math.min(nextValue, cap));
+            }}
+            disabled={isSoldOut}
             style={{
               width: '100%',
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '0.375rem',
               fontSize: '1rem',
+              backgroundColor: isSoldOut ? '#f9fafb' : 'white',
             }}
           />
+          {isSoldOut && (
+            <p style={{ color: '#b91c1c', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+              This ticket type is sold out.
+            </p>
+          )}
         </div>
 
         {/* Customer Name */}
@@ -285,21 +310,21 @@ export default function TicketCheckoutModal({
         {/* Checkout Button */}
         <button
           onClick={handleCheckout}
-          disabled={loading || !customerEmail || !customerName}
+          disabled={loading || !customerEmail || !customerName || isSoldOut}
           style={{
             width: '100%',
             padding: '1rem',
-            backgroundColor: loading || !customerEmail || !customerName ? '#9ca3af' : '#2563eb',
+            backgroundColor: loading || !customerEmail || !customerName || isSoldOut ? '#9ca3af' : '#2563eb',
             color: 'white',
             borderRadius: '0.375rem',
             fontWeight: '600',
             border: 'none',
             fontSize: '1rem',
-            cursor: loading || !customerEmail || !customerName ? 'not-allowed' : 'pointer',
+            cursor: loading || !customerEmail || !customerName || isSoldOut ? 'not-allowed' : 'pointer',
             transition: 'all 0.3s ease',
           }}
         >
-          {loading ? 'Processing...' : 'Proceed to Payment'}
+          {loading ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Proceed to Payment'}
         </button>
 
         <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '1rem', textAlign: 'center' }}>

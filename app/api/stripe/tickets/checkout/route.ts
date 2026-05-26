@@ -45,8 +45,12 @@ export async function POST(req: NextRequest) {
     if (!ticketOption) return errorResponse('Ticket type not found', 400);
 
     // Check remaining stock (undefined/null = unlimited)
-    if (ticketOption.quantity != null && ticketOption.quantity < quantity) {
-      return errorResponse(`Only ${ticketOption.quantity} tickets remaining`, 400);
+    const remaining = ticketOption.quantity == null ? null : Math.max(0, Number(ticketOption.quantity));
+    if (remaining != null && remaining < quantity) {
+      if (remaining === 0) {
+        return errorResponse('This ticket type is sold out', 400);
+      }
+      return errorResponse(`Only ${remaining} tickets remaining`, 400);
     }
 
     const unitPrice = ticketOption.price ?? 0;
