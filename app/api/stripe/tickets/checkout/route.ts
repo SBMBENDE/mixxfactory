@@ -11,6 +11,7 @@ import { connectDB } from '@/lib/db/connection';
 import { EventModel, TicketPurchaseModel } from '@/lib/db/models';
 import { stripe } from '@/lib/payment/stripe';
 import { errorResponse, successResponse } from '@/utils/api-response';
+import { sendTicketConfirmationEmail } from '@/lib/email';
 
 // Validation schema
 const checkoutSchema = z.object({
@@ -71,6 +72,20 @@ export async function POST(req: NextRequest) {
         ticketCode,
         status: 'confirmed',
       });
+
+      // Send confirmation email immediately for free tickets
+      sendTicketConfirmationEmail({
+        customerEmail,
+        customerName,
+        eventTitle: event.title,
+        eventSlug: event.slug,
+        ticketType,
+        quantity,
+        totalAmount: 0,
+        currency: currency.toUpperCase(),
+        ticketCode,
+      }).catch((err) => console.error('[Checkout] Free ticket email failed:', err));
+
       return successResponse({ url: `${baseUrl}/events/${event.slug}/ticket-success?code=${ticketCode}` });
     }
 

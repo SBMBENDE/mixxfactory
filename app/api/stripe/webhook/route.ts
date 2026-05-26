@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connectDB } from '@/lib/db/connection';
 import { TicketPurchaseModel, EventModel } from '@/lib/db/models';
+import { sendTicketConfirmationEmail } from '@/lib/email';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-03-31.basil' });
 
@@ -49,6 +50,20 @@ export async function POST(req: NextRequest) {
           { _id: purchase.eventId, 'ticketing.label': purchase.ticketType },
           { $inc: { 'ticketing.$.quantity': -quantity, attendees: quantity } }
         );
+
+        // Send confirmation email (non-blocking — don't fail webhook on email error)
+        sendTicketConfirmationEmail({
+          customerEmail: purchase.customerEmail,
+          customerName: purchase.customerName,
+          eventTitle: purchase.eventTitle,
+          eventSlug: purchase.eventSlug,
+          ticketType: purchase.ticketType,
+          quantity: purchase.quantity,
+          totalAmount: purchase.totalAmount,
+          currency: purchase.currency,
+          ticketCode: purchase.ticketCode,
+        }).catch((err) => console.error('[Webhook] Email send failed:', err));
+
         console.log(`[Webhook] Confirmed ticket purchase ${purchase.ticketCode} for ${purchase.eventTitle}`);
       } else {
         console.warn('[Webhook] No pending purchase found for session:', session.id);
