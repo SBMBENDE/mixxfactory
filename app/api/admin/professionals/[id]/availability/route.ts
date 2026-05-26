@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (!pro) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   if (body.clear === true) {
-    pro.availability = new Map();
+    pro.availability = {} as Record<string, boolean>;
     pro.markModified('availability');
   } else if (body.date) {
     const map: Map<string, boolean> = pro.availability instanceof Map
