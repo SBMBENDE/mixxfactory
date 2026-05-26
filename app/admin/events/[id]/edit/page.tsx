@@ -38,16 +38,76 @@ export default function AdminEventEditPage() {
     setEvent({ ...event, [name]: value });
   };
 
+  const handleTicketingChange = (
+    index: number,
+    field: 'label' | 'price' | 'currency' | 'quantity',
+    value: string
+  ) => {
+    if (!event) return;
+
+    const updatedTicketing = [...(event.ticketing || [])];
+    const current = updatedTicketing[index] || { label: '', price: 0, currency: 'EUR' };
+
+    if (field === 'price') {
+      current.price = Number.parseFloat(value) || 0;
+    } else if (field === 'quantity') {
+      if (value.trim() === '') {
+        delete current.quantity;
+      } else {
+        current.quantity = Math.max(0, Number.parseInt(value, 10) || 0);
+      }
+    } else {
+      current[field] = value as never;
+    }
+
+    updatedTicketing[index] = current;
+    setEvent({ ...event, ticketing: updatedTicketing });
+  };
+
+  const addTicketTier = () => {
+    if (!event) return;
+    const updatedTicketing = [...(event.ticketing || []), { label: '', price: 0, currency: 'EUR' }];
+    setEvent({ ...event, ticketing: updatedTicketing });
+  };
+
+  const removeTicketTier = (index: number) => {
+    if (!event) return;
+    const updatedTicketing = (event.ticketing || []).filter((_, i) => i !== index);
+    setEvent({ ...event, ticketing: updatedTicketing });
+  };
+
   const handleSave = async () => {
     if (!event) return;
     setSaving(true);
     setError('');
+
+    const cleanedTicketing = (event.ticketing || [])
+      .map((tier) => ({
+        label: (tier.label || '').trim(),
+        price: Number(tier.price) || 0,
+        currency: (tier.currency || 'EUR').trim() || 'EUR',
+        quantity:
+          tier.quantity === undefined || tier.quantity === null
+            ? undefined
+            : Math.max(0, Number(tier.quantity) || 0),
+      }))
+      .filter((tier) => tier.label.length > 0);
+
+    if (cleanedTicketing.length === 0) {
+      setError('Please add at least one ticket tier with a label.');
+      setSaving(false);
+      return;
+    }
+
     try {
       const res = await fetch(`/api/events/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(event),
+        body: JSON.stringify({
+          ...event,
+          ticketing: cleanedTicketing,
+        }),
       });
       const data = await res.json();
       if (data.success) {
@@ -107,7 +167,82 @@ export default function AdminEventEditPage() {
             onChange={handleChange}
           />
         </div>
-        {/* Add more fields as needed */}
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block font-medium">Ticketing</label>
+            <button
+              type="button"
+              onClick={addTicketTier}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Add Ticket Tier
+            </button>
+          </div>
+
+          {(event.ticketing || []).length === 0 ? (
+            <div className="text-sm text-gray-500 border rounded px-3 py-2">
+              No ticket tiers configured yet.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {(event.ticketing || []).map((tier, index) => (
+                <div key={`${tier.label}-${index}`} className="grid grid-cols-1 md:grid-cols-5 gap-3 border rounded p-3">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Label</label>
+                    <input
+                      className="w-full border rounded px-2 py-1"
+                      value={tier.label || ''}
+                      onChange={(e) => handleTicketingChange(index, 'label', e.target.value)}
+                      placeholder="VIP"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Price</label>
+                    <input
+                      className="w-full border rounded px-2 py-1"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={tier.price ?? 0}
+                      onChange={(e) => handleTicketingChange(index, 'price', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Currency</label>
+                    <input
+                      className="w-full border rounded px-2 py-1"
+                      value={tier.currency || 'EUR'}
+                      onChange={(e) => handleTicketingChange(index, 'currency', e.target.value.toUpperCase())}
+                      maxLength={5}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Quantity</label>
+                    <input
+                      className="w-full border rounded px-2 py-1"
+                      type="number"
+                      min="0"
+                      value={tier.quantity ?? ''}
+                      onChange={(e) => handleTicketingChange(index, 'quantity', e.target.value)}
+                      placeholder="Leave empty for unlimited"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      type="button"
+                      onClick={() => removeTicketTier(index)}
+                      className="w-full px-2 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="flex gap-4 mt-6">
           <Button onClick={handleSave} disabled={saving} variant="primary">
             {saving ? 'Saving...' : 'Save'}
