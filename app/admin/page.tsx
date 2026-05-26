@@ -285,7 +285,15 @@ async function AdminDashboardContent({
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Recent Ticket Purchases</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Recent Ticket Purchases</h2>
+              <a
+                href="/api/admin/tickets/export"
+                className="px-4 py-2 text-sm font-medium bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors"
+              >
+                Export CSV
+              </a>
+            </div>
             <div className="overflow-x-auto rounded-lg shadow bg-white dark:bg-gray-900">
               <table className="min-w-full text-sm">
                 <thead>
