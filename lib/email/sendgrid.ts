@@ -16,33 +16,42 @@ interface EmailOptions {
  * Send email via Resend
  */
 export async function sendEmail(options: EmailOptions): Promise<void> {
-  if (!process.env.RESEND_API_KEY) {
-    console.error('❌ [Email] CRITICAL: RESEND_API_KEY not configured!');
-    throw new Error('RESEND_API_KEY not configured');
+  try {
+    console.log('[Email] Checking RESEND_API_KEY...');
+    if (!process.env.RESEND_API_KEY) {
+      console.error('❌ [Email] CRITICAL: RESEND_API_KEY not configured!');
+      throw new Error('RESEND_API_KEY not configured');
+    }
+    console.log(`[Email] API Key present (length: ${process.env.RESEND_API_KEY.length})`);
+
+    const from = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    console.log(`[Email] From: ${from}`);
+    console.log(`[Email] To: ${options.to}`);
+    console.log(`[Email] Subject: ${options.subject}`);
+
+    console.log('[Email] Initializing Resend...');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    console.log('[Email] Calling resend.emails.send()...');
+    const { data, error } = await resend.emails.send({
+      from,
+      to: options.to,
+      replyTo: 'support@afrobizz.com',
+      subject: options.subject,
+      html: options.html,
+      text: options.text,
+    });
+
+    if (error) {
+      console.error('❌ [Email] Resend error:', JSON.stringify(error));
+      throw new Error(`Failed to send email: ${JSON.stringify(error)}`);
+    }
+
+    console.log(`✅ [Email] Successfully sent to ${options.to} | ID: ${data?.id}`);
+  } catch (err) {
+    console.error('❌ [Email] Exception:', err);
+    throw err;
   }
-
-  const from = process.env.RESEND_FROM_EMAIL || 'noreply@afrobizz.com';
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
-  console.log(`[Email] From: ${from}`);
-  console.log(`[Email] To: ${options.to}`);
-  console.log(`[Email] Subject: ${options.subject}`);
-
-  const { error } = await resend.emails.send({
-    from,
-    to: options.to,
-    replyTo: 'support@afrobizz.com',
-    subject: options.subject,
-    html: options.html,
-    text: options.text,
-  });
-
-  if (error) {
-    console.error('❌ [Email] Resend error:', error);
-    throw new Error(`Failed to send email: ${error.message}`);
-  }
-
-  console.log(`✅ [Email] Successfully sent to ${options.to}`);
 }
 
 /**
