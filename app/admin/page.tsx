@@ -32,6 +32,19 @@ type RecentPurchase = {
   createdAt: Date;
 };
 
+type EventStockTier = {
+  label: string;
+  quantity: number | null;
+};
+
+type EventStockItem = {
+  _id: string;
+  title: string;
+  slug: string;
+  startDate?: Date;
+  ticketing: EventStockTier[];
+};
+
 async function getDashboardData() {
   await connectDB();
 
@@ -47,6 +60,7 @@ async function getDashboardData() {
     confirmedSalesAgg,
     monthSalesAgg,
     recentPurchases,
+    stockEvents,
   ] = await Promise.all([
     UserModel.countDocuments(),
     ProfessionalModel.countDocuments({ active: true }),
@@ -84,6 +98,11 @@ async function getDashboardData() {
       .limit(8)
       .select('eventTitle ticketType quantity totalAmount currency customerEmail status createdAt')
       .lean(),
+    EventModel.find({ ticketing: { $exists: true, $ne: [] } })
+      .sort({ startDate: 1, createdAt: -1 })
+      .limit(8)
+      .select('title slug startDate ticketing')
+      .lean(),
   ]);
 
   const confirmedSales = confirmedSalesAgg[0] || {
@@ -115,6 +134,7 @@ async function getDashboardData() {
     },
     salesSummary,
     recentPurchases: recentPurchases as unknown as RecentPurchase[],
+    stockEvents: stockEvents as unknown as EventStockItem[],
   };
 }
 
@@ -200,7 +220,7 @@ async function AdminDashboardContent({
 }: {
   dataPromise: ReturnType<typeof getDashboardData>;
 }) {
-  const { platformStats, salesSummary, recentPurchases } = await dataPromise;
+  const { platformStats, salesSummary, recentPurchases, stockEvents } = await dataPromise;
 
   const stats = [
     { label: 'Total Users', value: platformStats.totalUsers },
@@ -281,6 +301,68 @@ async function AdminDashboardContent({
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Remaining Stock</h2>
+              <Link href="/admin/events" className="text-sm text-blue-600 hover:underline">
+                View all events
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {stockEvents.length === 0 ? (
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-5 text-gray-500">
+                  No ticketed events available.
+                </div>
+              ) : (
+                stockEvents.map((event) => {
+                  const finiteStock = event.ticketing
+                    .map((tier) => (tier.quantity == null ? null : Math.max(0, Number(tier.quantity))))
+                    .filter((qty): qty is number => qty !== null);
+                  const totalFiniteStock = finiteStock.length ? finiteStock.reduce((acc, qty) => acc + qty, 0) : null;
+
+                  return (
+                    <div key={event._id} className="bg-white dark:bg-gray-900 rounded-lg shadow p-5">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{event.title}</h3>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {event.startDate ? new Date(event.startDate).toLocaleDateString() : 'No date set'}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500">Total Remaining</p>
+                          <p className="text-lg font-bold text-gray-900 dark:text-white">
+                            {totalFiniteStock === null ? 'Unlimited' : totalFiniteStock}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        {event.ticketing.map((tier, index) => {
+                          const quantity = tier.quantity == null ? null : Math.max(0, Number(tier.quantity));
+                          return (
+                            <div key={`${event._id}-${tier.label}-${index}`} className="flex items-center justify-between text-sm border-b border-gray-100 dark:border-gray-800 pb-2 last:border-0 last:pb-0">
+                              <span className="text-gray-700 dark:text-gray-300">{tier.label}</span>
+                              <span className={quantity === 0 ? 'font-semibold text-red-600' : 'font-semibold text-gray-900 dark:text-white'}>
+                                {quantity === null ? 'Unlimited' : quantity === 0 ? 'Sold out' : `${quantity} left`}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className="mt-3">
+                        <Link href={`/admin/events/${event._id}/edit`} className="text-xs text-blue-600 hover:underline">
+                          Edit event stock
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </section>
 
