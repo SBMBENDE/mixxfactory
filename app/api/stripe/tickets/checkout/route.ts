@@ -53,7 +53,8 @@ export async function POST(req: NextRequest) {
     const totalAmount = unitPrice * quantity;
     const currency = (ticketOption.currency || 'EUR').toLowerCase();
     const ticketCode = `TKT-${randomUUID().toUpperCase().slice(0, 8)}`;
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // Derive base URL from the incoming request so redirects always point to the correct domain
+    const baseUrl = req.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     // ── Free tickets ─────────────────────────────────────────────────────────
     if (unitPrice === 0) {
