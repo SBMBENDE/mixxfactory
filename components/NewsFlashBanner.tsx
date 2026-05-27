@@ -227,16 +227,25 @@ export default function NewsFlashBanner() {
     // Poll for updates every 30 seconds for instant admin changes
     const pollInterval = setInterval(fetchAnnouncements, 30000);
 
-    // Auto-rotate announcements every 5 seconds if there are multiple
-    const rotateInterval = announcements.length > 1 ? setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % announcements.length);
-    }, 5000) : null;
-
     return () => {
       clearInterval(pollInterval);
-      if (rotateInterval) clearInterval(rotateInterval);
     };
   }, [announcements.length]);
+
+  useEffect(() => {
+    // Pause auto-slide while user is interacting (hover) or reading in modal.
+    if (announcements.length <= 1 || isHovering || showModal) {
+      return;
+    }
+
+    const rotateInterval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % announcements.length);
+    }, 5000);
+
+    return () => {
+      clearInterval(rotateInterval);
+    };
+  }, [announcements.length, isHovering, showModal]);
 
   if (loading) {
     return null;
