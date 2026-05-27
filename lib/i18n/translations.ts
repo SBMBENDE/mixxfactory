@@ -49,8 +49,8 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'African Businesses & Talent Worldwide',
-      tagline: 'African Businesses & Talent Worldwide',
+      title: 'African Businesses, Professionals & Events',
+      tagline: 'African Businesses, Professionals & Events',
       subtitle: 'Access trusted professionals, businesses & events near you — instantly',
       discoverBtn: 'Explore Professionals',
       eventsBtn: 'List Your Business',
