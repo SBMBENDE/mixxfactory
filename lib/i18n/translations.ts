@@ -671,11 +671,11 @@ export const translations = {
     },
     // Home page
     home: {
-      title: 'Entreprises et Talents Africains dans le monde',
-      tagline: 'Entreprises et Talents Africains dans le monde',
-      subtitle: 'Accédez à des professionnels de confiance et à des entreprises africaines instantanément',
-      discoverBtn: 'Explorer les professionnels',
-      eventsBtn: 'Listez votre entreprise',
+      title: 'Entreprises, Professionnels & Événements Africains',
+      tagline: 'Entreprises, Professionnels & Événements Africains',
+        subtitle: 'Accédez à des professionnels de confiance et à des entreprises africaines instantanément',
+        discoverBtn: 'Découvrir les Professionnels',
+        eventsBtn: 'Lister Votre Entreprise',
       registerBtn: 'S\'inscrire en tant que professionnel',
       popularCategories: 'Catégories populaires',
       topRatedProfessionals: 'Des Professionnels les mieux notés',
