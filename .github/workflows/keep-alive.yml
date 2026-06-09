@@ -1,0 +1,35 @@
+name: MixxFactory Keep-Alive
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/keep-alive.yml
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Validate keep-alive URL secret
+        env:
+          KEEP_ALIVE_URL: ${{ secrets.KEEP_ALIVE_URL }}
+        run: |
+          if [ -z "$KEEP_ALIVE_URL" ]; then
+            echo "KEEP_ALIVE_URL secret is not configured."
+            echo "Set it in GitHub: Settings > Secrets and variables > Actions > New repository secret"
+            exit 1
+          fi
+
+      - name: Ping application endpoint
+        env:
+          KEEP_ALIVE_URL: ${{ secrets.KEEP_ALIVE_URL }}
+        run: |
+          curl --silent --show-error --fail --max-time 20 "$KEEP_ALIVE_URL" > /dev/null
+          echo "Keep-alive ping successful"
