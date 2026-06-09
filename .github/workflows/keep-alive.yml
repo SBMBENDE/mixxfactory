@@ -31,5 +31,17 @@ jobs:
         env:
           KEEP_ALIVE_URL: ${{ secrets.KEEP_ALIVE_URL }}
         run: |
-          curl --silent --show-error --fail --max-time 20 "$KEEP_ALIVE_URL" > /dev/null
-          echo "Keep-alive ping successful"
+          status_code=$(curl --silent --show-error --max-time 20 --output /dev/null --write-out "%{http_code}" "$KEEP_ALIVE_URL")
+          echo "Keep-alive status code: $status_code"
+
+          if [ "$status_code" = "000" ]; then
+            echo "Keep-alive failed: no HTTP response (network/timeout/DNS issue)"
+            exit 1
+          fi
+
+          if [ "$status_code" -ge 500 ]; then
+            echo "Keep-alive failed: server error status $status_code"
+            exit 1
+          fi
+
+          echo "Keep-alive ping successful (non-5xx response)"
