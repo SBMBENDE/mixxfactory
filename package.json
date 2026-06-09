@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "predev": "pkill -f 'next dev' 2>/dev/null; rm -f .next/dev/lock; exit 0",
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

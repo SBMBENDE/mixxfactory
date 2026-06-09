@@ -673,7 +673,7 @@ export const translations = {
     home: {
       title: 'Entreprises, Professionnels & Événements Africains',
       tagline: 'Entreprises, Professionnels & Événements Africains',
-        subtitle: 'Accédez à des professionnels de confiance et à des entreprises africaines instantanément',
+        subtitle: 'Accédez instantanément à des professionnels de confiance, des entreprises et des événements  près de chez vous.',
         discoverBtn: 'Découvrir les Professionnels',
         eventsBtn: 'Lister Votre Entreprise',
       registerBtn: 'S\'inscrire en tant que professionnel',
