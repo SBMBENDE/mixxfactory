@@ -31,5 +31,9 @@ jobs:
         env:
           KEEP_ALIVE_URL: ${{ secrets.KEEP_ALIVE_URL }}
         run: |
-          curl --silent --show-error --fail --max-time 20 "$KEEP_ALIVE_URL" > /dev/null
-          echo "Keep-alive ping successful"
+          status_code=$(curl --silent --show-error --max-time 20 --output /dev/null --write-out "%{http_code}" "$KEEP_ALIVE_URL")
+          if [ "$status_code" -ge 500 ]; then
+            echo "Keep-alive ping failed with server error status: $status_code"
+            exit 1
+          fi
+          echo "Keep-alive ping successful (HTTP $status_code)"
