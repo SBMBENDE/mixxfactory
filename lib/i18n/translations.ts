@@ -463,7 +463,7 @@ export const translations = {
     },
     // Footer
     footer: {
-      description: 'Connecting users with professionals, venues, and events.',
+      description: 'Connecting professionals, businesses, venues & events instantly.',
       quickLinks: 'Quick Links',
       home: 'Home',
       directory: 'Directory',

@@ -18,7 +18,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <h3 className="text-lg font-bold mb-4 text-white">Afrobizz</h3>
             <p className="text-sm text-gray-400 mb-6">
-              {t.footer?.description || 'Connecting professionals, businesses, venues & events worldwide.'}
+              {t.footer?.description || 'Connecting professionals, businesses, venues & events instantly.'}
             </p>
             
             {/* Social Icons */}
