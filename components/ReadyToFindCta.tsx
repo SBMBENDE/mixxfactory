@@ -59,11 +59,14 @@ export default function ReadyToFindCta() {
     // Split subtitle text into individual letters
     const subtitleText = subtitleRef.current.textContent || '';
     
-    // For mobile, insert a line break after "top-rated" or "meilleurs"
+    // For mobile, enforce a cleaner two-line subtitle layout.
     let formattedSubtitle = subtitleText;
     if (isMobile) {
-      if (subtitleText.includes('top-rated professionals')) {
-        formattedSubtitle = subtitleText.replace('top-rated professionals', 'top-rated<br/>professionals');
+      if (subtitleText.toLowerCase().includes('top-rated')) {
+        formattedSubtitle = subtitleText.replace(
+          /top-rated\s+professionals(?:\s+and\s+events)?/i,
+          'top-rated<br/>professionals & events'
+        );
       } else if (subtitleText.includes('meilleurs professionnels')) {
         formattedSubtitle = subtitleText.replace('meilleurs professionnels', 'meilleurs<br/>professionnels');
       }

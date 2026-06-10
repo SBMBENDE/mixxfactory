@@ -101,25 +101,34 @@ export const getFeaturedProfessionals = cache(async () => {
 export const getPopularCategories = cache(async () => {
   try {
     if (mongoose.connection.readyState !== 1) {
-      await connectDB();
+      await Promise.race([
+        connectDB(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB connect timeout')), QUERY_TIMEOUT_MS)),
+      ]);
     }
 
     // Try to get categories marked as popular (sorted by popularOrder)
-    let categories = await CategoryModel.find({ popular: true })
-      .select('name slug icon description popular popularOrder')
-      .sort({ popularOrder: 1, name: 1 })
-      .limit(8)
-      .lean()
-      .exec();
+    let categories = await Promise.race([
+      CategoryModel.find({ popular: true })
+        .select('name slug icon description popular popularOrder')
+        .sort({ popularOrder: 1, name: 1 })
+        .limit(8)
+        .lean()
+        .exec(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Category query timeout')), QUERY_TIMEOUT_MS)),
+    ]) as any[];
 
     // Fallback: if none are marked popular, use old logic
     if (!categories || categories.length === 0) {
-      categories = await CategoryModel.find({})
-        .select('name slug icon description popular')
-        .sort({ name: 1 })
-        .limit(8)
-        .lean()
-        .exec();
+      categories = await Promise.race([
+        CategoryModel.find({})
+          .select('name slug icon description popular')
+          .sort({ name: 1 })
+          .limit(8)
+          .lean()
+          .exec(),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Category fallback query timeout')), QUERY_TIMEOUT_MS)),
+      ]) as any[];
     }
 
     console.log(`[CATEGORIES] Fetched ${categories?.length || 0} categories`);
