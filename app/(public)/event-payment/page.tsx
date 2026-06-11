@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -27,7 +27,7 @@ const EVENT_PRICING = {
   },
 };
 
-export default function EventPaymentPage() {
+function EventPaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated, authStatus } = useAuth();
@@ -290,5 +290,24 @@ export default function EventPaymentPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function EventPaymentFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
+        <p className="text-gray-600 dark:text-gray-400">Loading payment page...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function EventPaymentPage() {
+  return (
+    <Suspense fallback={<EventPaymentFallback />}>
+      <EventPaymentContent />
+    </Suspense>
   );
 }

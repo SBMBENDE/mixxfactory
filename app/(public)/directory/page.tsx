@@ -17,7 +17,7 @@ import { CategorySelect } from '@/components/ui/CategorySelect';
  * - Suspense prevents blocking initial page load
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AuthModal } from '@/components/AuthModal';
 import { AppImage } from '@/components/AppImage';
@@ -57,7 +57,7 @@ const categoryTaglineKeys: Record<string, string> = {
   'handyman-services': 'handymanServices',
 };
 
-export default function DirectoryPage() {
+function DirectoryPageContent() {
   const searchParams = useSearchParams();
   // const { language } = useLanguage();
   const [professionals, setProfessionals] = useState<any[]>([]);
@@ -594,5 +594,23 @@ export default function DirectoryPage() {
         }}
       />
     </div>
+  );
+}
+
+function DirectoryPageFallback() {
+  return (
+    <div style={{ padding: '3rem 1rem' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center' }}>
+        <p style={{ color: '#6b7280', fontSize: '1rem' }}>Loading directory...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function DirectoryPage() {
+  return (
+    <Suspense fallback={<DirectoryPageFallback />}>
+      <DirectoryPageContent />
+    </Suspense>
   );
 }

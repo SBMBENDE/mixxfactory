@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 interface TicketInfo {
   ticketCode: string;
@@ -22,7 +23,7 @@ interface TicketInfo {
   status: string;
 }
 
-export default function TicketSuccessPage() {
+function TicketSuccessPageContent() {
   const searchParams = useSearchParams();
   const params = useParams();
   const sessionId = searchParams?.get('session_id');
@@ -152,6 +153,23 @@ export default function TicketSuccessPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+function TicketSuccessFallback() {
+  return (
+    <section style={{ padding: '4rem 1rem', textAlign: 'center', minHeight: '80vh' }}>
+      <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎟️</div>
+      <p style={{ color: '#6b7280' }}>Loading ticket details...</p>
+    </section>
+  );
+}
+
+export default function TicketSuccessPage() {
+  return (
+    <Suspense fallback={<TicketSuccessFallback />}>
+      <TicketSuccessPageContent />
+    </Suspense>
   );
 }
 

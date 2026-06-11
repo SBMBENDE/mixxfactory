@@ -5,11 +5,11 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
-export default function EventPaymentSuccessPage() {
+function EventPaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -151,5 +151,27 @@ export default function EventPaymentSuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function EventPaymentSuccessFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+      <div className="max-w-md w-full text-center">
+        <Loader2 className="h-16 w-16 animate-spin text-blue-500 mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          Processing Payment
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">Loading payment details...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function EventPaymentSuccessPage() {
+  return (
+    <Suspense fallback={<EventPaymentSuccessFallback />}>
+      <EventPaymentSuccessContent />
+    </Suspense>
   );
 }
