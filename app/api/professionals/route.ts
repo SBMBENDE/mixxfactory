@@ -9,7 +9,7 @@ import { searchQuerySchema } from '@/lib/validations';
 import { successResponse, validationErrorResponse } from '@/utils/api-response';
 
 // Disable cache for instant updates (dev/debug)
-export const revalidate = 0;
+export const revalidate = 300;
 
 export async function GET(request: NextRequest) {
   try {
@@ -119,13 +119,22 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return successResponse({
+    const response = successResponse({
       data: processedProfessionals,
       total,
       page,
       pageSize: limit,
       totalPages,
     });
+
+    // Do not cache slug-based or authenticated fetches (used by profile edit flows).
+    if (slug || request.cookies.has('auth_token')) {
+      response.headers.set('Cache-Control', 'no-store, max-age=0');
+    } else {
+      response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=1800');
+    }
+
+    return response;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : undefined;

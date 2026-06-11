@@ -8,8 +8,8 @@ import { connectDBWithTimeout } from '@/lib/db/connection';
 import { NewsFlashModel } from '@/lib/db/models';
 import { successResponse, errorResponse } from '@/utils/api-response';
 
-// Disable cache for instant updates
-export const revalidate = 0;
+// Cache for 2 minutes - short enough for announcements, low enough request churn.
+export const revalidate = 120;
 
 export async function GET(_request: NextRequest) {
   try {
@@ -27,7 +27,7 @@ export async function GET(_request: NextRequest) {
       .limit(5)
       .lean();
 
-    return successResponse(
+    const response = successResponse(
       newsFlashes.map((n: any) => ({
         _id: n._id.toString(),
         title: n.title,
@@ -43,6 +43,9 @@ export async function GET(_request: NextRequest) {
       'News flashes fetched successfully',
       200
     );
+
+    response.headers.set('Cache-Control', 'public, max-age=120, s-maxage=120, stale-while-revalidate=900');
+    return response;
   } catch (error) {
     console.error('News Flash GET error:', error);
     const errorMsg = error instanceof Error ? error.message : String(error);
