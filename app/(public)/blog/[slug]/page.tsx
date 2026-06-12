@@ -9,9 +9,7 @@ import BlogPostClient from './BlogPostClient';
 import { connectDB } from '@/lib/db/connection';
 import { BlogPostModel } from '@/lib/db/models';
 
-// Force dynamic rendering to prevent stale content
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 300; // ISR: revalidate every 5 minutes
 
 interface Props {
   params: Promise<{ slug: string }>;

@@ -4,7 +4,7 @@
 
 'use client';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 120; // ISR: revalidate every 2 minutes
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';

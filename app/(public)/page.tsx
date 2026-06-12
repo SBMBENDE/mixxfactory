@@ -15,7 +15,7 @@
  * ✅ Better perceived performance (TTFMC)
  */
 
-export const revalidate = 60; // ISR: revalidate every 1 minute (faster updates for featured professionals)
+export const revalidate = 300; // ISR: revalidate every 5 minutes
 
 import { Suspense } from 'react';
 import TrustedByThousandsSection from '@/components/TrustedByThousandsSection';
